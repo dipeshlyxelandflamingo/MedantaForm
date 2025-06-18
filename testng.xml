@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+
+	<test thread-count="5" name="CareerJob">
+		<classes>
+			<class name="Medanta_Form.CareerJob" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="BuyMedicine">
+		<classes>
+			<class name="Medanta_Form.BuyMedicine" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="HomeCare">
+		<classes>
+			<class name="Medanta_Form.HomeCare" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="RequestAnEstimate">
+		<classes>
+			<class name="Medanta_Form.RequestAnEstimate" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="BecomeAPartner">
+		<classes>
+			<class name="Medanta_Form.BecomeAPartner" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="ContactUs">
+		<classes>
+			<class name="Medanta_Form.ContactUs" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="RequestACallback">
+		<classes>
+			<class name="Medanta_Form.RequestACallback" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="SecondOpiniun">
+		<classes>
+			<class name="Medanta_Form.SecondOpiniun" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="ElderCare">
+		<classes>
+			<class name="Medanta_Form.ElderCare" />
+		</classes>
+	</test> <!-- Test -->
+
+	<test thread-count="5" name="MedantaLabs">
+		<classes>
+			<class name="Medanta_Form.MedantaLabs" />
+		</classes>
+	</test> <!-- Test -->
+
+</suite> <!-- Suite -->

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="ElderCare(failed)">
+    <classes>
+      <class name="Medanta_Form.ElderCare">
+        <methods>
+          <include name="TC_03"/>
+          <include name="TearDown"/>
+          <include name="Openbrowser"/>
+          <include name="TC_02"/>
+        </methods>
+      </class> <!-- Medanta_Form.ElderCare -->
+    </classes>
+  </test> <!-- ElderCare(failed) -->
+</suite> <!-- Failed suite [Suite] -->
