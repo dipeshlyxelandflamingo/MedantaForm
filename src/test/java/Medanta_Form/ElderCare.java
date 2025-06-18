@@ -61,12 +61,14 @@ public class ElderCare extends BaseClass {
 
 		driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
 		Thread.sleep(2000);
-		driver.findElement(By.id("closeModal")).click();
+		driver.findElement(By.xpath("(//a[@id='closeModal'])[2]")).click();
+		Thread.sleep(15000);
 
 	}
 
 	@Test
-	public void TC_03() {
+	public void TC_03() throws Exception {
+		Thread.sleep(10000);
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,450)", "");
 

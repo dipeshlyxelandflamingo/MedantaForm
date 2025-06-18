@@ -1,4 +1,6 @@
-package Medanta.Medanta;
+package Medanta_Form;
+
+import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -7,11 +9,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
-import common.base;
+import Base.BaseClass;
 
-import java.time.Duration;
-
-public class CPR extends base {
+public class CPR extends BaseClass {
 
 	@Test
 	public void TC_01() throws InterruptedException {
@@ -28,11 +28,9 @@ public class CPR extends base {
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 		
-		validateSuccessMessage();
 		
-	}
-
-	public void validateSuccessMessage() {
+		
+	
 	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
 	    try {
@@ -44,8 +42,10 @@ public class CPR extends base {
 
 	        if (msg.contains("Thank you")) {
 	            System.out.println("PASS");
+	            sheet.getRow(35).createCell(5).setCellValue("PASS!");
 	        } else {
 	            System.out.println("FAIL");
+	            sheet.getRow(35).createCell(5).setCellValue("FAIL!");
 	        }
 	    } catch (Exception e) {
 	        System.out.println("Element not found or timeout occurred: " + e.getMessage());

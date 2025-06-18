@@ -75,7 +75,7 @@ public class CareerJob extends BaseClass {
 
 		// driver.findElement(By.xpath("//span[@id='recaptcha-anchor']")).click();
 
-		Thread.sleep(10000);
+		Thread.sleep(22000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 		
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
