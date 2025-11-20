@@ -6,22 +6,22 @@
       <class name="Medanta_Form.CareerJob">
         <methods>
           <include name="TearDown"/>
-          <include name="TC_03"/>
+          <include name="CareerJobPage_CandidateApplication_ProfessionalDetailsForm"/>
+          <include name="CareerJobPage_CandidateApplication_EducationalQualificationForm"/>
           <include name="Openbrowser"/>
         </methods>
       </class> <!-- Medanta_Form.CareerJob -->
     </classes>
   </test> <!-- CareerJob(failed) -->
-  <test thread-count="5" name="ElderCare(failed)">
+  <test thread-count="5" name="UpdateDPSehat(failed)">
     <classes>
-      <class name="Medanta_Form.ElderCare">
+      <class name="Medanta_Form.UpdateDPSehat">
         <methods>
-          <include name="TC_03"/>
           <include name="TearDown"/>
           <include name="Openbrowser"/>
-          <include name="TC_02"/>
+          <include name="UpdateDetailPages_QueryForm"/>
         </methods>
-      </class> <!-- Medanta_Form.ElderCare -->
+      </class> <!-- Medanta_Form.UpdateDPSehat -->
     </classes>
-  </test> <!-- ElderCare(failed) -->
+  </test> <!-- UpdateDPSehat(failed) -->
 </suite> <!-- Failed suite [Suite] -->

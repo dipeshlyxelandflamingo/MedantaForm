@@ -12,8 +12,8 @@ import Base.BaseClass;
 
 public class BecomeAPartner extends BaseClass {
 
-	@Test
-	public void TC_01() {
+	@Test(priority=1)
+	public void BecomeAPartnerPage_BusinessModelForm() {
 
 		driver.navigate().to("https://www.medanta.org/medanta-labs/become-a-partner");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -37,10 +37,10 @@ public class BecomeAPartner extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(7).createCell(5).setCellValue("PASS!");
+				sheet.getRow(2).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(7).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(2).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

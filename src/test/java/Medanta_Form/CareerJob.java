@@ -15,8 +15,8 @@ import Base.BaseClass;
 public class CareerJob extends BaseClass {
 	
 
-	@Test
-	public void TC_01() throws Exception {
+	@Test(priority=1)
+	public void CareerJobPage_CandidateApplication_PersonalDetailsForm() throws Exception {
 
 		driver.navigate().to("https://www.medanta.org/jobs/gurgaon-pharmacist-haryana-registration/form");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -26,32 +26,41 @@ public class CareerJob extends BaseClass {
 		driver.findElement(By.name("mobile")).sendKeys("9876543210");
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("//input[@placeholder='Enter Your City']")).sendKeys("noida");
-
+		
+		Thread.sleep(3000);
 		WebElement Statedropdown = driver.findElement(By.name("state"));
 		Select state = new Select(Statedropdown);
 		state.selectByValue("Uttar Pradesh");
-
+		Thread.sleep(3000);
 		driver.findElement(By.id("dob")).sendKeys("2000-06-12");
-
-		WebElement GenderDD = driver.findElement(By.name("gender"));
+		Thread.sleep(3000);
+		WebElement GenderDD = driver.findElement(By.xpath("(//select[@class='inputbox'])[2]"));
 		Select Gender = new Select(GenderDD);
 		Gender.selectByIndex(1);
-
+		Thread.sleep(3000);
 		driver.findElement(By.xpath("(//input[@name='selectedFreshOrExp'])[2]")).click();
+		Thread.sleep(3000);
 		driver.findElement(By.xpath("(//button[@type='button'])[8]")).click();
 		Thread.sleep(3000);
 
 	}
 
-	@Test
-	public void TC_02() throws Exception {
-
+	@Test(priority=2)
+	public void CareerJobPage_CandidateApplication_ProfessionalDetailsForm() throws Exception {
+		Thread.sleep(3000);
+		
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[5]")).sendKeys("Abcd");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[6]")).sendKeys("10000");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[7]")).sendKeys("20000");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[8]")).sendKeys("30");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[9]")).sendKeys("Associate");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[10]")).sendKeys("Abcd");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//input[@class='inputbox'])[11]")).sendKeys("3");
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("(//button[@type='button'])[9]")).click();
@@ -59,15 +68,15 @@ public class CareerJob extends BaseClass {
 
 	}
 
-	@Test
-	public void TC_03() throws Exception {
+	@Test(priority=3)
+	public void CareerJobPage_CandidateApplication_EducationalQualificationForm() throws Exception {
 
 		driver.findElement(By.xpath("//input[@placeholder='Enter Institution']")).sendKeys("Abcd");
 		driver.findElement(By.xpath("//input[@placeholder='Enter Degree']")).sendKeys("Abcd");
 		driver.findElement(By.xpath("//input[@placeholder='Enter Year of Completion']")).sendKeys("2010");
 		driver.findElement(By.xpath("//input[@placeholder='Enter Percentage']")).sendKeys("70");
 		Thread.sleep(1000);
-		driver.findElement(By.xpath("(//input[@id='resume'])[2]")).sendKeys("C:\\Users\\LYXELANDFLAMINGO\\upload.docx");
+		driver.findElement(By.xpath("(//input[@id='resume'])[2]")).sendKeys("SampleDocs/upload.docx");
 		Thread.sleep(1000);
 
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -87,10 +96,10 @@ public class CareerJob extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(25).createCell(5).setCellValue("PASS!");
+				sheet.getRow(4).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(25).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(4).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

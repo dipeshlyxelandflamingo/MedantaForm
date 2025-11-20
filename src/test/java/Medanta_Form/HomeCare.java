@@ -14,8 +14,8 @@ import Base.BaseClass;
 
 public class HomeCare extends BaseClass {
 
-	@Test
-	public void TC_01() {
+	@Test (priority=1)
+	public void HomeCarePage_RequestACallbackForm () {
 
 		driver.navigate().to("https://www.medanta.org/home-care");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -36,10 +36,10 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(8).createCell(5).setCellValue("PASS!");
+				sheet.getRow(14).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(8).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(14).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -47,8 +47,8 @@ public class HomeCare extends BaseClass {
 		}
 	}
 
-	@Test
-	public void TC_02() {
+	@Test (priority=2)
+	public void HomeCarePage_EnquiryForm() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,2000)", "");
 
@@ -73,11 +73,11 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(10).createCell(5).setCellValue("PASS!");
+				sheet.getRow(15).createCell(4).setCellValue("PASS!");
 				
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(10).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(15).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -85,8 +85,8 @@ public class HomeCare extends BaseClass {
 		}
 	}
 
-	@Test
-	public void TC_03() {
+	@Test (priority=3)
+	public void HomeCarePage_StrokeRehabilitationProgramPage_QueryForm() {
 
 		driver.navigate().to("https://www.medanta.org/home-care-service-program/stroke-rehabilitation-program");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -108,10 +108,10 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(11).createCell(5).setCellValue("PASS!");
+				sheet.getRow(16).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(11).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(16).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -119,8 +119,8 @@ public class HomeCare extends BaseClass {
 		}
 	}
 
-	@Test
-	public void TC_04() {
+	@Test (priority=4)
+	public void HomeCarePage_ElderCareProgramPage_QueryForm() {
 
 		driver.navigate().to("https://www.medanta.org/home-care-service-program/elder-care-program");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -142,10 +142,10 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(12).createCell(5).setCellValue("PASS!");
+				sheet.getRow(17).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(12).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(17).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

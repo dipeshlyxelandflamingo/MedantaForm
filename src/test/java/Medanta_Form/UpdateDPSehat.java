@@ -13,7 +13,8 @@ import Base.BaseClass;
 public class UpdateDPSehat extends BaseClass {
 
 	@Test
-	public void TC_01() throws InterruptedException {
+	public void UpdateDetailPages_QueryForm () throws InterruptedException {
+		
 		driver.navigate().to("https://www.medanta.org/updates/sehat-ka-shagun-happy-diwali-medanta");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
@@ -34,10 +35,10 @@ public class UpdateDPSehat extends BaseClass {
 
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(32).createCell(5).setCellValue("PASS!");
+				sheet.getRow(30).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(32).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(30).createCell(4).setCellValue("FAIL!");
 			}
 		} catch (Exception e) {
 			System.out.println("Element not found or timeout occurred: " + e.getMessage());

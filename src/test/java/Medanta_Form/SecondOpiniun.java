@@ -13,7 +13,7 @@ import Base.BaseClass;
 public class SecondOpiniun extends BaseClass {
 
 	@Test
-	public void TC_01() {
+	public void SecondOpiniunPage_RequestACallbackFrom () {
 		
 			
 		driver.navigate().to("https://www.medanta.org/second-opinion");
@@ -37,10 +37,10 @@ public class SecondOpiniun extends BaseClass {
             String msg = emt.getText();
             if (msg.contains("Thank you")) {
                 System.out.println("PASS");
-                sheet.getRow(1).createCell(5).setCellValue("PASS!");
+                sheet.getRow(28).createCell(4).setCellValue("PASS!");
             } else {
                 System.out.println("FAIL");
-                sheet.getRow(1).createCell(5).setCellValue("FAIL!");
+                sheet.getRow(28).createCell(4).setCellValue("FAIL!");
             }
 
         } catch (Exception e) {

@@ -14,7 +14,7 @@ import Base.BaseClass;
 public class CPR extends BaseClass {
 
 	@Test
-	public void TC_01() throws InterruptedException {
+	public void CPRPage_EnrollnowForm() throws InterruptedException {
 		driver.navigate().to(
 				"https://www.medanta.org/cpr");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -42,10 +42,10 @@ public class CPR extends BaseClass {
 
 	        if (msg.contains("Thank you")) {
 	            System.out.println("PASS");
-	            sheet.getRow(35).createCell(5).setCellValue("PASS!");
+	            sheet.getRow(8).createCell(4).setCellValue("PASS!");
 	        } else {
 	            System.out.println("FAIL");
-	            sheet.getRow(35).createCell(5).setCellValue("FAIL!");
+	            sheet.getRow(8).createCell(4).setCellValue("FAIL!");
 	        }
 	    } catch (Exception e) {
 	        System.out.println("Element not found or timeout occurred: " + e.getMessage());

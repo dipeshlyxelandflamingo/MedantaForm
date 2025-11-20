@@ -11,8 +11,9 @@ import org.testng.annotations.Test;
 import Base.BaseClass;
 
 public class MedantaLabs extends BaseClass {
-	@Test
-	public void TC_01() {
+	
+	@Test(priority=1)
+	public void MedantaLabsPage_RequestACallbackForm() {
 
 		driver.navigate().to("https://www.medanta.org/medanta-labs");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -33,10 +34,10 @@ public class MedantaLabs extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(4).createCell(5).setCellValue("PASS!");
+				sheet.getRow(20).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(4).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(20).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

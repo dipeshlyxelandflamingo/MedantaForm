@@ -14,8 +14,9 @@ import Base.BaseClass;
 
 public class ElderCare extends BaseClass {
 
-	@Test
-	public void TC_01() {
+	@Test(priority=1)
+	public void ElderCareProgramPage_RequestACallbackForm() {
+		
 		driver.navigate().to("https://www.medanta.org/elder-care-program");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 		driver.findElement(By.name("name")).sendKeys("Dipesh");
@@ -34,10 +35,10 @@ public class ElderCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(19).createCell(5).setCellValue("PASS!");
+				sheet.getRow(10).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(19).createCell(5).setCellValue("PASS!");
+				sheet.getRow(10).createCell(4).setCellValue("PASS!");
 			}
 
 		} catch (Exception e) {
@@ -45,8 +46,8 @@ public class ElderCare extends BaseClass {
 		}
 	}
 
-	@Test
-	public void TC_02() throws Throwable {
+	@Test(priority=2)
+	public void ElderCareProgramPage_EnrollNowForm() throws Throwable {
 
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,1550)", "");
@@ -61,13 +62,37 @@ public class ElderCare extends BaseClass {
 
 		driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
 		Thread.sleep(2000);
+		
+		WebDriverWait wait2 = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+		try {
+		    WebElement emt2 = wait2.until(
+		            ExpectedConditions.visibilityOfElementLocated(By.xpath("(//input[@type='text'])[5]"))
+		    );
+
+		    // Get placeholder value
+		    String placeholder = emt2.getAttribute("placeholder");
+
+		    if (placeholder == null || placeholder.trim().isEmpty()) {
+		       // System.out.println("PASS");
+		        sheet.getRow(11).createCell(4).setCellValue("PASS!");
+		    } else {
+		       // System.out.println("FAIL");
+		        sheet.getRow(11).createCell(4).setCellValue("FAIL!");
+		    }
+
+		} catch (Exception e) {
+		    System.out.println("Element not found or timeout occurred: " + e.getMessage());
+		}
+		
 		driver.findElement(By.xpath("(//a[@id='closeModal'])[2]")).click();
 		Thread.sleep(15000);
+		
 
 	}
 
-	@Test
-	public void TC_03() throws Exception {
+	@Test (priority=3)
+	public void ElderCareProgramPage_EnquiryForm() throws Exception {
 		Thread.sleep(10000);
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,450)", "");
@@ -97,10 +122,10 @@ public class ElderCare extends BaseClass {
 			String msg1 = emt1.getText();
 			if (msg1.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(21).createCell(5).setCellValue("PASS!");
+				sheet.getRow(12).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(21).createCell(5).setCellValue("PASS!");
+				sheet.getRow(12).createCell(4).setCellValue("PASS!");
 			}
 
 		} catch (Exception e) {

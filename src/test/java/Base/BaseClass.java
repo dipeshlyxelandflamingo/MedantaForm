@@ -11,7 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -35,7 +35,7 @@ public class BaseClass {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
 		try {
-			file = new FileInputStream("C:\\Users\\LYXELANDFLAMINGO\\Desktop\\Medanta\\forms.xlsx");
+			file = new FileInputStream("MedantaExcel/forms automation.xlsx");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,10 +52,10 @@ public class BaseClass {
 		System.out.println("Sheet name: " + sheet.getSheetName());
 	}
 
-	@AfterTest
+	//@AfterClass
 	public void TearDown() {
 		try {
-			fileOut = new FileOutputStream("C:\\Users\\LYXELANDFLAMINGO\\Desktop\\Medanta\\forms.xlsx");
+			fileOut = new FileOutputStream("MedantaExcel/forms automation.xlsx");
 			workbook.write(fileOut);
 		} catch (Exception e) {
 			System.err.println("Error while writing to Excel file: " + e.getMessage());

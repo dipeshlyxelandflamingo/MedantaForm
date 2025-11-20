@@ -12,8 +12,8 @@ import Base.BaseClass;
 
 public class updateEICU extends BaseClass {
 
-	@Test
-	public void TC_01() throws InterruptedException {
+	@Test(priority=1)
+	public void EICUPage_RequestACallbackForm	() throws InterruptedException {
 		driver.navigate().to("https://www.medanta.org/eicu");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
@@ -36,10 +36,10 @@ public class updateEICU extends BaseClass {
 
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(33).createCell(5).setCellValue("PASS!");
+				sheet.getRow(31).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(33).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(31).createCell(4).setCellValue("FAIL!");
 			}
 		} catch (Exception e) {
 			System.out.println("Element not found or timeout occurred: " + e.getMessage());

@@ -3,142 +3,124 @@
 
 <suite name="Suite">
 
-	<test thread-count="5" name="CareerJob">
-		<classes>
-			<class name="Medanta_Form.CareerJob" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="AilmentDP">
+        <classes>
+            <class name="Medanta_Form.AilmentDP" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="HomeCare">
-		<classes>
-			<class name="Medanta_Form.HomeCare" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="BecomeAPartner">
+        <classes>
+            <class name="Medanta_Form.BecomeAPartner" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="InternationalP">
-		<classes>
-			<class name="Medanta_Form.InternationalP" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="BlogDP">
+        <classes>
+            <class name="Medanta_Form.BlogDP" />
+        </classes>
+    </test>   
 
-	<test thread-count="5" name="UpdateDPSehat">
-		<classes>
-			<class name="Medanta_Form.UpdateDPSehat" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="ContactUs">
+        <classes>
+            <class name="Medanta_Form.ContactUs" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="CPR">
-		<classes>
-			<class name="Medanta_Form.CPR" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="CPR">
+        <classes>
+            <class name="Medanta_Form.CPR" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="SecondOpiniun">
-		<classes>
-			<class name="Medanta_Form.SecondOpiniun" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="CulturalEDP">
+        <classes>
+            <class name="Medanta_Form.CulturalEDP" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="TechnologyDP">
-		<classes>
-			<class name="Medanta_Form.TechnologyDP" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="ElderCare">
+        <classes>
+            <class name="Medanta_Form.ElderCare" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="ElderCare">
-		<classes>
-			<class name="Medanta_Form.ElderCare" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="Headerform">
+        <classes>
+            <class name="Medanta_Form.Headerform" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="BuyMedicine">
-		<classes>
-			<class name="Medanta_Form.BuyMedicine" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="HomeCare">
+        <classes>
+            <class name="Medanta_Form.HomeCare" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="BlogDP">
-		<classes>
-			<class name="Medanta_Form.BlogDP" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="InternationalP">
+        <classes>
+            <class name="Medanta_Form.InternationalP" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="CulturalEDP">
-		<classes>
-			<class name="Medanta_Form.CulturalEDP" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="landingHealth">
+        <classes>
+            <class name="Medanta_Form.landingHealth" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="RequestAnEstimate">
-		<classes>
-			<class name="Medanta_Form.RequestAnEstimate" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="MedantaLabs">
+        <classes>
+            <class name="Medanta_Form.MedantaLabs" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="BecomeAPartner">
-		<classes>
-			<class name="Medanta_Form.BecomeAPartner" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="MedantaPharmacy">
+        <classes>
+            <class name="Medanta_Form.MedantaPharmacy" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="Headerform">
-		<classes>
-			<class name="Medanta_Form.Headerform" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="planYT">
+        <classes>
+            <class name="Medanta_Form.planYT" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="landingHealth">
-		<classes>
-			<class name="Medanta_Form.landingHealth" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="RequestACallback">
+        <classes>
+            <class name="Medanta_Form.RequestACallback" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="Jobs">
-		<classes>
-			<class name="Medanta_Form.Jobs" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="RequestAnEstimate">
+        <classes>
+            <class name="Medanta_Form.RequestAnEstimate" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="ContactUs">
-		<classes>
-			<class name="Medanta_Form.ContactUs" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="SecondOpiniun">
+        <classes>
+            <class name="Medanta_Form.SecondOpiniun" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="planYT">
-		<classes>
-			<class name="Medanta_Form.planYT" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="TechnologyDP">
+        <classes>
+            <class name="Medanta_Form.TechnologyDP" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="RequestACallback">
-		<classes>
-			<class name="Medanta_Form.RequestACallback" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="TreatmentD">
+        <classes>
+            <class name="Medanta_Form.TreatmentD" />
+        </classes>
+    </test>   
 
-	<test thread-count="5" name="AilmentDP">
-		<classes>
-			<class name="Medanta_Form.AilmentDP" />
-		</classes>
-	</test> <!-- Test -->
+    <test thread-count="5" name="updateEICU">
+        <classes>
+            <class name="Medanta_Form.updateEICU" />
+        </classes>
+    </test>
 
-	<test thread-count="5" name="TreatmentD">
-		<classes>
-			<class name="Medanta_Form.TreatmentD" />
-		</classes>
-	</test> <!-- Test -->
-
-	<test thread-count="5" name="updateEICU">
-		<classes>
-			<class name="Medanta_Form.updateEICU" />
-		</classes>
-	</test> <!-- Test -->
-
-	<test thread-count="5" name="MedantaLabs">
-		<classes>
-			<class name="Medanta_Form.MedantaLabs" />
-		</classes>
-	</test> <!-- Test -->
-
-</suite> <!-- Suite -->
+</suite>

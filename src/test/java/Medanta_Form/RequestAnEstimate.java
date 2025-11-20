@@ -14,8 +14,8 @@ import Base.BaseClass;
 
 public class RequestAnEstimate extends BaseClass {
 
-	@Test
-	public void TC_01() throws Exception {
+	@Test(priority=1)
+	public void RequestAnEstimatePage_PriceEstimateForm() throws Exception {
 
 		driver.navigate().to("https://www.medanta.org/international-patient/services/request-an-estimate");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -50,10 +50,10 @@ public class RequestAnEstimate extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(24).createCell(5).setCellValue("PASS!");
+				sheet.getRow(27).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(24).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(27).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

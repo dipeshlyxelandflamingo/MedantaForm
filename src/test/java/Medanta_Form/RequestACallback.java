@@ -13,7 +13,7 @@ import Base.BaseClass;
 public class RequestACallback extends BaseClass {
 
 	@Test
-	public void Telemedicine() {
+	public void TelemedicinePage_RequestACallbackForm() {
 
 		driver.navigate().to("https://www.medanta.org/tele-medicine");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -33,10 +33,10 @@ public class RequestACallback extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(16).createCell(5).setCellValue("PASS!");
+				sheet.getRow(24).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(16).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(24).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -65,10 +65,10 @@ public class RequestACallback extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(17).createCell(5).setCellValue("PASS!");
+				sheet.getRow(25).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(17).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(25).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -97,10 +97,10 @@ public class RequestACallback extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(18).createCell(5).setCellValue("PASS!");
+				sheet.getRow(26).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(18).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(26).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

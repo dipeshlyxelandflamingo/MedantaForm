@@ -12,8 +12,9 @@ import Base.BaseClass;
 
 public class landingHealth extends BaseClass {
 
-	@Test
-	public void TC_01() throws InterruptedException {
+	@Test(priority=1)
+	public void LandingHealth_Page_QueryForm() throws InterruptedException {
+		
 		driver.navigate().to(
 				"https://www.medanta.org/ehc/hishealth-checkup/L1gz");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -38,10 +39,10 @@ public class landingHealth extends BaseClass {
 
 	        if (msg.contains("Your query")) {
 	            System.out.println("PASS");
-	            sheet.getRow(40).createCell(5).setCellValue("PASS!");
+	            sheet.getRow(19).createCell(4).setCellValue("PASS!");
 	        } else {
 	            System.out.println("FAIL");
-	            sheet.getRow(40).createCell(5).setCellValue("FAIL!");
+	            sheet.getRow(19).createCell(4).setCellValue("FAIL!");
 	        }
 	    } catch (Exception e) {
 	        System.out.println("Element not found or timeout occurred: " + e.getMessage());

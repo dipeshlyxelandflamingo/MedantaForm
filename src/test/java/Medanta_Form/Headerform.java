@@ -13,7 +13,8 @@ import Base.BaseClass;
 public class Headerform extends BaseClass {
 
 	@Test
-	public void TC_01() {
+	public void Header_RequestACallBackForm () {
+		
 		driver.navigate().to("https://www.medanta.org");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 		driver.findElement(By.xpath("//span[normalize-space()='Request Call Back']")).click();
@@ -36,10 +37,10 @@ public class Headerform extends BaseClass {
 
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(38).createCell(5).setCellValue("PASS!");
+				sheet.getRow(13).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(38).createCell(5).setCellValue("FAIL!");
+				sheet.getRow(13).createCell(4).setCellValue("FAIL!");
 			}
 		} catch (Exception e) {
 			System.out.println("Element not found or timeout occurred: " + e.getMessage());
