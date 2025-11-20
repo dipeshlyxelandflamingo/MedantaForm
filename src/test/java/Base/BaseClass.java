@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -29,10 +30,35 @@ public class BaseClass {
 	public void Openbrowser() {
 
 		WebDriverManager.chromedriver().setup();
+		
+
+        ChromeOptions options = new ChromeOptions();
+
+        // ✅ Use realistic browser fingerprint to bypass Cloudflare
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.addArguments("start-maximized");
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/142.0.7444.134 Safari/537.36");
+
+        // ✅ Headless + Jenkins safe setup
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+        }
+
+        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+        options.setExperimentalOption("useAutomationExtension", false);
+        options.addArguments("--remote-allow-origins=*");
+		
 		driver = new ChromeDriver();
 		driver.get("https://www.medanta.org");
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		
+		
 
 		try {
 			file = new FileInputStream("MedantaExcel/forms automation.xlsx");
