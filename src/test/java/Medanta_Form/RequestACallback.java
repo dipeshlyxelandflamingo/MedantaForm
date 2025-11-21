@@ -12,7 +12,7 @@ import Base.BaseClass;
 
 public class RequestACallback extends BaseClass {
 
-	@Test
+	@Test(priority=1)
 	public void TelemedicinePage_RequestACallbackForm() {
 
 		driver.navigate().to("https://www.medanta.org/tele-medicine");
@@ -28,7 +28,9 @@ public class RequestACallback extends BaseClass {
 		try {
 			WebElement emt = wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.xpath("//div[contains(text(), 'Thank you for filling the form')]")));
-
+			
+			Thread.sleep(3000);
+			
 			// Validate the success message
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
@@ -44,7 +46,7 @@ public class RequestACallback extends BaseClass {
 		}
 	}
 
-	@Test
+	@Test(priority=2)
 	public void Air_Ambulance() {
 
 		driver.navigate().to("https://www.medanta.org/air-ambulance");
@@ -60,7 +62,9 @@ public class RequestACallback extends BaseClass {
 		try {
 			WebElement emt = wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.xpath("//div[contains(text(), 'Thank you for filling the form')]")));
-
+			
+			Thread.sleep(3000);
+			
 			// Validate the success message
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
@@ -76,7 +80,7 @@ public class RequestACallback extends BaseClass {
 		}
 	}
 
-	@Test
+	@Test(priority=3)
 	public void Health_Checkup() {
 
 		driver.navigate().to("https://www.medanta.org/healthcheckup/gurugram-hospital");
@@ -92,7 +96,9 @@ public class RequestACallback extends BaseClass {
 		try {
 			WebElement emt = wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.xpath("//div[contains(text(), 'Thank you for filling the form')]")));
-
+			
+			Thread.sleep(3000);
+			
 			// Validate the success message
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {

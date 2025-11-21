@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
-  <test thread-count="5" name="CareerJob(failed)">
+  <test thread-count="5" name="RequestACallback(failed)">
     <classes>
-      <class name="Medanta_Form.CareerJob">
+      <class name="Medanta_Form.RequestACallback">
         <methods>
-          <include name="TearDown"/>
-          <include name="CareerJobPage_CandidateApplication_ProfessionalDetailsForm"/>
-          <include name="CareerJobPage_CandidateApplication_EducationalQualificationForm"/>
+          <include name="Health_Checkup"/>
           <include name="Openbrowser"/>
         </methods>
-      </class> <!-- Medanta_Form.CareerJob -->
+      </class> <!-- Medanta_Form.RequestACallback -->
     </classes>
-  </test> <!-- CareerJob(failed) -->
-  <test thread-count="5" name="UpdateDPSehat(failed)">
-    <classes>
-      <class name="Medanta_Form.UpdateDPSehat">
-        <methods>
-          <include name="TearDown"/>
-          <include name="Openbrowser"/>
-          <include name="UpdateDetailPages_QueryForm"/>
-        </methods>
-      </class> <!-- Medanta_Form.UpdateDPSehat -->
-    </classes>
-  </test> <!-- UpdateDPSehat(failed) -->
+  </test> <!-- RequestACallback(failed) -->
 </suite> <!-- Failed suite [Suite] -->

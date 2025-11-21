@@ -78,7 +78,7 @@ public class BaseClass {
 		System.out.println("Sheet name: " + sheet.getSheetName());
 	}
 
-	//@AfterClass
+	@AfterClass
 	public void TearDown() {
 		try {
 			fileOut = new FileOutputStream("MedantaExcel/forms automation.xlsx");
