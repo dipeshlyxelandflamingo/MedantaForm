@@ -37,10 +37,10 @@ public class Headerform extends BaseClass {
 
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(13).createCell(4).setCellValue("PASS!");
+				sheet.getRow(12).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(13).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(12).createCell(4).setCellValue("FAIL!");
 			}
 		} catch (Exception e) {
 			System.out.println("Element not found or timeout occurred: " + e.getMessage());

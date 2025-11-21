@@ -36,10 +36,10 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(14).createCell(4).setCellValue("PASS!");
+				sheet.getRow(13).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(14).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(13).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -73,11 +73,11 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(15).createCell(4).setCellValue("PASS!");
+				sheet.getRow(14).createCell(4).setCellValue("PASS!");
 				
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(15).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(14).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -108,10 +108,10 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(16).createCell(4).setCellValue("PASS!");
+				sheet.getRow(15).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(16).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(15).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -142,10 +142,10 @@ public class HomeCare extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(17).createCell(4).setCellValue("PASS!");
+				sheet.getRow(16).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(17).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(16).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

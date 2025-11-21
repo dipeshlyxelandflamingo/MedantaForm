@@ -34,10 +34,10 @@ public class MedantaPharmacy extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(21).createCell(4).setCellValue("PASS!");
+				sheet.getRow(20).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(21).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(20).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {
@@ -65,10 +65,10 @@ public class MedantaPharmacy extends BaseClass {
 			String msg = emt.getText();
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(22).createCell(4).setCellValue("PASS!");
+				sheet.getRow(21).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(22).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(21).createCell(4).setCellValue("FAIL!");
 			}
 
 		} catch (Exception e) {

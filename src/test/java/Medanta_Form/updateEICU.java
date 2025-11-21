@@ -36,10 +36,10 @@ public class updateEICU extends BaseClass {
 
 			if (msg.contains("Thank you")) {
 				System.out.println("PASS");
-				sheet.getRow(31).createCell(4).setCellValue("PASS!");
+				sheet.getRow(30).createCell(4).setCellValue("PASS!");
 			} else {
 				System.out.println("FAIL");
-				sheet.getRow(31).createCell(4).setCellValue("FAIL!");
+				sheet.getRow(30).createCell(4).setCellValue("FAIL!");
 			}
 		} catch (Exception e) {
 			System.out.println("Element not found or timeout occurred: " + e.getMessage());

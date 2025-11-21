@@ -3,12 +3,14 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="Medanta_Form.CareerJob">
+      <class name="Medanta_Form.ElderCare">
         <methods>
-          <include name="CareerJobPage_CandidateApplication_EducationalQualificationForm"/>
+          <include name="ElderCareProgramPage_EnquiryForm"/>
+          <include name="TearDown"/>
+          <include name="ElderCareProgramPage_EnrollNowForm"/>
           <include name="Openbrowser"/>
         </methods>
-      </class> <!-- Medanta_Form.CareerJob -->
+      </class> <!-- Medanta_Form.ElderCare -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

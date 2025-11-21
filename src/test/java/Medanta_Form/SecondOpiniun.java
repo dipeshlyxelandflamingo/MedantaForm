@@ -37,10 +37,10 @@ public class SecondOpiniun extends BaseClass {
             String msg = emt.getText();
             if (msg.contains("Thank you")) {
                 System.out.println("PASS");
-                sheet.getRow(28).createCell(4).setCellValue("PASS!");
+                sheet.getRow(27).createCell(4).setCellValue("PASS!");
             } else {
                 System.out.println("FAIL");
-                sheet.getRow(28).createCell(4).setCellValue("FAIL!");
+                sheet.getRow(27).createCell(4).setCellValue("FAIL!");
             }
 
         } catch (Exception e) {
