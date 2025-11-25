@@ -61,7 +61,8 @@ public class BaseClass {
 		
 
 		try {
-			file = new FileInputStream("MedantaExcel/forms automation.xlsx");
+			String path = System.getProperty("user.dir") + "/forms automation.xlsx";
+			file = new FileInputStream(path);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,14 +81,24 @@ public class BaseClass {
 
 	@AfterClass
 	public void TearDown() {
-		try {
-			fileOut = new FileOutputStream("MedantaExcel/forms automation.xlsx");
-			workbook.write(fileOut);
-		} catch (Exception e) {
-			System.err.println("Error while writing to Excel file: " + e.getMessage());
+	    try {
+	        String path = System.getProperty("user.dir") + "/forms automation.xlsx";
+	        
+	        file.close(); // close input stream before writing
 
-		}
-		driver.quit();
+	        fileOut = new FileOutputStream(path); //  open output stream
+	        workbook.write(fileOut);              //  write Excel changes
+
+	        fileOut.close();
+	        workbook.close(); 
+
+	        System.out.println("Excel Updated Successfully!");
+	        
+	    } catch (Exception e) {
+	        System.err.println("Error while writing to Excel file: " + e.getMessage());
+	    }
+
+	    driver.quit();
 	}
 
 }
