@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="3" passed="3" failed="0" skipped="0">
+<testng-results ignored="0" total="2" passed="2" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-11-21T15:01:31 IST" name="Default suite" finished-at="2025-11-21T15:02:12 IST" duration-ms="41784">
+  <suite started-at="2025-11-25T12:19:53 IST" name="Default suite" finished-at="2025-11-25T12:20:29 IST" duration-ms="35597">
     <groups>
     </groups>
-    <test started-at="2025-11-21T15:01:31 IST" name="Default test" finished-at="2025-11-21T15:02:12 IST" duration-ms="41784">
-      <class name="Medanta_Form.RequestACallback">
-        <test-method is-config="true" signature="Openbrowser()[pri:0, instance:Medanta_Form.RequestACallback@4be29ed9]" started-at="2025-11-21T15:01:31 IST" name="Openbrowser" finished-at="2025-11-21T15:01:44 IST" duration-ms="13611" status="PASS">
+    <test started-at="2025-11-25T12:19:53 IST" name="Default test" finished-at="2025-11-25T12:20:29 IST" duration-ms="35597">
+      <class name="Medanta_Form.ElderCare">
+        <test-method is-config="true" signature="Openbrowser()[pri:0, instance:Medanta_Form.ElderCare@3a7442c7]" started-at="2025-11-25T12:19:53 IST" name="Openbrowser" finished-at="2025-11-25T12:20:07 IST" duration-ms="13927" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- Openbrowser -->
-        <test-method signature="TelemedicinePage_RequestACallbackForm()[pri:1, instance:Medanta_Form.RequestACallback@4be29ed9]" started-at="2025-11-21T15:01:44 IST" name="TelemedicinePage_RequestACallbackForm" finished-at="2025-11-21T15:01:51 IST" duration-ms="7141" status="PASS">
+        <test-method signature="ElderCareProgramPage_RequestACallbackForm()[pri:1, instance:Medanta_Form.ElderCare@3a7442c7]" started-at="2025-11-25T12:20:07 IST" name="ElderCareProgramPage_RequestACallbackForm" finished-at="2025-11-25T12:20:17 IST" duration-ms="10237" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- TelemedicinePage_RequestACallbackForm -->
-        <test-method signature="Air_Ambulance()[pri:2, instance:Medanta_Form.RequestACallback@4be29ed9]" started-at="2025-11-21T15:01:51 IST" name="Air_Ambulance" finished-at="2025-11-21T15:01:59 IST" duration-ms="7987" status="PASS">
+        </test-method> <!-- ElderCareProgramPage_RequestACallbackForm -->
+        <test-method signature="ElderCareProgramPage_EnquiryForm()[pri:2, instance:Medanta_Form.ElderCare@3a7442c7]" started-at="2025-11-25T12:20:17 IST" name="ElderCareProgramPage_EnquiryForm" finished-at="2025-11-25T12:20:26 IST" duration-ms="9075" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- Air_Ambulance -->
-        <test-method signature="Health_Checkup()[pri:3, instance:Medanta_Form.RequestACallback@4be29ed9]" started-at="2025-11-21T15:01:59 IST" name="Health_Checkup" finished-at="2025-11-21T15:02:10 IST" duration-ms="10774" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- Health_Checkup -->
-        <test-method is-config="true" signature="TearDown()[pri:0, instance:Medanta_Form.RequestACallback@4be29ed9]" started-at="2025-11-21T15:02:10 IST" name="TearDown" finished-at="2025-11-21T15:02:12 IST" duration-ms="2144" status="PASS">
+        </test-method> <!-- ElderCareProgramPage_EnquiryForm -->
+        <test-method is-config="true" signature="TearDown()[pri:0, instance:Medanta_Form.ElderCare@3a7442c7]" started-at="2025-11-25T12:20:26 IST" name="TearDown" finished-at="2025-11-25T12:20:29 IST" duration-ms="2260" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- TearDown -->
-      </class> <!-- Medanta_Form.RequestACallback -->
+      </class> <!-- Medanta_Form.ElderCare -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>

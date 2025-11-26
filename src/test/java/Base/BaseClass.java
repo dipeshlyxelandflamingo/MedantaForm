@@ -2,6 +2,7 @@ package Base;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
 
@@ -27,7 +28,6 @@ public class BaseClass {
 
     @BeforeClass
     public void Openbrowser() {
-
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
@@ -48,30 +48,42 @@ public class BaseClass {
         options.addArguments("--remote-allow-origins=*");
 
         driver = new ChromeDriver(options);
-
         driver.get("https://www.medanta.org");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
         try {
-            file = new FileInputStream("MedantaExcel/forms automation.xlsx");
+            String path = System.getProperty("user.dir") + "/forms automation.xlsx";
+            file = new FileInputStream(path);
             workbook = new XSSFWorkbook(file);
-        } catch (Exception e) {
+            sheet = workbook.getSheet("Sheet1");
+            formatter = new DataFormatter();
+            System.out.println("Sheet name: " + sheet.getSheetName());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        sheet = workbook.getSheet("Sheet1");
-        formatter = new DataFormatter();
-        System.out.println("Sheet name: " + sheet.getSheetName());
     }
 
     @AfterClass
     public void TearDown() {
         try {
-            fileOut = new FileOutputStream("MedantaExcel/forms automation.xlsx");
+            if (file != null) file.close(); // Close input stream first
+
+            String path = System.getProperty("user.dir") + "/forms automation.xlsx";
+            fileOut = new FileOutputStream(path);
             workbook.write(fileOut);
+            System.out.println("Excel Updated Successfully!");
         } catch (Exception e) {
-            System.err.println("Error writing Excel: " + e.getMessage());
+            System.err.println("Error while writing to Excel file: " + e.getMessage());
+        } finally {
+            try {
+                if (fileOut != null) fileOut.close();
+                if (workbook != null) workbook.close();
+            } catch (Exception ex) {
+                System.err.println("Error while closing workbook/file: " + ex.getMessage());
+            }
+            if (driver != null) driver.quit();
         }
-        driver.quit();
     }
 }
