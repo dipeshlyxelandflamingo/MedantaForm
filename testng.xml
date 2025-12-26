@@ -9,6 +9,12 @@
         </classes>
     </test>
 
+    <test thread-count="5" name="AirAmbulancePage">
+        <classes>
+            <class name="Medanta_Form.AirAmbulancePage" />
+        </classes>
+    </test>
+
     <test thread-count="5" name="BecomeAPartner">
         <classes>
             <class name="Medanta_Form.BecomeAPartner" />
@@ -19,11 +25,23 @@
         <classes>
             <class name="Medanta_Form.BlogDP" />
         </classes>
-    </test>   
+    </test>
 
-    <test thread-count="5" name="ContactUs">
+    <test thread-count="5" name="ContactUs_Enquiry">
         <classes>
-            <class name="Medanta_Form.ContactUs" />
+            <class name="Medanta_Form.ContactUs_Enquiry" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="ContactUs_Feedback">
+        <classes>
+            <class name="Medanta_Form.ContactUs_Feedback" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="ContactUs_Others">
+        <classes>
+            <class name="Medanta_Form.ContactUs_Others" />
         </classes>
     </test>
 
@@ -39,9 +57,15 @@
         </classes>
     </test>
 
-    <test thread-count="5" name="ElderCare">
+    <test thread-count="5" name="ElderCare_EnquiryForm">
         <classes>
-            <class name="Medanta_Form.ElderCare" />
+            <class name="Medanta_Form.ElderCare_EnquiryForm" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="ElderCare_RequestACallbackForm">
+        <classes>
+            <class name="Medanta_Form.ElderCare_RequestACallbackForm" />
         </classes>
     </test>
 
@@ -51,9 +75,33 @@
         </classes>
     </test>
 
-    <test thread-count="5" name="HomeCare">
+    <test thread-count="5" name="HealthCheckup">
         <classes>
-            <class name="Medanta_Form.HomeCare" />
+            <class name="Medanta_Form.HealthCheckup" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="HomeCare_ElderCare">
+        <classes>
+            <class name="Medanta_Form.HomeCare_ElderCare" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="HomeCare_EnquiryForm">
+        <classes>
+            <class name="Medanta_Form.HomeCare_EnquiryForm" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="HomeCare_RequestACallbackForm">
+        <classes>
+            <class name="Medanta_Form.HomeCare_RequestACallbackForm" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="HomeCare_StrokeRehabilitation">
+        <classes>
+            <class name="Medanta_Form.HomeCare_StrokeRehabilitation" />
         </classes>
     </test>
 
@@ -75,21 +123,21 @@
         </classes>
     </test>
 
-    <test thread-count="5" name="MedantaPharmacy">
+    <test thread-count="5" name="MedantaPharmacy_RequestACallbackForm">
         <classes>
-            <class name="Medanta_Form.MedantaPharmacy" />
+            <class name="Medanta_Form.MedantaPharmacy_RequestACallbackForm" />
+        </classes>
+    </test>
+
+    <test thread-count="5" name="MedantaPharmacy_UploadForm">
+        <classes>
+            <class name="Medanta_Form.MedantaPharmacy_UploadForm" />
         </classes>
     </test>
 
     <test thread-count="5" name="planYT">
         <classes>
             <class name="Medanta_Form.planYT" />
-        </classes>
-    </test>
-
-    <test thread-count="5" name="RequestACallback">
-        <classes>
-            <class name="Medanta_Form.RequestACallback" />
         </classes>
     </test>
 
@@ -111,11 +159,17 @@
         </classes>
     </test>
 
+    <test thread-count="5" name="Telemedicine">
+        <classes>
+            <class name="Medanta_Form.Telemedicine" />
+        </classes>
+    </test>
+
     <test thread-count="5" name="TreatmentD">
         <classes>
             <class name="Medanta_Form.TreatmentD" />
         </classes>
-    </test>   
+    </test>
 
     <test thread-count="5" name="updateEICU">
         <classes>

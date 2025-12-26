@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
-  <test thread-count="5" name="RequestACallback(failed)">
+  <test thread-count="5" name="CPR(failed)">
     <classes>
-      <class name="Medanta_Form.RequestACallback">
+      <class name="Medanta_Form.CPR">
         <methods>
-          <include name="Health_Checkup"/>
+          <include name="TearDown"/>
+          <include name="CPRPage_EnrollnowForm"/>
           <include name="Openbrowser"/>
         </methods>
-      </class> <!-- Medanta_Form.RequestACallback -->
+      </class> <!-- Medanta_Form.CPR -->
     </classes>
-  </test> <!-- RequestACallback(failed) -->
+  </test> <!-- CPR(failed) -->
 </suite> <!-- Failed suite [Suite] -->

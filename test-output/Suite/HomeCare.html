@@ -55,11 +55,11 @@ function toggleAllBoxes() {
 <body>
 <h2 align='center'>HomeCare</h2><table border='1' align="center">
 <tr>
-<td>Tests passed/Failed/Skipped:</td><td>4/0/0</td>
+<td>Tests passed/Failed/Skipped:</td><td>0/3/0</td>
 </tr><tr>
-<td>Started on:</td><td>Tue Dec 02 10:32:55 IST 2025</td>
+<td>Started on:</td><td>Thu Dec 25 23:11:29 IST 2025</td>
 </tr>
-<tr><td>Total time:</td><td>30 seconds (30514 ms)</td>
+<tr><td>Total time:</td><td>81 seconds (81582 ms)</td>
 </tr><tr>
 <td>Included groups:</td><td></td>
 </tr><tr>
@@ -67,8 +67,8 @@ function toggleAllBoxes() {
 </tr>
 </table><p/>
 <small><i>(Hover the method name to see the test class name)</i></small><p/>
-<table width='100%' border='1' class='invocation-passed'>
-<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<table width='100%' border='1' class='invocation-failed'>
+<tr><td colspan='4' align='center'><b>FAILED TESTS</b></td></tr>
 <tr><td><b>Test method</b></td>
 <td><b>Attribute(s)</b></td>
 <td width="30%"><b>Exception</b></td>
@@ -76,25 +76,125 @@ function toggleAllBoxes() {
 <td><b>Instance</b></td>
 </tr>
 <tr>
-<td title='Medanta_Form.HomeCare.HomeCarePage_RequestACallbackForm()'><b>HomeCarePage_RequestACallbackForm</b><br>Test class: Medanta_Form.HomeCare</td>
-<td></td>
-<td>5</td>
-<td>Medanta_Form.HomeCare@66982506</td></tr>
+<td title='Medanta_Form.HomeCare_RequestACallbackForm.HomeCarePage_EnquiryForm()'><b>HomeCarePage_EnquiryForm</b><br>Test class: Medanta_Form.HomeCare_RequestACallbackForm</td>
+<td><div><pre>java.lang.AssertionError: Name=Dipesh | Mobile=987 | Email=dipesh@yopmail.com | Location=Select Location | Errors =&gt; Mobile Error: Please enter 10 digit mobile number | 
+	at Medanta_Form.HomeCare_RequestACallbackForm.HomeCarePage_EnquiryForm(HomeCare.java:171)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 28 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace287649987", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace287649987'><pre>java.lang.AssertionError: Name=Dipesh | Mobile=987 | Email=dipesh@yopmail.com | Location=Select Location | Errors =&gt; Mobile Error: Please enter 10 digit mobile number | 
+	at org.testng.Assert.fail(Assert.java:110)
+	at Medanta_Form.HomeCare_RequestACallbackForm.HomeCarePage_EnquiryForm(HomeCare.java:171)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:677)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:221)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:50)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:969)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:194)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.testng.TestRunner.privateRun(TestRunner.java:829)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:437)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:431)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:391)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:330)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1256)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1176)
+	at org.testng.TestNG.runSuites(TestNG.java:1099)
+	at org.testng.TestNG.run(TestNG.java:1067)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>27</td>
+<td>Medanta_Form.HomeCare_RequestACallbackForm@723ca036</td></tr>
 <tr>
-<td title='Medanta_Form.HomeCare.HomeCarePage_StrokeRehabilitationProgramPage_QueryForm()'><b>HomeCarePage_StrokeRehabilitationProgramPage_QueryForm</b><br>Test class: Medanta_Form.HomeCare</td>
-<td></td>
-<td>6</td>
-<td>Medanta_Form.HomeCare@66982506</td></tr>
+<td title='Medanta_Form.HomeCare_RequestACallbackForm.HomeCarePage_RequestACallbackForm()'><b>HomeCarePage_RequestACallbackForm</b><br>Test class: Medanta_Form.HomeCare_RequestACallbackForm</td>
+<td><div><pre>java.lang.AssertionError: Name=Dipesh | Mobile=987 | Email=dipesh@yopmail.com | Errors =&gt; 
+	at Medanta_Form.HomeCare_RequestACallbackForm.HomeCarePage_RequestACallbackForm(HomeCare.java:94)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 28 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace353786333", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace353786333'><pre>java.lang.AssertionError: Name=Dipesh | Mobile=987 | Email=dipesh@yopmail.com | Errors =&gt; 
+	at org.testng.Assert.fail(Assert.java:110)
+	at Medanta_Form.HomeCare_RequestACallbackForm.HomeCarePage_RequestACallbackForm(HomeCare.java:94)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:677)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:221)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:50)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:969)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:194)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.testng.TestRunner.privateRun(TestRunner.java:829)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:437)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:431)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:391)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:330)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1256)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1176)
+	at org.testng.TestNG.runSuites(TestNG.java:1099)
+	at org.testng.TestNG.run(TestNG.java:1067)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>32</td>
+<td>Medanta_Form.HomeCare_RequestACallbackForm@723ca036</td></tr>
 <tr>
-<td title='Medanta_Form.HomeCare.HomeCarePage_EnquiryForm()'><b>HomeCarePage_EnquiryForm</b><br>Test class: Medanta_Form.HomeCare</td>
-<td></td>
-<td>1</td>
-<td>Medanta_Form.HomeCare@66982506</td></tr>
-<tr>
-<td title='Medanta_Form.HomeCare.HomeCarePage_ElderCareProgramPage_QueryForm()'><b>HomeCarePage_ElderCareProgramPage_QueryForm</b><br>Test class: Medanta_Form.HomeCare</td>
-<td></td>
-<td>10</td>
-<td>Medanta_Form.HomeCare@66982506</td></tr>
+<td title='Medanta_Form.HomeCare_RequestACallbackForm.HomeCare_StrokeRehabilitation_QueryForm()'><b>HomeCare_StrokeRehabilitation_QueryForm</b><br>Test class: Medanta_Form.HomeCare_RequestACallbackForm</td>
+<td><div><pre>java.lang.AssertionError: Stroke Rehabilitation validation failed: Name=Dipesh | Mobile=987 | Email= | Errors =&gt; Mobile Error: Please enter a 10 digit mobile number | Email Error: The email field is required. | 
+	at Medanta_Form.HomeCare_RequestACallbackForm.HomeCare_StrokeRehabilitation_QueryForm(HomeCare.java:232)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 28 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace661868623", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace661868623'><pre>java.lang.AssertionError: Stroke Rehabilitation validation failed: Name=Dipesh | Mobile=987 | Email= | Errors =&gt; Mobile Error: Please enter a 10 digit mobile number | Email Error: The email field is required. | 
+	at org.testng.Assert.fail(Assert.java:110)
+	at Medanta_Form.HomeCare_RequestACallbackForm.HomeCare_StrokeRehabilitation_QueryForm(HomeCare.java:232)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:677)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:221)
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:50)
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:969)
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:194)
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.testng.TestRunner.privateRun(TestRunner.java:829)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:437)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:431)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:391)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:330)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1256)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1176)
+	at org.testng.TestNG.runSuites(TestNG.java:1099)
+	at org.testng.TestNG.run(TestNG.java:1067)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>19</td>
+<td>Medanta_Form.HomeCare_RequestACallbackForm@723ca036</td></tr>
 </table><p>
 </body>
 </html>

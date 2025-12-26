@@ -25,7 +25,7 @@
       <span class="top-banner-title-font">Test results</span>
       <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
       <br/>
-      <span class="top-banner-font-1">1 suite</span>
+      <span class="top-banner-font-1">1 suite, 1 failed test</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -39,7 +39,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" panel-name="suite-Suite" class="navigator-link">
-              <span class="suite-name border-passed">Suite</span>
+              <span class="suite-name border-failed">Suite</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -55,7 +55,7 @@
                 </li>
                 <li>
                   <a href="#" panel-name="testlist-Suite" class="navigator-link ">
-                    <span class="test-stats">20 tests</span>
+                    <span class="test-stats">29 tests</span>
                   </a> <!-- navigator-link  -->
                 </li>
                 <li>
@@ -92,7 +92,21 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">29 methods,   29 passed</span>
+                    <span class="method-stats">29 methods, 1 failed,   28 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Suite" class="hide-methods failed suite-Suite"> (hide)</a> <!-- hide-methods failed suite-Suite -->
+                      <a href="#" panel-name="suite-Suite" class="show-methods failed suite-Suite"> (show)</a> <!-- show-methods failed suite-Suite -->
+                    </span>
+                    <div class="method-list-content failed suite-Suite">
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.CPR" class="method navigator-link" hash-for-method="CPRPage_EnrollnowForm">CPRPage_EnrollnowForm</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content failed suite-Suite -->
                   </li>
                   <li>
                     <span class="method-list-title passed">Passed methods</span>
@@ -108,7 +122,7 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.RequestACallback" class="method navigator-link" hash-for-method="Air_Ambulance">Air_Ambulance</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.AirAmbulancePage" class="method navigator-link" hash-for-method="AirAmbulance_RequestACallbackForm">AirAmbulance_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -123,22 +137,17 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.CPR" class="method navigator-link" hash-for-method="CPRPage_EnrollnowForm">CPRPage_EnrollnowForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ContactUs_Enquiry" class="method navigator-link" hash-for-method="ContactUsPage_EnquiryForm">ContactUsPage_EnquiryForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ContactUs" class="method navigator-link" hash-for-method="ContactUsPage_EnquiryForm">ContactUsPage_EnquiryForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ContactUs_Feedback" class="method navigator-link" hash-for-method="ContactUsPage_FeedbackForm">ContactUsPage_FeedbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ContactUs" class="method navigator-link" hash-for-method="ContactUsPage_FeedbackForm">ContactUsPage_FeedbackForm</a> <!-- method navigator-link -->
-                      </span>
-                      <br/>
-                      <span>
-                        <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ContactUs" class="method navigator-link" hash-for-method="ContactUsPage_OthersForm">ContactUsPage_OthersForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ContactUs_Others" class="method navigator-link" hash-for-method="ContactUsPage_OthersForm">ContactUsPage_OthersForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -153,12 +162,12 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ElderCare" class="method navigator-link" hash-for-method="ElderCareProgramPage_EnquiryForm">ElderCareProgramPage_EnquiryForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ElderCare_EnquiryForm" class="method navigator-link" hash-for-method="ElderCareProgramPage_EnquiryForm">ElderCareProgramPage_EnquiryForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ElderCare" class="method navigator-link" hash-for-method="ElderCareProgramPage_RequestACallbackForm">ElderCareProgramPage_RequestACallbackForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.ElderCare_RequestACallbackForm" class="method navigator-link" hash-for-method="ElderCareProgramPage_RequestACallbackForm">ElderCareProgramPage_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -168,27 +177,27 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.RequestACallback" class="method navigator-link" hash-for-method="Health_Checkup">Health_Checkup</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HealthCheckup" class="method navigator-link" hash-for-method="HealthCheckup_RequestACallbackForm">HealthCheckup_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare" class="method navigator-link" hash-for-method="HomeCarePage_ElderCareProgramPage_QueryForm">HomeCarePage_ElderCareProgramPage_QueryForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare_EnquiryForm" class="method navigator-link" hash-for-method="HomeCarePage_EnquiryForm">HomeCarePage_EnquiryForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare" class="method navigator-link" hash-for-method="HomeCarePage_EnquiryForm">HomeCarePage_EnquiryForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare_RequestACallbackForm" class="method navigator-link" hash-for-method="HomeCarePage_RequestACallbackForm">HomeCarePage_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare" class="method navigator-link" hash-for-method="HomeCarePage_RequestACallbackForm">HomeCarePage_RequestACallbackForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare_ElderCare" class="method navigator-link" hash-for-method="HomeCare_ElderCareProgram_QueryForm">HomeCare_ElderCareProgram_QueryForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare" class="method navigator-link" hash-for-method="HomeCarePage_StrokeRehabilitationProgramPage_QueryForm">HomeCarePage_StrokeRehabilitationProgramPage_QueryForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.HomeCare_StrokeRehabilitation" class="method navigator-link" hash-for-method="HomeCare_StrokeRehabilitation_QueryForm">HomeCare_StrokeRehabilitation_QueryForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -208,7 +217,12 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.MedantaPharmacy" class="method navigator-link" hash-for-method="MedantaPharmacyPage_RequestACallbackForm">MedantaPharmacyPage_RequestACallbackForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.MedantaPharmacy_RequestACallbackForm" class="method navigator-link" hash-for-method="MedantaPharmacyPage_RequestACallbackForm">MedantaPharmacyPage_RequestACallbackForm</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.MedantaPharmacy_UploadForm" class="method navigator-link" hash-for-method="MedantaPharmacyPage_UploadForm">MedantaPharmacyPage_UploadForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -223,12 +237,7 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.SecondOpiniun" class="method navigator-link" hash-for-method="SecondOpiniunPage_RequestACallbackFrom">SecondOpiniunPage_RequestACallbackFrom</a> <!-- method navigator-link -->
-                      </span>
-                      <br/>
-                      <span>
-                        <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.MedantaPharmacy" class="method navigator-link" hash-for-method="TC_02">TC_02</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.SecondOpiniun" class="method navigator-link" hash-for-method="SecondOpinionPage_RequestACallbackForm">SecondOpinionPage_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -238,7 +247,7 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.RequestACallback" class="method navigator-link" hash-for-method="TelemedicinePage_RequestACallbackForm">TelemedicinePage_RequestACallbackForm</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.Telemedicine" class="method navigator-link" hash-for-method="Telemedicine_RequestACallbackForm">Telemedicine_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -258,68 +267,9 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-Suite" class="panel Suite">
-          <div class="suite-Suite-class-passed">
+          <div class="suite-Suite-class-failed">
             <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.TreatmentD</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="TreatmentDetailPage_RequestACallBackForm">
-                  </a> <!-- TreatmentDetailPage_RequestACallBackForm -->
-                  <span class="method-name">TreatmentDetailPage_RequestACallBackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.ContactUs</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="ContactUsPage_EnquiryForm">
-                  </a> <!-- ContactUsPage_EnquiryForm -->
-                  <span class="method-name">ContactUsPage_EnquiryForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="ContactUsPage_FeedbackForm">
-                  </a> <!-- ContactUsPage_FeedbackForm -->
-                  <span class="method-name">ContactUsPage_FeedbackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="ContactUsPage_OthersForm">
-                  </a> <!-- ContactUsPage_OthersForm -->
-                  <span class="method-name">ContactUsPage_OthersForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.MedantaLabs</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="MedantaLabsPage_RequestACallbackForm">
-                  </a> <!-- MedantaLabsPage_RequestACallbackForm -->
-                  <span class="method-name">MedantaLabsPage_RequestACallbackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
+              <img src="failed.png"/>
               <span class="class-name">Medanta_Form.CPR</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
@@ -328,57 +278,26 @@
                   <a name="CPRPage_EnrollnowForm">
                   </a> <!-- CPRPage_EnrollnowForm -->
                   <span class="method-name">CPRPage_EnrollnowForm</span>
+                  <div class="stack-trace">java.lang.AssertionError: CPR Enroll form validation failed: Name=Test | Mobile=98210 | Email=wakemedantatest@gmail.com | Location=Gurugram | Errors =&gt; Mobile Error: Please enter 10 digit mobile number | 
+	at Medanta_Form.CPR.CPRPage_EnrollnowForm(CPR.java:117)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 28 stack frames
+</div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
+          </div> <!-- suite-Suite-class-failed -->
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.BlogDP</span>
+              <span class="class-name">Medanta_Form.updateEICU</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="BlogDetailPage_QueryForm">
-                  </a> <!-- BlogDetailPage_QueryForm -->
-                  <span class="method-name">BlogDetailPage_QueryForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.HomeCare</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="HomeCarePage_ElderCareProgramPage_QueryForm">
-                  </a> <!-- HomeCarePage_ElderCareProgramPage_QueryForm -->
-                  <span class="method-name">HomeCarePage_ElderCareProgramPage_QueryForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="HomeCarePage_EnquiryForm">
-                  </a> <!-- HomeCarePage_EnquiryForm -->
-                  <span class="method-name">HomeCarePage_EnquiryForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="HomeCarePage_RequestACallbackForm">
-                  </a> <!-- HomeCarePage_RequestACallbackForm -->
-                  <span class="method-name">HomeCarePage_RequestACallbackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="HomeCarePage_StrokeRehabilitationProgramPage_QueryForm">
-                  </a> <!-- HomeCarePage_StrokeRehabilitationProgramPage_QueryForm -->
-                  <span class="method-name">HomeCarePage_StrokeRehabilitationProgramPage_QueryForm</span>
+                  <a name="EICUPage_RequestACallbackForm">
+                  </a> <!-- EICUPage_RequestACallbackForm -->
+                  <span class="method-name">EICUPage_RequestACallbackForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -401,14 +320,14 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.InternationalP</span>
+              <span class="class-name">Medanta_Form.landingHealth</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="InternationalPatientsPage_QueryForm">
-                  </a> <!-- InternationalPatientsPage_QueryForm -->
-                  <span class="method-name">InternationalPatientsPage_QueryForm</span>
+                  <a name="LandingHealth_Page_QueryForm">
+                  </a> <!-- LandingHealth_Page_QueryForm -->
+                  <span class="method-name">LandingHealth_Page_QueryForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -416,14 +335,14 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.RequestAnEstimate</span>
+              <span class="class-name">Medanta_Form.HomeCare_StrokeRehabilitation</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="RequestAnEstimatePage_PriceEstimateForm">
-                  </a> <!-- RequestAnEstimatePage_PriceEstimateForm -->
-                  <span class="method-name">RequestAnEstimatePage_PriceEstimateForm</span>
+                  <a name="HomeCare_StrokeRehabilitation_QueryForm">
+                  </a> <!-- HomeCare_StrokeRehabilitation_QueryForm -->
+                  <span class="method-name">HomeCare_StrokeRehabilitation_QueryForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -431,46 +350,9 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.BecomeAPartner</span>
+              <span class="class-name">Medanta_Form.ElderCare_RequestACallbackForm</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="BecomeAPartnerPage_BusinessModelForm">
-                  </a> <!-- BecomeAPartnerPage_BusinessModelForm -->
-                  <span class="method-name">BecomeAPartnerPage_BusinessModelForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.updateEICU</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="EICUPage_RequestACallbackForm">
-                  </a> <!-- EICUPage_RequestACallbackForm -->
-                  <span class="method-name">EICUPage_RequestACallbackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.ElderCare</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="ElderCareProgramPage_EnquiryForm">
-                  </a> <!-- ElderCareProgramPage_EnquiryForm -->
-                  <span class="method-name">ElderCareProgramPage_EnquiryForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
                   <a name="ElderCareProgramPage_RequestACallbackForm">
@@ -483,14 +365,14 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.CulturalEDP</span>
+              <span class="class-name">Medanta_Form.ContactUs_Feedback</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="CulturalEventDetailPage_QueryForm">
-                  </a> <!-- CulturalEventDetailPage_QueryForm -->
-                  <span class="method-name">CulturalEventDetailPage_QueryForm</span>
+                  <a name="ContactUsPage_FeedbackForm">
+                  </a> <!-- ContactUsPage_FeedbackForm -->
+                  <span class="method-name">ContactUsPage_FeedbackForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -498,14 +380,14 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.planYT</span>
+              <span class="class-name">Medanta_Form.TreatmentD</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="PlanYourTripPage_QueryForm">
-                  </a> <!-- PlanYourTripPage_QueryForm -->
-                  <span class="method-name">PlanYourTripPage_QueryForm</span>
+                  <a name="TreatmentDetailPage_RequestACallBackForm">
+                  </a> <!-- TreatmentDetailPage_RequestACallBackForm -->
+                  <span class="method-name">TreatmentDetailPage_RequestACallBackForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -513,14 +395,14 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.SecondOpiniun</span>
+              <span class="class-name">Medanta_Form.HomeCare_EnquiryForm</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="SecondOpiniunPage_RequestACallbackFrom">
-                  </a> <!-- SecondOpiniunPage_RequestACallbackFrom -->
-                  <span class="method-name">SecondOpiniunPage_RequestACallbackFrom</span>
+                  <a name="HomeCarePage_EnquiryForm">
+                  </a> <!-- HomeCarePage_EnquiryForm -->
+                  <span class="method-name">HomeCarePage_EnquiryForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -528,50 +410,14 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.RequestACallback</span>
+              <span class="class-name">Medanta_Form.HomeCare_RequestACallbackForm</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="Air_Ambulance">
-                  </a> <!-- Air_Ambulance -->
-                  <span class="method-name">Air_Ambulance</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="Health_Checkup">
-                  </a> <!-- Health_Checkup -->
-                  <span class="method-name">Health_Checkup</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="TelemedicinePage_RequestACallbackForm">
-                  </a> <!-- TelemedicinePage_RequestACallbackForm -->
-                  <span class="method-name">TelemedicinePage_RequestACallbackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.MedantaPharmacy</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="MedantaPharmacyPage_RequestACallbackForm">
-                  </a> <!-- MedantaPharmacyPage_RequestACallbackForm -->
-                  <span class="method-name">MedantaPharmacyPage_RequestACallbackForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-              <div class="method">
-                <div class="method-content">
-                  <a name="TC_02">
-                  </a> <!-- TC_02 -->
-                  <span class="method-name">TC_02</span>
+                  <a name="HomeCarePage_RequestACallbackForm">
+                  </a> <!-- HomeCarePage_RequestACallbackForm -->
+                  <span class="method-name">HomeCarePage_RequestACallbackForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -594,6 +440,156 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.CulturalEDP</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="CulturalEventDetailPage_QueryForm">
+                  </a> <!-- CulturalEventDetailPage_QueryForm -->
+                  <span class="method-name">CulturalEventDetailPage_QueryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.HealthCheckup</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="HealthCheckup_RequestACallbackForm">
+                  </a> <!-- HealthCheckup_RequestACallbackForm -->
+                  <span class="method-name">HealthCheckup_RequestACallbackForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.HomeCare_ElderCare</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="HomeCare_ElderCareProgram_QueryForm">
+                  </a> <!-- HomeCare_ElderCareProgram_QueryForm -->
+                  <span class="method-name">HomeCare_ElderCareProgram_QueryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.ContactUs_Enquiry</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="ContactUsPage_EnquiryForm">
+                  </a> <!-- ContactUsPage_EnquiryForm -->
+                  <span class="method-name">ContactUsPage_EnquiryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.AirAmbulancePage</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="AirAmbulance_RequestACallbackForm">
+                  </a> <!-- AirAmbulance_RequestACallbackForm -->
+                  <span class="method-name">AirAmbulance_RequestACallbackForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.MedantaPharmacy_RequestACallbackForm</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="MedantaPharmacyPage_RequestACallbackForm">
+                  </a> <!-- MedantaPharmacyPage_RequestACallbackForm -->
+                  <span class="method-name">MedantaPharmacyPage_RequestACallbackForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.planYT</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="PlanYourTripPage_QueryForm">
+                  </a> <!-- PlanYourTripPage_QueryForm -->
+                  <span class="method-name">PlanYourTripPage_QueryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.MedantaLabs</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="MedantaLabsPage_RequestACallbackForm">
+                  </a> <!-- MedantaLabsPage_RequestACallbackForm -->
+                  <span class="method-name">MedantaLabsPage_RequestACallbackForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.MedantaPharmacy_UploadForm</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="MedantaPharmacyPage_UploadForm">
+                  </a> <!-- MedantaPharmacyPage_UploadForm -->
+                  <span class="method-name">MedantaPharmacyPage_UploadForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.Telemedicine</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="Telemedicine_RequestACallbackForm">
+                  </a> <!-- Telemedicine_RequestACallbackForm -->
+                  <span class="method-name">Telemedicine_RequestACallbackForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
               <span class="class-name">Medanta_Form.TechnologyDP</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
@@ -609,14 +605,104 @@
           <div class="suite-Suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.landingHealth</span>
+              <span class="class-name">Medanta_Form.ContactUs_Others</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="LandingHealth_Page_QueryForm">
-                  </a> <!-- LandingHealth_Page_QueryForm -->
-                  <span class="method-name">LandingHealth_Page_QueryForm</span>
+                  <a name="ContactUsPage_OthersForm">
+                  </a> <!-- ContactUsPage_OthersForm -->
+                  <span class="method-name">ContactUsPage_OthersForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.BlogDP</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="BlogDetailPage_QueryForm">
+                  </a> <!-- BlogDetailPage_QueryForm -->
+                  <span class="method-name">BlogDetailPage_QueryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.InternationalP</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="InternationalPatientsPage_QueryForm">
+                  </a> <!-- InternationalPatientsPage_QueryForm -->
+                  <span class="method-name">InternationalPatientsPage_QueryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.ElderCare_EnquiryForm</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="ElderCareProgramPage_EnquiryForm">
+                  </a> <!-- ElderCareProgramPage_EnquiryForm -->
+                  <span class="method-name">ElderCareProgramPage_EnquiryForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.SecondOpiniun</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="SecondOpinionPage_RequestACallbackForm">
+                  </a> <!-- SecondOpinionPage_RequestACallbackForm -->
+                  <span class="method-name">SecondOpinionPage_RequestACallbackForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.BecomeAPartner</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="BecomeAPartnerPage_BusinessModelForm">
+                  </a> <!-- BecomeAPartnerPage_BusinessModelForm -->
+                  <span class="method-name">BecomeAPartnerPage_BusinessModelForm</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">Medanta_Form.RequestAnEstimate</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="RequestAnEstimatePage_PriceEstimateForm">
+                  </a> <!-- RequestAnEstimatePage_PriceEstimateForm -->
+                  <span class="method-name">RequestAnEstimatePage_PriceEstimateForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -636,6 +722,11 @@
       &lt;class name=&quot;Medanta_Form.AilmentDP&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- AilmentDP --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;AirAmbulancePage&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.AirAmbulancePage&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- AirAmbulancePage --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;BecomeAPartner&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.BecomeAPartner&quot;/&gt;
@@ -646,11 +737,21 @@
       &lt;class name=&quot;Medanta_Form.BlogDP&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- BlogDP --&gt;
-  &lt;test thread-count=&quot;5&quot; name=&quot;ContactUs&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;ContactUs_Enquiry&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;Medanta_Form.ContactUs&quot;/&gt;
+      &lt;class name=&quot;Medanta_Form.ContactUs_Enquiry&quot;/&gt;
     &lt;/classes&gt;
-  &lt;/test&gt; &lt;!-- ContactUs --&gt;
+  &lt;/test&gt; &lt;!-- ContactUs_Enquiry --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;ContactUs_Feedback&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.ContactUs_Feedback&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- ContactUs_Feedback --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;ContactUs_Others&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.ContactUs_Others&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- ContactUs_Others --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;CPR&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.CPR&quot;/&gt;
@@ -661,21 +762,46 @@
       &lt;class name=&quot;Medanta_Form.CulturalEDP&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- CulturalEDP --&gt;
-  &lt;test thread-count=&quot;5&quot; name=&quot;ElderCare&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;ElderCare_EnquiryForm&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;Medanta_Form.ElderCare&quot;/&gt;
+      &lt;class name=&quot;Medanta_Form.ElderCare_EnquiryForm&quot;/&gt;
     &lt;/classes&gt;
-  &lt;/test&gt; &lt;!-- ElderCare --&gt;
+  &lt;/test&gt; &lt;!-- ElderCare_EnquiryForm --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;ElderCare_RequestACallbackForm&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.ElderCare_RequestACallbackForm&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- ElderCare_RequestACallbackForm --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;Headerform&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.Headerform&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- Headerform --&gt;
-  &lt;test thread-count=&quot;5&quot; name=&quot;HomeCare&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;HealthCheckup&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;Medanta_Form.HomeCare&quot;/&gt;
+      &lt;class name=&quot;Medanta_Form.HealthCheckup&quot;/&gt;
     &lt;/classes&gt;
-  &lt;/test&gt; &lt;!-- HomeCare --&gt;
+  &lt;/test&gt; &lt;!-- HealthCheckup --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;HomeCare_ElderCare&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.HomeCare_ElderCare&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- HomeCare_ElderCare --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;HomeCare_EnquiryForm&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.HomeCare_EnquiryForm&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- HomeCare_EnquiryForm --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;HomeCare_RequestACallbackForm&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.HomeCare_RequestACallbackForm&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- HomeCare_RequestACallbackForm --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;HomeCare_StrokeRehabilitation&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.HomeCare_StrokeRehabilitation&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- HomeCare_StrokeRehabilitation --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;InternationalP&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.InternationalP&quot;/&gt;
@@ -691,21 +817,21 @@
       &lt;class name=&quot;Medanta_Form.MedantaLabs&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- MedantaLabs --&gt;
-  &lt;test thread-count=&quot;5&quot; name=&quot;MedantaPharmacy&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;MedantaPharmacy_RequestACallbackForm&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;Medanta_Form.MedantaPharmacy&quot;/&gt;
+      &lt;class name=&quot;Medanta_Form.MedantaPharmacy_RequestACallbackForm&quot;/&gt;
     &lt;/classes&gt;
-  &lt;/test&gt; &lt;!-- MedantaPharmacy --&gt;
+  &lt;/test&gt; &lt;!-- MedantaPharmacy_RequestACallbackForm --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;MedantaPharmacy_UploadForm&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.MedantaPharmacy_UploadForm&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- MedantaPharmacy_UploadForm --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;planYT&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.planYT&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- planYT --&gt;
-  &lt;test thread-count=&quot;5&quot; name=&quot;RequestACallback&quot;&gt;
-    &lt;classes&gt;
-      &lt;class name=&quot;Medanta_Form.RequestACallback&quot;/&gt;
-    &lt;/classes&gt;
-  &lt;/test&gt; &lt;!-- RequestACallback --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;RequestAnEstimate&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.RequestAnEstimate&quot;/&gt;
@@ -721,6 +847,11 @@
       &lt;class name=&quot;Medanta_Form.TechnologyDP&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- TechnologyDP --&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;Telemedicine&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;Medanta_Form.Telemedicine&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Telemedicine --&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;TreatmentD&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;Medanta_Form.TreatmentD&quot;/&gt;
@@ -745,13 +876,22 @@
                 <span class="test-name">AilmentDP (1 class)</span>
               </li>
               <li>
+                <span class="test-name">AirAmbulancePage (1 class)</span>
+              </li>
+              <li>
                 <span class="test-name">BecomeAPartner (1 class)</span>
               </li>
               <li>
                 <span class="test-name">BlogDP (1 class)</span>
               </li>
               <li>
-                <span class="test-name">ContactUs (1 class)</span>
+                <span class="test-name">ContactUs_Enquiry (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">ContactUs_Feedback (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">ContactUs_Others (1 class)</span>
               </li>
               <li>
                 <span class="test-name">CPR (1 class)</span>
@@ -760,13 +900,28 @@
                 <span class="test-name">CulturalEDP (1 class)</span>
               </li>
               <li>
-                <span class="test-name">ElderCare (1 class)</span>
+                <span class="test-name">ElderCare_EnquiryForm (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">ElderCare_RequestACallbackForm (1 class)</span>
               </li>
               <li>
                 <span class="test-name">Headerform (1 class)</span>
               </li>
               <li>
-                <span class="test-name">HomeCare (1 class)</span>
+                <span class="test-name">HealthCheckup (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">HomeCare_ElderCare (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">HomeCare_EnquiryForm (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">HomeCare_RequestACallbackForm (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">HomeCare_StrokeRehabilitation (1 class)</span>
               </li>
               <li>
                 <span class="test-name">InternationalP (1 class)</span>
@@ -778,13 +933,13 @@
                 <span class="test-name">MedantaLabs (1 class)</span>
               </li>
               <li>
-                <span class="test-name">MedantaPharmacy (1 class)</span>
+                <span class="test-name">MedantaPharmacy_RequestACallbackForm (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">MedantaPharmacy_UploadForm (1 class)</span>
               </li>
               <li>
                 <span class="test-name">planYT (1 class)</span>
-              </li>
-              <li>
-                <span class="test-name">RequestACallback (1 class)</span>
               </li>
               <li>
                 <span class="test-name">RequestAnEstimate (1 class)</span>
@@ -794,6 +949,9 @@
               </li>
               <li>
                 <span class="test-name">TechnologyDP (1 class)</span>
+              </li>
+              <li>
+                <span class="test-name">Telemedicine (1 class)</span>
               </li>
               <li>
                 <span class="test-name">TreatmentD (1 class)</span>
@@ -827,121 +985,121 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(29);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'ContactUsPage_EnquiryForm')
-data.setCell(0, 2, 'Medanta_Form.ContactUs')
-data.setCell(0, 3, 17437);
+data.setCell(0, 1, 'CPRPage_EnrollnowForm')
+data.setCell(0, 2, 'Medanta_Form.CPR')
+data.setCell(0, 3, 32688);
 data.setCell(1, 0, 1)
-data.setCell(1, 1, 'CPRPage_EnrollnowForm')
-data.setCell(1, 2, 'Medanta_Form.CPR')
-data.setCell(1, 3, 15854);
+data.setCell(1, 1, 'HealthCheckup_RequestACallbackForm')
+data.setCell(1, 2, 'Medanta_Form.HealthCheckup')
+data.setCell(1, 3, 16650);
 data.setCell(2, 0, 2)
-data.setCell(2, 1, 'EICUPage_RequestACallbackForm')
-data.setCell(2, 2, 'Medanta_Form.updateEICU')
-data.setCell(2, 3, 15722);
+data.setCell(2, 1, 'ContactUsPage_OthersForm')
+data.setCell(2, 2, 'Medanta_Form.ContactUs_Others')
+data.setCell(2, 3, 14586);
 data.setCell(3, 0, 3)
-data.setCell(3, 1, 'ContactUsPage_OthersForm')
-data.setCell(3, 2, 'Medanta_Form.ContactUs')
-data.setCell(3, 3, 15366);
+data.setCell(3, 1, 'HomeCare_StrokeRehabilitation_QueryForm')
+data.setCell(3, 2, 'Medanta_Form.HomeCare_StrokeRehabilitation')
+data.setCell(3, 3, 14545);
 data.setCell(4, 0, 4)
 data.setCell(4, 1, 'RequestAnEstimatePage_PriceEstimateForm')
 data.setCell(4, 2, 'Medanta_Form.RequestAnEstimate')
-data.setCell(4, 3, 13509);
+data.setCell(4, 3, 13352);
 data.setCell(5, 0, 5)
 data.setCell(5, 1, 'AilmentDetailPage_RequestCallBackForm')
 data.setCell(5, 2, 'Medanta_Form.AilmentDP')
-data.setCell(5, 3, 10816);
+data.setCell(5, 3, 12906);
 data.setCell(6, 0, 6)
-data.setCell(6, 1, 'HomeCarePage_ElderCareProgramPage_QueryForm')
-data.setCell(6, 2, 'Medanta_Form.HomeCare')
-data.setCell(6, 3, 10589);
+data.setCell(6, 1, 'InternationalPatientsPage_QueryForm')
+data.setCell(6, 2, 'Medanta_Form.InternationalP')
+data.setCell(6, 3, 12833);
 data.setCell(7, 0, 7)
-data.setCell(7, 1, 'ContactUsPage_FeedbackForm')
-data.setCell(7, 2, 'Medanta_Form.ContactUs')
-data.setCell(7, 3, 9853);
+data.setCell(7, 1, 'EICUPage_RequestACallbackForm')
+data.setCell(7, 2, 'Medanta_Form.updateEICU')
+data.setCell(7, 3, 12353);
 data.setCell(8, 0, 8)
-data.setCell(8, 1, 'Header_RequestACallBackForm')
-data.setCell(8, 2, 'Medanta_Form.Headerform')
-data.setCell(8, 3, 9730);
+data.setCell(8, 1, 'ElderCareProgramPage_EnquiryForm')
+data.setCell(8, 2, 'Medanta_Form.ElderCare_EnquiryForm')
+data.setCell(8, 3, 11856);
 data.setCell(9, 0, 9)
-data.setCell(9, 1, 'InternationalPatientsPage_QueryForm')
-data.setCell(9, 2, 'Medanta_Form.InternationalP')
-data.setCell(9, 3, 9629);
+data.setCell(9, 1, 'MedantaLabsPage_RequestACallbackForm')
+data.setCell(9, 2, 'Medanta_Form.MedantaLabs')
+data.setCell(9, 3, 11194);
 data.setCell(10, 0, 10)
-data.setCell(10, 1, 'MedantaPharmacyPage_RequestACallbackForm')
-data.setCell(10, 2, 'Medanta_Form.MedantaPharmacy')
-data.setCell(10, 3, 9506);
+data.setCell(10, 1, 'BlogDetailPage_QueryForm')
+data.setCell(10, 2, 'Medanta_Form.BlogDP')
+data.setCell(10, 3, 10812);
 data.setCell(11, 0, 11)
-data.setCell(11, 1, 'BecomeAPartnerPage_BusinessModelForm')
-data.setCell(11, 2, 'Medanta_Form.BecomeAPartner')
-data.setCell(11, 3, 9415);
+data.setCell(11, 1, 'ContactUsPage_EnquiryForm')
+data.setCell(11, 2, 'Medanta_Form.ContactUs_Enquiry')
+data.setCell(11, 3, 10510);
 data.setCell(12, 0, 12)
-data.setCell(12, 1, 'ElderCareProgramPage_RequestACallbackForm')
-data.setCell(12, 2, 'Medanta_Form.ElderCare')
-data.setCell(12, 3, 8934);
+data.setCell(12, 1, 'HomeCare_ElderCareProgram_QueryForm')
+data.setCell(12, 2, 'Medanta_Form.HomeCare_ElderCare')
+data.setCell(12, 3, 9744);
 data.setCell(13, 0, 13)
-data.setCell(13, 1, 'MedantaLabsPage_RequestACallbackForm')
-data.setCell(13, 2, 'Medanta_Form.MedantaLabs')
-data.setCell(13, 3, 8863);
+data.setCell(13, 1, 'MedantaPharmacyPage_UploadForm')
+data.setCell(13, 2, 'Medanta_Form.MedantaPharmacy_UploadForm')
+data.setCell(13, 3, 9316);
 data.setCell(14, 0, 14)
-data.setCell(14, 1, 'SecondOpiniunPage_RequestACallbackFrom')
-data.setCell(14, 2, 'Medanta_Form.SecondOpiniun')
-data.setCell(14, 3, 8839);
+data.setCell(14, 1, 'BecomeAPartnerPage_BusinessModelForm')
+data.setCell(14, 2, 'Medanta_Form.BecomeAPartner')
+data.setCell(14, 3, 8325);
 data.setCell(15, 0, 15)
-data.setCell(15, 1, 'TechnologyDetailPage_QueryForm')
-data.setCell(15, 2, 'Medanta_Form.TechnologyDP')
-data.setCell(15, 3, 8000);
+data.setCell(15, 1, 'CulturalEventDetailPage_QueryForm')
+data.setCell(15, 2, 'Medanta_Form.CulturalEDP')
+data.setCell(15, 3, 7977);
 data.setCell(16, 0, 16)
-data.setCell(16, 1, 'TreatmentDetailPage_RequestACallBackForm')
-data.setCell(16, 2, 'Medanta_Form.TreatmentD')
-data.setCell(16, 3, 7644);
+data.setCell(16, 1, 'SecondOpinionPage_RequestACallbackForm')
+data.setCell(16, 2, 'Medanta_Form.SecondOpiniun')
+data.setCell(16, 3, 7885);
 data.setCell(17, 0, 17)
-data.setCell(17, 1, 'PlanYourTripPage_QueryForm')
-data.setCell(17, 2, 'Medanta_Form.planYT')
-data.setCell(17, 3, 7519);
+data.setCell(17, 1, 'MedantaPharmacyPage_RequestACallbackForm')
+data.setCell(17, 2, 'Medanta_Form.MedantaPharmacy_RequestACallbackForm')
+data.setCell(17, 3, 7187);
 data.setCell(18, 0, 18)
-data.setCell(18, 1, 'ElderCareProgramPage_EnquiryForm')
-data.setCell(18, 2, 'Medanta_Form.ElderCare')
-data.setCell(18, 3, 7475);
+data.setCell(18, 1, 'PlanYourTripPage_QueryForm')
+data.setCell(18, 2, 'Medanta_Form.planYT')
+data.setCell(18, 3, 7154);
 data.setCell(19, 0, 19)
-data.setCell(19, 1, 'BlogDetailPage_QueryForm')
-data.setCell(19, 2, 'Medanta_Form.BlogDP')
-data.setCell(19, 3, 7436);
+data.setCell(19, 1, 'TechnologyDetailPage_QueryForm')
+data.setCell(19, 2, 'Medanta_Form.TechnologyDP')
+data.setCell(19, 3, 7092);
 data.setCell(20, 0, 20)
-data.setCell(20, 1, 'Health_Checkup')
-data.setCell(20, 2, 'Medanta_Form.RequestACallback')
-data.setCell(20, 3, 7344);
+data.setCell(20, 1, 'Telemedicine_RequestACallbackForm')
+data.setCell(20, 2, 'Medanta_Form.Telemedicine')
+data.setCell(20, 3, 7054);
 data.setCell(21, 0, 21)
-data.setCell(21, 1, 'CulturalEventDetailPage_QueryForm')
-data.setCell(21, 2, 'Medanta_Form.CulturalEDP')
-data.setCell(21, 3, 6793);
+data.setCell(21, 1, 'ContactUsPage_FeedbackForm')
+data.setCell(21, 2, 'Medanta_Form.ContactUs_Feedback')
+data.setCell(21, 3, 6860);
 data.setCell(22, 0, 22)
-data.setCell(22, 1, 'HomeCarePage_StrokeRehabilitationProgramPage_QueryForm')
-data.setCell(22, 2, 'Medanta_Form.HomeCare')
-data.setCell(22, 3, 6563);
+data.setCell(22, 1, 'TreatmentDetailPage_RequestACallBackForm')
+data.setCell(22, 2, 'Medanta_Form.TreatmentD')
+data.setCell(22, 3, 6588);
 data.setCell(23, 0, 23)
-data.setCell(23, 1, 'Air_Ambulance')
-data.setCell(23, 2, 'Medanta_Form.RequestACallback')
-data.setCell(23, 3, 6043);
+data.setCell(23, 1, 'ElderCareProgramPage_RequestACallbackForm')
+data.setCell(23, 2, 'Medanta_Form.ElderCare_RequestACallbackForm')
+data.setCell(23, 3, 5879);
 data.setCell(24, 0, 24)
-data.setCell(24, 1, 'HomeCarePage_RequestACallbackForm')
-data.setCell(24, 2, 'Medanta_Form.HomeCare')
-data.setCell(24, 3, 5748);
+data.setCell(24, 1, 'HomeCarePage_EnquiryForm')
+data.setCell(24, 2, 'Medanta_Form.HomeCare_EnquiryForm')
+data.setCell(24, 3, 5827);
 data.setCell(25, 0, 25)
-data.setCell(25, 1, 'LandingHealth_Page_QueryForm')
-data.setCell(25, 2, 'Medanta_Form.landingHealth')
-data.setCell(25, 3, 5497);
+data.setCell(25, 1, 'HomeCarePage_RequestACallbackForm')
+data.setCell(25, 2, 'Medanta_Form.HomeCare_RequestACallbackForm')
+data.setCell(25, 3, 5540);
 data.setCell(26, 0, 26)
-data.setCell(26, 1, 'TelemedicinePage_RequestACallbackForm')
-data.setCell(26, 2, 'Medanta_Form.RequestACallback')
-data.setCell(26, 3, 5170);
+data.setCell(26, 1, 'Header_RequestACallBackForm')
+data.setCell(26, 2, 'Medanta_Form.Headerform')
+data.setCell(26, 3, 5519);
 data.setCell(27, 0, 27)
-data.setCell(27, 1, 'HomeCarePage_EnquiryForm')
-data.setCell(27, 2, 'Medanta_Form.HomeCare')
-data.setCell(27, 3, 1613);
+data.setCell(27, 1, 'AirAmbulance_RequestACallbackForm')
+data.setCell(27, 2, 'Medanta_Form.AirAmbulancePage')
+data.setCell(27, 3, 4720);
 data.setCell(28, 0, 28)
-data.setCell(28, 1, 'TC_02')
-data.setCell(28, 2, 'Medanta_Form.MedantaPharmacy')
-data.setCell(28, 3, 1338);
+data.setCell(28, 1, 'LandingHealth_Page_QueryForm')
+data.setCell(28, 2, 'Medanta_Form.landingHealth')
+data.setCell(28, 3, 4580);
 window.suiteTableData['Suite']= { tableData: data, tableDiv: 'times-div-Suite'}
 return data;
 }
@@ -979,332 +1137,433 @@ return data;
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">AilmentDetailPage_RequestCallBackForm</span>
-                <span class="method-start">12410 ms</span>
+                <span class="method-start">7226 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">23234 ms</span>
+                <span class="method-start">20142 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.AirAmbulancePage</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">20858 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">AirAmbulance_RequestACallbackForm</span>
+                <span class="method-start">24593 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">29316 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.BecomeAPartner</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">24558 ms</span>
+                <span class="method-start">29784 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">BecomeAPartnerPage_BusinessModelForm</span>
-                <span class="method-start">29040 ms</span>
+                <span class="method-start">32659 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">38458 ms</span>
+                <span class="method-start">40988 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.BlogDP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">38976 ms</span>
+                <span class="method-start">41449 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">BlogDetailPage_QueryForm</span>
-                <span class="method-start">43088 ms</span>
+                <span class="method-start">44024 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">50526 ms</span>
+                <span class="method-start">54839 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
-              <div class="chronological-class-name">Medanta_Form.ContactUs</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">Medanta_Form.ContactUs_Enquiry</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">50975 ms</span>
+                <span class="method-start">55207 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">ContactUsPage_EnquiryForm</span>
-                <span class="method-start">55334 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">ContactUsPage_FeedbackForm</span>
-                <span class="method-start">72774 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">ContactUsPage_OthersForm</span>
-                <span class="method-start">82629 ms</span>
+                <span class="method-start">58082 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">97997 ms</span>
+                <span class="method-start">68594 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.ContactUs_Feedback</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">68946 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">ContactUsPage_FeedbackForm</span>
+                <span class="method-start">72209 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">79071 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.ContactUs_Others</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">79477 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">ContactUsPage_OthersForm</span>
+                <span class="method-start">82603 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">97191 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.CPR</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">98632 ms</span>
+                <span class="method-start">97541 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
+                <img src="failed.png">
+                </img>
                 <span class="method-name">CPRPage_EnrollnowForm</span>
-                <span class="method-start">106937 ms</span>
+                <span class="method-start">100245 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">122792 ms</span>
+                <span class="method-start">132939 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.CulturalEDP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">123299 ms</span>
+                <span class="method-start">133349 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">CulturalEventDetailPage_QueryForm</span>
-                <span class="method-start">127833 ms</span>
+                <span class="method-start">136064 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">134627 ms</span>
+                <span class="method-start">144044 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
-              <div class="chronological-class-name">Medanta_Form.ElderCare</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">Medanta_Form.ElderCare_EnquiryForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">135175 ms</span>
+                <span class="method-start">144450 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
-                <span class="method-name">ElderCareProgramPage_RequestACallbackForm</span>
-                <span class="method-start">139482 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
                 <span class="method-name">ElderCareProgramPage_EnquiryForm</span>
-                <span class="method-start">148418 ms</span>
+                <span class="method-start">146741 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">155898 ms</span>
+                <span class="method-start">158599 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.ElderCare_RequestACallbackForm</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">158947 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">ElderCareProgramPage_RequestACallbackForm</span>
+                <span class="method-start">171457 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">177338 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.Headerform</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">158022 ms</span>
+                <span class="method-start">177718 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">Header_RequestACallBackForm</span>
-                <span class="method-start">161125 ms</span>
+                <span class="method-start">180506 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">170864 ms</span>
+                <span class="method-start">186027 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
-              <div class="chronological-class-name">Medanta_Form.HomeCare</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">Medanta_Form.HealthCheckup</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">171464 ms</span>
+                <span class="method-start">186398 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
-                <span class="method-name">HomeCarePage_RequestACallbackForm</span>
-                <span class="method-start">176086 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">HomeCarePage_EnquiryForm</span>
-                <span class="method-start">181836 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">HomeCarePage_StrokeRehabilitationProgramPage_QueryForm</span>
-                <span class="method-start">183451 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">HomeCarePage_ElderCareProgramPage_QueryForm</span>
-                <span class="method-start">190021 ms</span>
+                <span class="method-name">HealthCheckup_RequestACallbackForm</span>
+                <span class="method-start">188911 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">200611 ms</span>
+                <span class="method-start">205564 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.HomeCare_ElderCare</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">205946 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">HomeCare_ElderCareProgram_QueryForm</span>
+                <span class="method-start">209725 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">219472 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.HomeCare_EnquiryForm</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">219845 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">HomeCarePage_EnquiryForm</span>
+                <span class="method-start">222968 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">228797 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.HomeCare_RequestACallbackForm</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">229145 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">HomeCarePage_RequestACallbackForm</span>
+                <span class="method-start">231890 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">237432 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.HomeCare_StrokeRehabilitation</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">237752 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">HomeCare_StrokeRehabilitation_QueryForm</span>
+                <span class="method-start">239203 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">253749 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.InternationalP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">201994 ms</span>
+                <span class="method-start">254178 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">InternationalPatientsPage_QueryForm</span>
-                <span class="method-start">206221 ms</span>
+                <span class="method-start">257400 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">215853 ms</span>
+                <span class="method-start">270235 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.landingHealth</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">216439 ms</span>
+                <span class="method-start">270596 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">LandingHealth_Page_QueryForm</span>
-                <span class="method-start">220171 ms</span>
+                <span class="method-start">273120 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">225671 ms</span>
+                <span class="method-start">277703 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.MedantaLabs</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">226262 ms</span>
+                <span class="method-start">278115 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">MedantaLabsPage_RequestACallbackForm</span>
-                <span class="method-start">229108 ms</span>
+                <span class="method-start">280962 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">237972 ms</span>
+                <span class="method-start">292158 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
-              <div class="chronological-class-name">Medanta_Form.MedantaPharmacy</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">Medanta_Form.MedantaPharmacy_RequestACallbackForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">238331 ms</span>
+                <span class="method-start">292573 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">MedantaPharmacyPage_RequestACallbackForm</span>
-                <span class="method-start">242043 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">TC_02</span>
-                <span class="method-start">251550 ms</span>
+                <span class="method-start">295492 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">252889 ms</span>
+                <span class="method-start">302682 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.MedantaPharmacy_UploadForm</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">303003 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">MedantaPharmacyPage_UploadForm</span>
+                <span class="method-start">306412 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">315730 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.planYT</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">253450 ms</span>
+                <span class="method-start">316069 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">PlanYourTripPage_QueryForm</span>
-                <span class="method-start">257764 ms</span>
+                <span class="method-start">319372 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">265284 ms</span>
-              </div> <!-- configuration-class after -->
-            </div> <!-- chronological-class -->
-            <div class="chronological-class">
-              <div class="chronological-class-name">Medanta_Form.RequestACallback</div> <!-- chronological-class-name -->
-              <div class="configuration-class before">
-                <span class="method-name">Openbrowser</span>
-                <span class="method-start">265759 ms</span>
-              </div> <!-- configuration-class before -->
-              <div class="test-method">
-                <span class="method-name">TelemedicinePage_RequestACallbackForm</span>
-                <span class="method-start">269359 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">Air_Ambulance</span>
-                <span class="method-start">274531 ms</span>
-              </div> <!-- test-method -->
-              <div class="test-method">
-                <span class="method-name">Health_Checkup</span>
-                <span class="method-start">280575 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-class after">
-                <span class="method-name">TearDown</span>
-                <span class="method-start">287921 ms</span>
+                <span class="method-start">326527 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.RequestAnEstimate</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">288626 ms</span>
+                <span class="method-start">326865 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">RequestAnEstimatePage_PriceEstimateForm</span>
-                <span class="method-start">292223 ms</span>
+                <span class="method-start">382541 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">305734 ms</span>
+                <span class="method-start">395895 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.SecondOpiniun</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">306804 ms</span>
+                <span class="method-start">396253 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
-                <span class="method-name">SecondOpiniunPage_RequestACallbackFrom</span>
-                <span class="method-start">311168 ms</span>
+                <span class="method-name">SecondOpinionPage_RequestACallbackForm</span>
+                <span class="method-start">399540 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">320009 ms</span>
+                <span class="method-start">407426 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.TechnologyDP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">320545 ms</span>
+                <span class="method-start">407713 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">TechnologyDetailPage_QueryForm</span>
-                <span class="method-start">324723 ms</span>
+                <span class="method-start">411042 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">332724 ms</span>
+                <span class="method-start">418135 ms</span>
+              </div> <!-- configuration-class after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">Medanta_Form.Telemedicine</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">Openbrowser</span>
+                <span class="method-start">418482 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">Telemedicine_RequestACallbackForm</span>
+                <span class="method-start">422253 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-class after">
+                <span class="method-name">TearDown</span>
+                <span class="method-start">429309 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.TreatmentD</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">333306 ms</span>
+                <span class="method-start">429620 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">TreatmentDetailPage_RequestACallBackForm</span>
-                <span class="method-start">337483 ms</span>
+                <span class="method-start">432286 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">345129 ms</span>
+                <span class="method-start">438876 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.updateEICU</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">345817 ms</span>
+                <span class="method-start">439239 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">EICUPage_RequestACallbackForm</span>
-                <span class="method-start">348727 ms</span>
+                <span class="method-start">442032 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">364450 ms</span>
+                <span class="method-start">454387 ms</span>
               </div> <!-- configuration-class after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
