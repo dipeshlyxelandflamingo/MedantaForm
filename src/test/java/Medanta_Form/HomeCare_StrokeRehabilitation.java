@@ -31,11 +31,14 @@ public class HomeCare_StrokeRehabilitation extends BaseClass {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
 		driver.navigate().to("https://www.medanta.org/home-care-service-program/stroke-rehabilitation-program");
-
+		 Thread.sleep(3000);
+		 Thread.sleep(1000);
 		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).sendKeys("Dipesh");
+		 Thread.sleep(1000);
 		driver.findElement(By.xpath("(//input[@type='number'])[3]")).sendKeys("9876543210"); 
+		 Thread.sleep(1000);
 		driver.findElement(By.xpath("(//input[@type='email'])[2]")).sendKeys("dipesh@yopmail.com");
-
+		 Thread.sleep(3000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

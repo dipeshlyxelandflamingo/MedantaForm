@@ -30,13 +30,13 @@ public class HomeCare_ElderCare extends BaseClass{
 		public void HomeCare_ElderCareProgram_QueryForm() throws Exception {
 
 			driver.navigate().to("https://www.medanta.org/home-care-service-program/elder-care-program");
-
+			 Thread.sleep(3000);
 			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).sendKeys("Dipesh");
 			Thread.sleep(1000);
 			driver.findElement(By.xpath("(//input[@type='number'])[3]")).sendKeys("9876543210"); 
 			Thread.sleep(1000);
 			driver.findElement(By.xpath("(//input[@type='email'])[2]")).sendKeys("dipesh@yopmail.com");
-			Thread.sleep(1000);
+			 Thread.sleep(3000);
 
 			driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 			Thread.sleep(1000);

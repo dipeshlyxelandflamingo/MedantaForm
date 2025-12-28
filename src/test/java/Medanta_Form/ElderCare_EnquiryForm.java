@@ -37,7 +37,8 @@ public class ElderCare_EnquiryForm extends BaseClass {
 	        Thread.sleep(3000);
 	        JavascriptExecutor js = (JavascriptExecutor) driver;
 	        js.executeScript("window.scrollBy(0,1950)", "");
-	        Thread.sleep(1000);
+	        
+	        Thread.sleep(3000);
 	        driver.findElement(By.xpath("(//input[@type='text'])[6]")).sendKeys("Dipesh");
 	        Thread.sleep(1000);
 	        driver.findElement(By.xpath("(//input[@type='number'])[5]")).sendKeys("9876543210"); 
@@ -54,7 +55,7 @@ public class ElderCare_EnquiryForm extends BaseClass {
 	        preferredMode.selectByIndex(1);
 	        Thread.sleep(1000);
 	        driver.findElement(By.xpath("//input[@type='checkbox']")).click();
-	        Thread.sleep(1000);
+	        Thread.sleep(3000);
 	        driver.findElement(By.xpath("(//button[@type='submit'])[5]")).click();
 
 	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

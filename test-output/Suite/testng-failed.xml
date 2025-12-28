@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="AirAmbulancePage(failed)">
+    <classes>
+      <class name="Medanta_Form.AirAmbulancePage">
+        <methods>
+          <include name="AirAmbulance_RequestACallbackForm"/>
+          <include name="TearDown"/>
+          <include name="Openbrowser"/>
+        </methods>
+      </class> <!-- Medanta_Form.AirAmbulancePage -->
+    </classes>
+  </test> <!-- AirAmbulancePage(failed) -->
   <test thread-count="5" name="CPR(failed)">
     <classes>
       <class name="Medanta_Form.CPR">

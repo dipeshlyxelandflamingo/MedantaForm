@@ -19,7 +19,7 @@ public class BlogDP extends BaseClass {
 	        driver.navigate().to(
 	                "https://www.medanta.org/patient-education-blog/omicron-variant-key-facts-you-need-to-know-in-2025");
 	        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+	        Thread.sleep(3000);
 	        // ---------- Fill Form (INTENTIONALLY INVALID) ----------
 	        driver.findElement(
 	                By.xpath("(//input[@type='text' and @placeholder='Enter Your Name'])[3]"))
@@ -33,10 +33,10 @@ public class BlogDP extends BaseClass {
 	        driver.findElement(
 	                By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]"))
 	                .sendKeys("wakemedantatest@gmail.com");
-	        Thread.sleep(1000);
+	        Thread.sleep(3000);
 	        driver.findElement(By.xpath("//button[@class='theme-button submitpopupbt']")).click();
 
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
 	        try {
 	            // ---------- PASS CHECK ----------

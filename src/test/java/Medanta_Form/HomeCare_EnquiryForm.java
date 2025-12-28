@@ -33,14 +33,16 @@ public class HomeCare_EnquiryForm extends BaseClass{
 			
 			JavascriptExecutor js = (JavascriptExecutor) driver;
 			js.executeScript("window.scrollBy(0,2000)", "");
-
+			 Thread.sleep(3000);
 			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[4]")).sendKeys("Dipesh");
+			 Thread.sleep(1000);
 			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[3]")).sendKeys("9876543210"); 
+			 Thread.sleep(1000);
 			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Email'])[4]")).sendKeys("dipesh@yopmail.com");
-
+			 Thread.sleep(1000);
 			Select location = new Select(driver.findElement(By.xpath("//select[@placeholder='Select Location']")));
 			location.selectByIndex(0); // ❌ default
-
+			 Thread.sleep(3000);
 			driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
 
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

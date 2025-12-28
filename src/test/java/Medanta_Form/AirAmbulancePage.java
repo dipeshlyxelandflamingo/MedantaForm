@@ -31,11 +31,15 @@ public class AirAmbulancePage extends BaseClass {
 
       driver.navigate().to("https://www.medanta.org/air-ambulance");
       driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+      Thread.sleep(3000);
       driver.findElement(By.name("name")).sendKeys("Dipesh");
+      Thread.sleep(1000);
       driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
+      Thread.sleep(1000);
       driver.findElement(By.name("email")).sendKeys("dipesh@yopmail.com");
+      Thread.sleep(1000);
       driver.findElement(By.xpath("//textarea[@class='inputbox']")).sendKeys("Test");
+      Thread.sleep(3000);
       driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
       WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

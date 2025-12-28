@@ -29,7 +29,7 @@ public class ContactUs_Enquiry extends BaseClass {
     public void ContactUsPage_EnquiryForm() throws Exception {
         driver.navigate().to("https://www.medanta.org/contact-us");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+        Thread.sleep(3000);
         // Fill form
         driver.findElement(By.name("name")).sendKeys("dipesh");
         Thread.sleep(1000);
@@ -47,10 +47,10 @@ public class ContactUs_Enquiry extends BaseClass {
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0,200)", "");
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
             WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(

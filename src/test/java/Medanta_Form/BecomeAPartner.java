@@ -19,20 +19,24 @@ public class BecomeAPartner extends BaseClass {
 
 	    driver.navigate().to("https://www.medanta.org/medanta-labs/become-a-partner");
 	    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+	    Thread.sleep(3000);
 	    JavascriptExecutor js = (JavascriptExecutor) driver;
 	    js.executeScript("scrollBy(0, 2300)");
-
+	    Thread.sleep(3000);
 	    // ---------- Fill Form (INTENTIONALLY INVALID) ----------
 	    driver.findElement(By.xpath("(//input[@type='text'])[4]")).sendKeys("Dipesh");
+	    Thread.sleep(1000);
 	    driver.findElement(By.xpath("(//input[@type='email'])[2]")).sendKeys("dipesh@yopmail.com");
+	    Thread.sleep(1000);
 	    driver.findElement(By.xpath("(//input[@type='text'])[5]")).sendKeys("9876543210"); 
+	    Thread.sleep(1000);
 	    driver.findElement(By.xpath("(//input[@type='text'])[6]")).sendKeys("Test");
+	    Thread.sleep(1000);
 	    driver.findElement(By.xpath("(//input[@type='text'])[7]")).sendKeys("123456"); 
-
+	    Thread.sleep(3000);
 	    driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
 	    try {
 	        // ---------- PASS CHECK ----------

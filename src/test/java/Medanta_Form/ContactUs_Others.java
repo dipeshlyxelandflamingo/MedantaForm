@@ -37,8 +37,8 @@ public class ContactUs_Others extends BaseClass {
 
 		WebElement otherFormBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("other-form")));
 		otherFormBtn.click();
-		Thread.sleep(1000);
-
+		
+		 Thread.sleep(3000);
 		// Fill form (intentionally invalid mobile)
 		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[5]")).sendKeys("dipesh");
 		Thread.sleep(1000);
@@ -53,7 +53,7 @@ public class ContactUs_Others extends BaseClass {
 		Thread.sleep(2000);
 
 		driver.findElement(By.xpath("(//textarea[@placeholder='Enter Your Message Here'])[2]")).sendKeys("Test");
-		Thread.sleep(2000);
+		 Thread.sleep(3000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[5]")).click();
 		
 

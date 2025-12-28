@@ -30,7 +30,7 @@ public class updateEICU extends BaseClass {
 		driver.navigate().to("https://www.medanta.org/eicu");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
-		// ================= Fill Form =================
+		 Thread.sleep(3000);
 		driver.findElement(By.name("name")).sendKeys("Test");
 		Thread.sleep(1000);
 		driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
@@ -40,7 +40,7 @@ public class updateEICU extends BaseClass {
 		driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']"))
 				.sendKeys("Testing the form Please ignore");
 		Thread.sleep(1000);
-
+		 Thread.sleep(3000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
 		// ================= Validation =================

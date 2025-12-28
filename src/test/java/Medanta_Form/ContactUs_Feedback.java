@@ -38,11 +38,15 @@ public class ContactUs_Feedback extends BaseClass{
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".form-loader.loading")));
         WebElement feedbackBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("feedback-form")));
         feedbackBtn.click();
-
+        Thread.sleep(3000);
         driver.findElement(By.name("feedback_message")).sendKeys("Test");
+        Thread.sleep(1000);
         driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[4]")).sendKeys("Dipesh");
-        driver.findElement(By.xpath("(//input[@placeholder='Enter Your Phone Number'])[2]")).sendKeys("9876543210"); // Invalid
+        Thread.sleep(1000);
+        driver.findElement(By.xpath("(//input[@placeholder='Enter Your Phone Number'])[2]")).sendKeys("9876543210"); 
+        Thread.sleep(1000);
         driver.findElement(By.xpath("(//input[@placeholder='Enter Your E-mail'])[2]")).sendKeys("dipesh@yopmail.com");
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
 
         WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(10));

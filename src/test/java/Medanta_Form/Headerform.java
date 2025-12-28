@@ -28,20 +28,20 @@ public class Headerform extends BaseClass {
 
         driver.navigate().to("https://www.medanta.org");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+        
         driver.findElement(By.xpath("//span[normalize-space()='Request Call Back']")).click();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+        Thread.sleep(3000);
         // Fill form (INTENTIONALLY INVALID MOBILE)
         driver.findElement(By.xpath("//input[@id='fname']"))
                 .sendKeys("Test");
-
+        Thread.sleep(1000);
         driver.findElement(By.xpath("//input[@placeholder='Enter Your Mobile Number']"))
                 .sendKeys("9876543210"); 
-
+        Thread.sleep(1000);
         driver.findElement(By.xpath("//input[@id='lname' and @placeholder='Enter Your Email']"))
                 .sendKeys("wakemedantatest@gmail.com");
-
+        Thread.sleep(3000);
         driver.findElement(By.xpath("//button[@class='submitpopupbt']")).click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

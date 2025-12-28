@@ -25,7 +25,7 @@
       <span class="top-banner-title-font">Test results</span>
       <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
       <br/>
-      <span class="top-banner-font-1">1 suite, 1 failed test</span>
+      <span class="top-banner-font-1">1 suite, 2 failed tests</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -92,7 +92,7 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">29 methods, 1 failed,   28 passed</span>
+                    <span class="method-stats">29 methods, 2 failed,   27 passed</span>
                   </li>
                   <li>
                     <span class="method-list-title failed">Failed methods</span>
@@ -101,6 +101,11 @@
                       <a href="#" panel-name="suite-Suite" class="show-methods failed suite-Suite"> (show)</a> <!-- show-methods failed suite-Suite -->
                     </span>
                     <div class="method-list-content failed suite-Suite">
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.AirAmbulancePage" class="method navigator-link" hash-for-method="AirAmbulance_RequestACallbackForm">AirAmbulance_RequestACallbackForm</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
                       <span>
                         <img src="failed.png" width="3%"/>
                         <a href="#" panel-name="suite-Suite" title="Medanta_Form.CPR" class="method navigator-link" hash-for-method="CPRPage_EnrollnowForm">CPRPage_EnrollnowForm</a> <!-- method navigator-link -->
@@ -118,11 +123,6 @@
                       <span>
                         <img src="passed.png" width="3%"/>
                         <a href="#" panel-name="suite-Suite" title="Medanta_Form.AilmentDP" class="method navigator-link" hash-for-method="AilmentDetailPage_RequestCallBackForm">AilmentDetailPage_RequestCallBackForm</a> <!-- method navigator-link -->
-                      </span>
-                      <br/>
-                      <span>
-                        <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Suite" title="Medanta_Form.AirAmbulancePage" class="method navigator-link" hash-for-method="AirAmbulance_RequestACallbackForm">AirAmbulance_RequestACallbackForm</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
@@ -280,6 +280,26 @@
                   <span class="method-name">CPRPage_EnrollnowForm</span>
                   <div class="stack-trace">java.lang.AssertionError: CPR Enroll form validation failed: Name=Test | Mobile=98210 | Email=wakemedantatest@gmail.com | Location=Gurugram | Errors =&gt; Mobile Error: Please enter 10 digit mobile number | 
 	at Medanta_Form.CPR.CPRPage_EnrollnowForm(CPR.java:117)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 28 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-failed -->
+          <div class="suite-Suite-class-failed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="failed.png"/>
+              <span class="class-name">Medanta_Form.AirAmbulancePage</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="AirAmbulance_RequestACallbackForm">
+                  </a> <!-- AirAmbulance_RequestACallbackForm -->
+                  <span class="method-name">AirAmbulance_RequestACallbackForm</span>
+                  <div class="stack-trace">java.lang.AssertionError: Air Ambulance validation failed: Name= | Mobile=9876543210 | Email=dipesh@yopmail.com | Errors =&gt; Name Error: The name field is required. | 
+	at Medanta_Form.AirAmbulancePage.AirAmbulance_RequestACallbackForm(AirAmbulancePage.java:93)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 ... Removed 28 stack frames
 </div> <!-- stack-trace -->
@@ -493,21 +513,6 @@
                   <a name="ContactUsPage_EnquiryForm">
                   </a> <!-- ContactUsPage_EnquiryForm -->
                   <span class="method-name">ContactUsPage_EnquiryForm</span>
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Suite-class-passed -->
-          <div class="suite-Suite-class-passed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">Medanta_Form.AirAmbulancePage</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="AirAmbulance_RequestACallbackForm">
-                  </a> <!-- AirAmbulance_RequestACallbackForm -->
-                  <span class="method-name">AirAmbulance_RequestACallbackForm</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -987,124 +992,124 @@ data.addRows(29);
 data.setCell(0, 0, 0)
 data.setCell(0, 1, 'CPRPage_EnrollnowForm')
 data.setCell(0, 2, 'Medanta_Form.CPR')
-data.setCell(0, 3, 32688);
+data.setCell(0, 3, 39862);
 data.setCell(1, 0, 1)
-data.setCell(1, 1, 'HealthCheckup_RequestACallbackForm')
-data.setCell(1, 2, 'Medanta_Form.HealthCheckup')
-data.setCell(1, 3, 16650);
+data.setCell(1, 1, 'AirAmbulance_RequestACallbackForm')
+data.setCell(1, 2, 'Medanta_Form.AirAmbulancePage')
+data.setCell(1, 3, 34796);
 data.setCell(2, 0, 2)
-data.setCell(2, 1, 'ContactUsPage_OthersForm')
-data.setCell(2, 2, 'Medanta_Form.ContactUs_Others')
-data.setCell(2, 3, 14586);
+data.setCell(2, 1, 'HealthCheckup_RequestACallbackForm')
+data.setCell(2, 2, 'Medanta_Form.HealthCheckup')
+data.setCell(2, 3, 24718);
 data.setCell(3, 0, 3)
-data.setCell(3, 1, 'HomeCare_StrokeRehabilitation_QueryForm')
-data.setCell(3, 2, 'Medanta_Form.HomeCare_StrokeRehabilitation')
-data.setCell(3, 3, 14545);
+data.setCell(3, 1, 'SecondOpinionPage_RequestACallbackForm')
+data.setCell(3, 2, 'Medanta_Form.SecondOpiniun')
+data.setCell(3, 3, 20921);
 data.setCell(4, 0, 4)
-data.setCell(4, 1, 'RequestAnEstimatePage_PriceEstimateForm')
-data.setCell(4, 2, 'Medanta_Form.RequestAnEstimate')
-data.setCell(4, 3, 13352);
+data.setCell(4, 1, 'BecomeAPartnerPage_BusinessModelForm')
+data.setCell(4, 2, 'Medanta_Form.BecomeAPartner')
+data.setCell(4, 3, 20870);
 data.setCell(5, 0, 5)
-data.setCell(5, 1, 'AilmentDetailPage_RequestCallBackForm')
-data.setCell(5, 2, 'Medanta_Form.AilmentDP')
-data.setCell(5, 3, 12906);
+data.setCell(5, 1, 'ElderCareProgramPage_EnquiryForm')
+data.setCell(5, 2, 'Medanta_Form.ElderCare_EnquiryForm')
+data.setCell(5, 3, 20182);
 data.setCell(6, 0, 6)
-data.setCell(6, 1, 'InternationalPatientsPage_QueryForm')
-data.setCell(6, 2, 'Medanta_Form.InternationalP')
-data.setCell(6, 3, 12833);
+data.setCell(6, 1, 'EICUPage_RequestACallbackForm')
+data.setCell(6, 2, 'Medanta_Form.updateEICU')
+data.setCell(6, 3, 18775);
 data.setCell(7, 0, 7)
-data.setCell(7, 1, 'EICUPage_RequestACallbackForm')
-data.setCell(7, 2, 'Medanta_Form.updateEICU')
-data.setCell(7, 3, 12353);
+data.setCell(7, 1, 'BlogDetailPage_QueryForm')
+data.setCell(7, 2, 'Medanta_Form.BlogDP')
+data.setCell(7, 3, 18562);
 data.setCell(8, 0, 8)
-data.setCell(8, 1, 'ElderCareProgramPage_EnquiryForm')
-data.setCell(8, 2, 'Medanta_Form.ElderCare_EnquiryForm')
-data.setCell(8, 3, 11856);
+data.setCell(8, 1, 'RequestAnEstimatePage_PriceEstimateForm')
+data.setCell(8, 2, 'Medanta_Form.RequestAnEstimate')
+data.setCell(8, 3, 18326);
 data.setCell(9, 0, 9)
-data.setCell(9, 1, 'MedantaLabsPage_RequestACallbackForm')
-data.setCell(9, 2, 'Medanta_Form.MedantaLabs')
-data.setCell(9, 3, 11194);
+data.setCell(9, 1, 'MedantaPharmacyPage_UploadForm')
+data.setCell(9, 2, 'Medanta_Form.MedantaPharmacy_UploadForm')
+data.setCell(9, 3, 17869);
 data.setCell(10, 0, 10)
-data.setCell(10, 1, 'BlogDetailPage_QueryForm')
-data.setCell(10, 2, 'Medanta_Form.BlogDP')
-data.setCell(10, 3, 10812);
+data.setCell(10, 1, 'AilmentDetailPage_RequestCallBackForm')
+data.setCell(10, 2, 'Medanta_Form.AilmentDP')
+data.setCell(10, 3, 16981);
 data.setCell(11, 0, 11)
-data.setCell(11, 1, 'ContactUsPage_EnquiryForm')
-data.setCell(11, 2, 'Medanta_Form.ContactUs_Enquiry')
-data.setCell(11, 3, 10510);
+data.setCell(11, 1, 'MedantaPharmacyPage_RequestACallbackForm')
+data.setCell(11, 2, 'Medanta_Form.MedantaPharmacy_RequestACallbackForm')
+data.setCell(11, 3, 16966);
 data.setCell(12, 0, 12)
-data.setCell(12, 1, 'HomeCare_ElderCareProgram_QueryForm')
-data.setCell(12, 2, 'Medanta_Form.HomeCare_ElderCare')
-data.setCell(12, 3, 9744);
+data.setCell(12, 1, 'TechnologyDetailPage_QueryForm')
+data.setCell(12, 2, 'Medanta_Form.TechnologyDP')
+data.setCell(12, 3, 16890);
 data.setCell(13, 0, 13)
-data.setCell(13, 1, 'MedantaPharmacyPage_UploadForm')
-data.setCell(13, 2, 'Medanta_Form.MedantaPharmacy_UploadForm')
-data.setCell(13, 3, 9316);
+data.setCell(13, 1, 'CulturalEventDetailPage_QueryForm')
+data.setCell(13, 2, 'Medanta_Form.CulturalEDP')
+data.setCell(13, 3, 16748);
 data.setCell(14, 0, 14)
-data.setCell(14, 1, 'BecomeAPartnerPage_BusinessModelForm')
-data.setCell(14, 2, 'Medanta_Form.BecomeAPartner')
-data.setCell(14, 3, 8325);
+data.setCell(14, 1, 'HomeCare_StrokeRehabilitation_QueryForm')
+data.setCell(14, 2, 'Medanta_Form.HomeCare_StrokeRehabilitation')
+data.setCell(14, 3, 16213);
 data.setCell(15, 0, 15)
-data.setCell(15, 1, 'CulturalEventDetailPage_QueryForm')
-data.setCell(15, 2, 'Medanta_Form.CulturalEDP')
-data.setCell(15, 3, 7977);
+data.setCell(15, 1, 'MedantaLabsPage_RequestACallbackForm')
+data.setCell(15, 2, 'Medanta_Form.MedantaLabs')
+data.setCell(15, 3, 16122);
 data.setCell(16, 0, 16)
-data.setCell(16, 1, 'SecondOpinionPage_RequestACallbackForm')
-data.setCell(16, 2, 'Medanta_Form.SecondOpiniun')
-data.setCell(16, 3, 7885);
+data.setCell(16, 1, 'HomeCare_ElderCareProgram_QueryForm')
+data.setCell(16, 2, 'Medanta_Form.HomeCare_ElderCare')
+data.setCell(16, 3, 16022);
 data.setCell(17, 0, 17)
-data.setCell(17, 1, 'MedantaPharmacyPage_RequestACallbackForm')
-data.setCell(17, 2, 'Medanta_Form.MedantaPharmacy_RequestACallbackForm')
-data.setCell(17, 3, 7187);
+data.setCell(17, 1, 'TreatmentDetailPage_RequestACallBackForm')
+data.setCell(17, 2, 'Medanta_Form.TreatmentD')
+data.setCell(17, 3, 16011);
 data.setCell(18, 0, 18)
-data.setCell(18, 1, 'PlanYourTripPage_QueryForm')
-data.setCell(18, 2, 'Medanta_Form.planYT')
-data.setCell(18, 3, 7154);
+data.setCell(18, 1, 'ElderCareProgramPage_RequestACallbackForm')
+data.setCell(18, 2, 'Medanta_Form.ElderCare_RequestACallbackForm')
+data.setCell(18, 3, 15962);
 data.setCell(19, 0, 19)
-data.setCell(19, 1, 'TechnologyDetailPage_QueryForm')
-data.setCell(19, 2, 'Medanta_Form.TechnologyDP')
-data.setCell(19, 3, 7092);
+data.setCell(19, 1, 'ContactUsPage_FeedbackForm')
+data.setCell(19, 2, 'Medanta_Form.ContactUs_Feedback')
+data.setCell(19, 3, 15635);
 data.setCell(20, 0, 20)
-data.setCell(20, 1, 'Telemedicine_RequestACallbackForm')
-data.setCell(20, 2, 'Medanta_Form.Telemedicine')
-data.setCell(20, 3, 7054);
+data.setCell(20, 1, 'HomeCarePage_EnquiryForm')
+data.setCell(20, 2, 'Medanta_Form.HomeCare_EnquiryForm')
+data.setCell(20, 3, 15563);
 data.setCell(21, 0, 21)
-data.setCell(21, 1, 'ContactUsPage_FeedbackForm')
-data.setCell(21, 2, 'Medanta_Form.ContactUs_Feedback')
-data.setCell(21, 3, 6860);
+data.setCell(21, 1, 'Telemedicine_RequestACallbackForm')
+data.setCell(21, 2, 'Medanta_Form.Telemedicine')
+data.setCell(21, 3, 15433);
 data.setCell(22, 0, 22)
-data.setCell(22, 1, 'TreatmentDetailPage_RequestACallBackForm')
-data.setCell(22, 2, 'Medanta_Form.TreatmentD')
-data.setCell(22, 3, 6588);
+data.setCell(22, 1, 'ContactUsPage_EnquiryForm')
+data.setCell(22, 2, 'Medanta_Form.ContactUs_Enquiry')
+data.setCell(22, 3, 15326);
 data.setCell(23, 0, 23)
-data.setCell(23, 1, 'ElderCareProgramPage_RequestACallbackForm')
-data.setCell(23, 2, 'Medanta_Form.ElderCare_RequestACallbackForm')
-data.setCell(23, 3, 5879);
+data.setCell(23, 1, 'ContactUsPage_OthersForm')
+data.setCell(23, 2, 'Medanta_Form.ContactUs_Others')
+data.setCell(23, 3, 15302);
 data.setCell(24, 0, 24)
-data.setCell(24, 1, 'HomeCarePage_EnquiryForm')
-data.setCell(24, 2, 'Medanta_Form.HomeCare_EnquiryForm')
-data.setCell(24, 3, 5827);
+data.setCell(24, 1, 'InternationalPatientsPage_QueryForm')
+data.setCell(24, 2, 'Medanta_Form.InternationalP')
+data.setCell(24, 3, 15001);
 data.setCell(25, 0, 25)
 data.setCell(25, 1, 'HomeCarePage_RequestACallbackForm')
 data.setCell(25, 2, 'Medanta_Form.HomeCare_RequestACallbackForm')
-data.setCell(25, 3, 5540);
+data.setCell(25, 3, 14791);
 data.setCell(26, 0, 26)
 data.setCell(26, 1, 'Header_RequestACallBackForm')
 data.setCell(26, 2, 'Medanta_Form.Headerform')
-data.setCell(26, 3, 5519);
+data.setCell(26, 3, 14734);
 data.setCell(27, 0, 27)
-data.setCell(27, 1, 'AirAmbulance_RequestACallbackForm')
-data.setCell(27, 2, 'Medanta_Form.AirAmbulancePage')
-data.setCell(27, 3, 4720);
+data.setCell(27, 1, 'PlanYourTripPage_QueryForm')
+data.setCell(27, 2, 'Medanta_Form.planYT')
+data.setCell(27, 3, 13322);
 data.setCell(28, 0, 28)
 data.setCell(28, 1, 'LandingHealth_Page_QueryForm')
 data.setCell(28, 2, 'Medanta_Form.landingHealth')
-data.setCell(28, 3, 4580);
+data.setCell(28, 3, 12533);
 window.suiteTableData['Suite']= { tableData: data, tableDiv: 'times-div-Suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 4 minutes</span>
+              <span class="suite-total-time">Total running time: 8 minutes</span>
               <div id="times-div-Suite">
               </div> <!-- times-div-Suite -->
             </div> <!-- times-div -->
@@ -1137,433 +1142,435 @@ return data;
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">AilmentDetailPage_RequestCallBackForm</span>
-                <span class="method-start">7226 ms</span>
+                <span class="method-start">6568 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">20142 ms</span>
+                <span class="method-start">23554 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.AirAmbulancePage</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">20858 ms</span>
+                <span class="method-start">24185 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
+                <img src="failed.png">
+                </img>
                 <span class="method-name">AirAmbulance_RequestACallbackForm</span>
-                <span class="method-start">24593 ms</span>
+                <span class="method-start">26945 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">29316 ms</span>
+                <span class="method-start">61747 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.BecomeAPartner</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">29784 ms</span>
+                <span class="method-start">62192 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">BecomeAPartnerPage_BusinessModelForm</span>
-                <span class="method-start">32659 ms</span>
+                <span class="method-start">65084 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">40988 ms</span>
+                <span class="method-start">85956 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.BlogDP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">41449 ms</span>
+                <span class="method-start">86435 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">BlogDetailPage_QueryForm</span>
-                <span class="method-start">44024 ms</span>
+                <span class="method-start">89698 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">54839 ms</span>
+                <span class="method-start">108261 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.ContactUs_Enquiry</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">55207 ms</span>
+                <span class="method-start">108616 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">ContactUsPage_EnquiryForm</span>
-                <span class="method-start">58082 ms</span>
+                <span class="method-start">110862 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">68594 ms</span>
+                <span class="method-start">126191 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.ContactUs_Feedback</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">68946 ms</span>
+                <span class="method-start">126603 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">ContactUsPage_FeedbackForm</span>
-                <span class="method-start">72209 ms</span>
+                <span class="method-start">129025 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">79071 ms</span>
+                <span class="method-start">144662 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.ContactUs_Others</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">79477 ms</span>
+                <span class="method-start">145044 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">ContactUsPage_OthersForm</span>
-                <span class="method-start">82603 ms</span>
+                <span class="method-start">147469 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">97191 ms</span>
+                <span class="method-start">162773 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.CPR</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">97541 ms</span>
+                <span class="method-start">163482 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <img src="failed.png">
                 </img>
                 <span class="method-name">CPRPage_EnrollnowForm</span>
-                <span class="method-start">100245 ms</span>
+                <span class="method-start">167060 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">132939 ms</span>
+                <span class="method-start">206926 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.CulturalEDP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">133349 ms</span>
+                <span class="method-start">207293 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">CulturalEventDetailPage_QueryForm</span>
-                <span class="method-start">136064 ms</span>
+                <span class="method-start">209922 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">144044 ms</span>
+                <span class="method-start">226671 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.ElderCare_EnquiryForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">144450 ms</span>
+                <span class="method-start">227021 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">ElderCareProgramPage_EnquiryForm</span>
-                <span class="method-start">146741 ms</span>
+                <span class="method-start">229288 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">158599 ms</span>
+                <span class="method-start">249472 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.ElderCare_RequestACallbackForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">158947 ms</span>
+                <span class="method-start">249839 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">ElderCareProgramPage_RequestACallbackForm</span>
-                <span class="method-start">171457 ms</span>
+                <span class="method-start">252586 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">177338 ms</span>
+                <span class="method-start">268549 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.Headerform</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">177718 ms</span>
+                <span class="method-start">268833 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">Header_RequestACallBackForm</span>
-                <span class="method-start">180506 ms</span>
+                <span class="method-start">271160 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">186027 ms</span>
+                <span class="method-start">285896 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.HealthCheckup</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">186398 ms</span>
+                <span class="method-start">286203 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">HealthCheckup_RequestACallbackForm</span>
-                <span class="method-start">188911 ms</span>
+                <span class="method-start">288474 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">205564 ms</span>
+                <span class="method-start">313195 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.HomeCare_ElderCare</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">205946 ms</span>
+                <span class="method-start">313564 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">HomeCare_ElderCareProgram_QueryForm</span>
-                <span class="method-start">209725 ms</span>
+                <span class="method-start">316313 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">219472 ms</span>
+                <span class="method-start">332337 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.HomeCare_EnquiryForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">219845 ms</span>
+                <span class="method-start">332688 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">HomeCarePage_EnquiryForm</span>
-                <span class="method-start">222968 ms</span>
+                <span class="method-start">335333 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">228797 ms</span>
+                <span class="method-start">350897 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.HomeCare_RequestACallbackForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">229145 ms</span>
+                <span class="method-start">351285 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">HomeCarePage_RequestACallbackForm</span>
-                <span class="method-start">231890 ms</span>
+                <span class="method-start">353473 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">237432 ms</span>
+                <span class="method-start">368265 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.HomeCare_StrokeRehabilitation</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">237752 ms</span>
+                <span class="method-start">368662 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">HomeCare_StrokeRehabilitation_QueryForm</span>
-                <span class="method-start">239203 ms</span>
+                <span class="method-start">371785 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">253749 ms</span>
+                <span class="method-start">387999 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.InternationalP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">254178 ms</span>
+                <span class="method-start">388327 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">InternationalPatientsPage_QueryForm</span>
-                <span class="method-start">257400 ms</span>
+                <span class="method-start">391674 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">270235 ms</span>
+                <span class="method-start">406677 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.landingHealth</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">270596 ms</span>
+                <span class="method-start">407043 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">LandingHealth_Page_QueryForm</span>
-                <span class="method-start">273120 ms</span>
+                <span class="method-start">409864 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">277703 ms</span>
+                <span class="method-start">422397 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.MedantaLabs</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">278115 ms</span>
+                <span class="method-start">422693 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">MedantaLabsPage_RequestACallbackForm</span>
-                <span class="method-start">280962 ms</span>
+                <span class="method-start">424685 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">292158 ms</span>
+                <span class="method-start">440808 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.MedantaPharmacy_RequestACallbackForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">292573 ms</span>
+                <span class="method-start">441124 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">MedantaPharmacyPage_RequestACallbackForm</span>
-                <span class="method-start">295492 ms</span>
+                <span class="method-start">443414 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">302682 ms</span>
+                <span class="method-start">460381 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.MedantaPharmacy_UploadForm</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">303003 ms</span>
+                <span class="method-start">460665 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">MedantaPharmacyPage_UploadForm</span>
-                <span class="method-start">306412 ms</span>
+                <span class="method-start">462933 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">315730 ms</span>
+                <span class="method-start">480805 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.planYT</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">316069 ms</span>
+                <span class="method-start">481165 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">PlanYourTripPage_QueryForm</span>
-                <span class="method-start">319372 ms</span>
+                <span class="method-start">483141 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">326527 ms</span>
+                <span class="method-start">496464 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.RequestAnEstimate</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">326865 ms</span>
+                <span class="method-start">496815 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">RequestAnEstimatePage_PriceEstimateForm</span>
-                <span class="method-start">382541 ms</span>
+                <span class="method-start">499853 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">395895 ms</span>
+                <span class="method-start">518182 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.SecondOpiniun</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">396253 ms</span>
+                <span class="method-start">518481 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">SecondOpinionPage_RequestACallbackForm</span>
-                <span class="method-start">399540 ms</span>
+                <span class="method-start">520598 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">407426 ms</span>
+                <span class="method-start">541520 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.TechnologyDP</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">407713 ms</span>
+                <span class="method-start">541860 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">TechnologyDetailPage_QueryForm</span>
-                <span class="method-start">411042 ms</span>
+                <span class="method-start">544943 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">418135 ms</span>
+                <span class="method-start">561835 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.Telemedicine</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">418482 ms</span>
+                <span class="method-start">562195 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">Telemedicine_RequestACallbackForm</span>
-                <span class="method-start">422253 ms</span>
+                <span class="method-start">565488 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">429309 ms</span>
+                <span class="method-start">580922 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.TreatmentD</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">429620 ms</span>
+                <span class="method-start">581206 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">TreatmentDetailPage_RequestACallBackForm</span>
-                <span class="method-start">432286 ms</span>
+                <span class="method-start">585117 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">438876 ms</span>
+                <span class="method-start">601130 ms</span>
               </div> <!-- configuration-class after -->
             </div> <!-- chronological-class -->
             <div class="chronological-class">
               <div class="chronological-class-name">Medanta_Form.updateEICU</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
                 <span class="method-name">Openbrowser</span>
-                <span class="method-start">439239 ms</span>
+                <span class="method-start">601459 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">EICUPage_RequestACallbackForm</span>
-                <span class="method-start">442032 ms</span>
+                <span class="method-start">603465 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-class after">
                 <span class="method-name">TearDown</span>
-                <span class="method-start">454387 ms</span>
+                <span class="method-start">622241 ms</span>
               </div> <!-- configuration-class after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->

@@ -29,8 +29,7 @@ public class InternationalP extends BaseClass {
 
         driver.navigate().to("https://www.medanta.org/international-patient");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
-        // Fill form (INTENTIONALLY INVALID MOBILE)
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//input[@type='text' and @placeholder='Enter Your Name'])[3]"))
                 .sendKeys("Test");
         Thread.sleep(1000);
@@ -40,7 +39,7 @@ public class InternationalP extends BaseClass {
         driver.findElement(By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]"))
                 .sendKeys("wakemedantatest@gmail.com");
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

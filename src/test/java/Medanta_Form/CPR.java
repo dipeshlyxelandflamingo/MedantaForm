@@ -30,19 +30,19 @@ public class CPR extends BaseClass {
 
 		driver.navigate().to("https://www.medanta.org/cpr");
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+		 Thread.sleep(3000);
 		// Fill form (INTENTIONALLY INVALID MOBILE)
 		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).sendKeys("Test");
-
+		 Thread.sleep(1000);
 		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]")).sendKeys("98210"); 
-
+		 Thread.sleep(1000);
 		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Email'])[3]"))
 				.sendKeys("wakemedantatest@gmail.com");
-
+		 Thread.sleep(1000);
 		Select locationDD = new Select(driver.findElement(By.xpath("//select[@placeholder='Select Location']")));
 		locationDD.selectByVisibleText("Gurugram");
 
-		Thread.sleep(1500);
+		 Thread.sleep(3000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

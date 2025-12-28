@@ -30,13 +30,16 @@ public class landingHealth extends BaseClass {
         driver.navigate().to("https://www.medanta.org/ehc/hishealth-checkup/L1gz");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
-        // Fill form
+        Thread.sleep(3000);
         driver.findElement(By.name("name")).sendKeys("Test");
+        Thread.sleep(1000);
         driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
+        Thread.sleep(1000);
         driver.findElement(By.name("email")).sendKeys("wakemedantatest@gmail.com");
+        Thread.sleep(1000);
         driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']"))
                 .sendKeys("Testing the form Please ignore");
-
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//button[@type='submit'])[2]")).click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

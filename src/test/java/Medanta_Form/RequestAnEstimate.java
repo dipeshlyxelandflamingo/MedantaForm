@@ -35,7 +35,7 @@ public class RequestAnEstimate extends BaseClass {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,210)", "");
 
-		// ================= Fill Form =================
+		 Thread.sleep(3000);
 		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).sendKeys("Dipesh");
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("//input[@placeholder='Enter Your Last Name']")).sendKeys("Singh");
@@ -52,7 +52,7 @@ public class RequestAnEstimate extends BaseClass {
 		department.selectByValue("Obstetrics");
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("(//input[@type='file'])[2]")).sendKeys("C:\\Users\\LYXELANDFLAMINGO\\upload.docx");
-		Thread.sleep(1000);
+		 Thread.sleep(3000);
 		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
 		// ================= Validation =================

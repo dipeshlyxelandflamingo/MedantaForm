@@ -37,11 +37,14 @@ public class MedantaPharmacy_UploadForm extends BaseClass{
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0,800)", "");
 
-        // Fill form (INTENTIONALLY SKIP FILE / INVALID)
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//input[@type='text'])[5]")).sendKeys("Dipesh");
+        Thread.sleep(1000);
         driver.findElement(By.xpath("(//input[@type='email'])[3]")).sendKeys("dipesh@yopmail.com");
+        Thread.sleep(1000);
      // 1️⃣ Locate the file input
         WebElement fileInput = driver.findElement(By.xpath("(//input[@type='file'])[2]"));
+        Thread.sleep(3000);
 
         // 2️⃣ File path (relative to project)
         String filePath = System.getProperty("user.dir") + "\\SampleDocs\\upload.docx";
@@ -50,7 +53,7 @@ public class MedantaPharmacy_UploadForm extends BaseClass{
         fileInput.sendKeys(filePath);
 
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
