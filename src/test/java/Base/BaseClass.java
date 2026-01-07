@@ -3,8 +3,9 @@ package Base;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
-
+import java.util.Date;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -15,6 +16,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -25,6 +27,42 @@ public class BaseClass {
 	public XSSFWorkbook workbook;
 	public XSSFSheet sheet;
 	public DataFormatter formatter;
+
+	// ================= EXECUTION DATE (ONCE PER SUITE) =================
+	@BeforeSuite
+	public void writeExecutionDateOnce() {
+
+		try {
+			String path = System.getProperty("user.dir") + "/forms automation.xlsx";
+
+			FileInputStream fis = new FileInputStream(path);
+			XSSFWorkbook wb = new XSSFWorkbook(fis);
+			XSSFSheet sh = wb.getSheet("Sheet1");
+
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			String runDate = sdf.format(new Date());
+
+			int rowIndex = 32; // Excel Row 33
+			int colIndex = 1;  // Column B
+
+			if (sh.getRow(rowIndex) == null)
+				sh.createRow(rowIndex);
+
+			sh.getRow(rowIndex).createCell(colIndex).setCellValue(runDate);
+
+			fis.close();
+
+			try (FileOutputStream fos = new FileOutputStream(path)) {
+				wb.write(fos);
+			}
+			wb.close();
+
+			System.out.println("📅 Execution date written once in Excel");
+
+		} catch (Exception e) {
+			System.err.println("❌ Execution date write failed: " + e.getMessage());
+		}
+	}
 
 	// ================= BEFORE CLASS =================
 	@BeforeClass
@@ -76,7 +114,7 @@ public class BaseClass {
 		for (char c : text.toCharArray()) {
 			element.sendKeys(String.valueOf(c));
 			try {
-				Thread.sleep(120); // human typing speed
+				Thread.sleep(120);
 			} catch (InterruptedException e) {
 			}
 		}
@@ -88,7 +126,7 @@ public class BaseClass {
 		js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
 	}
 
-	// ================= EXCEL WRITE (JENKINS SAFE) =================
+	// ================= EXCEL WRITE (STATUS / ERROR) =================
 	public synchronized void writeExcel(int row, int col, String value) {
 		try {
 			if (sheet.getRow(row) == null)
