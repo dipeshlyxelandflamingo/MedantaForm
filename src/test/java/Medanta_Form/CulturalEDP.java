@@ -3,6 +3,7 @@ package Medanta_Form;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -12,100 +13,71 @@ import org.testng.annotations.Test;
 import Base.BaseClass;
 
 public class CulturalEDP extends BaseClass {
+	
+    
 
-	 // Helper method to write Excel
-    public void writeExcel(int rowNum, int cellNum, String value) {
-        try {
-            if (sheet.getRow(rowNum) == null)
-                sheet.createRow(rowNum);
-            sheet.getRow(rowNum).createCell(cellNum).setCellValue(value);
-        } catch (Exception e) {
-            System.out.println("Excel write error: " + e.getMessage());
-        }
-    }
-
-    @Test
-    public void CulturalEventDetailPage_QueryForm() throws InterruptedException {
+    @Test(priority = 1)
+    public void CulturalEventDetailPage_QueryForm() {
 
         driver.navigate().to("https://www.medanta.org/careers/events/cultural-events");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        Thread.sleep(3000);
-       
-        driver.findElement(By.xpath("//input[@name='name']"))
-                .sendKeys("Test");
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//input[@name='mobile']"))
-                .sendKeys("9876543210"); 
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]"))
-                .sendKeys("wakemedantatest@gmail.com");
 
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        // -------- Locate fields --------
+        WebElement name = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@name='name']")));
+        WebElement mobile = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@name='mobile']")));
+        WebElement email = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]")));
+        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[@type='submit'])[3]")));
 
+        // -------- Scroll and fill fields --------
+        scrollToElement(name);
+        slowType(name, "Test");
+        slowType(mobile, "9876543210");
+        slowType(email, "wakemedantatest@gmail.com");
+
+        // -------- Wait before submit --------
+        try { Thread.sleep(800); } catch (Exception ignored) {}
+        submitBtn.click();
+
+        // -------- Try-catch for success/fail --------
         try {
-            // SUCCESS CASE
-            WebElement successMsg = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
+            // -------- PASS --------
+            wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-            writeExcel(9, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-            System.out.println("✅ FORM SUBMITTED SUCCSESSFULLY!");
+            writeExcel(9, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+            System.out.println("✅ Cultural Event Query Form – PASS");
 
         } catch (Exception e) {
+            // -------- FAIL --------
+            String nameVal = name.getAttribute("value");
+            String mobileVal = mobile.getAttribute("value");
+            String emailVal = email.getAttribute("value");
 
-            System.out.println("❌ Cultural Event Query Form FAIL");
-
-            // Capture entered values
-            String nameVal = driver.findElement(By.xpath("//input[@name='name']"))
-                    .getAttribute("value");
-
-            String mobileVal = driver.findElement(By.xpath("//input[@name='mobile']"))
-                    .getAttribute("value");
-
-            String emailVal = driver.findElement(
-                    By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]"))
-                    .getAttribute("value");
-
-            // Capture validation errors
             StringBuilder errorMsg = new StringBuilder();
-
             try {
-                WebElement nameErr = driver.findElement(
-                        By.xpath("//input[@name='name']/following-sibling::span[contains(@class,'errmsg')]"));
-                if (nameErr.isDisplayed())
-                    errorMsg.append("Name Error: ").append(nameErr.getText()).append(" | ");
+                WebElement err = driver.findElement(By.xpath("//input[@name='name']/following-sibling::span[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
+            try {
+                WebElement err = driver.findElement(By.xpath("//input[@name='mobile']/following-sibling::span[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
+            try {
+                WebElement err = driver.findElement(By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]/following-sibling::span[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
             } catch (Exception ignored) {}
 
-            try {
-                WebElement mobileErr = driver.findElement(
-                        By.xpath("//input[@name='mobile']/following-sibling::span[contains(@class,'errmsg')]"));
-                if (mobileErr.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(mobileErr.getText()).append(" | ");
-            } catch (Exception ignored) {}
+            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal
+                    + " | Errors => " + errorMsg;
 
-            try {
-                WebElement emailErr = driver.findElement(
-                        By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]/following-sibling::span[contains(@class,'errmsg')]"));
-                if (emailErr.isDisplayed())
-                    errorMsg.append("Email Error: ").append(emailErr.getText()).append(" | ");
-            } catch (Exception ignored) {}
-
-            // Final result string
-            String finalResult =
-                    "Name=" + nameVal +
-                    " | Mobile=" + mobileVal +
-                    " | Email=" + emailVal +
-                    " | Errors => " + errorMsg;
-
-            writeExcel(9, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
+            writeExcel(9, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
             writeExcel(9, 5, finalResult);
-            Thread.sleep(3000);
 
+            System.out.println(finalResult);
             Assert.fail("Cultural Event Query form validation failed: " + finalResult);
-            Thread.sleep(3000);
         }
     }
 }

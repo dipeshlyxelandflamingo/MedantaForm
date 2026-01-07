@@ -3,13 +3,13 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="Medanta_Form.ContactUs_Enquiry">
+      <class name="Medanta_Form.ElderCare_EnquiryForm">
         <methods>
+          <include name="OpenBrowser"/>
           <include name="TearDown"/>
-          <include name="Openbrowser"/>
-          <include name="ContactUsPage_EnquiryForm"/>
+          <include name="ElderCareProgramPage_EnquiryForm"/>
         </methods>
-      </class> <!-- Medanta_Form.ContactUs_Enquiry -->
+      </class> <!-- Medanta_Form.ElderCare_EnquiryForm -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -12,98 +12,96 @@ import org.testng.annotations.Test;
 
 import Base.BaseClass;
 
-public class MedantaPharmacy_UploadForm extends BaseClass{
+public class MedantaPharmacy_UploadForm extends BaseClass {
+
 	
-	
 
-	// Common Excel writer
-    public void writeExcel(int row, int col, String value) {
-        try {
-            if (sheet.getRow(row) == null)
-                sheet.createRow(row);
-            sheet.getRow(row).createCell(col).setCellValue(value);
-        } catch (Exception e) {
-            System.out.println("Excel write error: " + e.getMessage());
-        }
-    }
+	@Test(priority = 1)
+	public void MedantaPharmacyPage_UploadForm() {
 
-    // ================== TC_02 : Upload Form ==================
-    @Test(priority = 1)
-    public void MedantaPharmacyPage_UploadForm() throws Exception {
+		driver.navigate().to("https://www.medanta.org/medanta-pharmacy");
 
-    	driver.navigate().to("https://www.medanta.org/medanta-pharmacy");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-    	
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("window.scrollBy(0,800)", "");
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+		JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//input[@type='text'])[5]")).sendKeys("Dipesh");
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("(//input[@type='email'])[3]")).sendKeys("dipesh@yopmail.com");
-        Thread.sleep(1000);
-     // 1️⃣ Locate the file input
-        WebElement fileInput = driver.findElement(By.xpath("(//input[@type='file'])[2]"));
-        Thread.sleep(3000);
+		// Scroll down to form
+		js.executeScript("window.scrollBy(0,800)");
+		try {
+			Thread.sleep(2000);
+		} catch (Exception ignored) {
+		}
 
-        // 2️⃣ File path (relative to project)
-        String filePath = System.getProperty("user.dir") + "\\SampleDocs\\upload.docx";
+		WebElement nameInput = driver.findElement(By.xpath("(//input[@type='text'])[5]"));
+		WebElement emailInput = driver.findElement(By.xpath("(//input[@type='email'])[3]"));
+		WebElement fileInput = driver.findElement(By.xpath("(//input[@type='file'])[2]"));
+		WebElement submitBtn = driver.findElement(By.xpath("(//button[@type='submit'])[4]"));
 
-        // 3️⃣ Upload file
-        fileInput.sendKeys(filePath);
+		// -------- Fill form with slow typing --------
+		slowType(nameInput, "Dipesh");
+		slowType(emailInput, "dipesh@yopmail.com");
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String filePath = System.getProperty("user.dir") + "\\SampleDocs\\upload.docx";
+		fileInput.sendKeys(filePath);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Submit form
+		submitBtn.click();
 
+		// ===== Try-catch for success/fail (EDP style) =====
+		try {
+			wait.until(ExpectedConditions
+					.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
+			writeExcel(22, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+			System.out.println("✅ Medanta Pharmacy – Upload Form PASS");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		} catch (Exception e) {
 
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
+			String nameVal = nameInput.getAttribute("value");
+			String emailVal = emailInput.getAttribute("value");
 
-            System.out.println("✅ Medanta Pharmacy – Upload Form PASS");
-            writeExcel(22, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
+			StringBuilder errorMsg = new StringBuilder();
+			try {
+				WebElement err = driver.findElement(
+						By.xpath("(//input[@type='text'])[5]/following-sibling::span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(
+						By.xpath("(//input[@type='email'])[3]/following-sibling::span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(
+						By.xpath("(//input[@type='file'])[2]/following-sibling::span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("File Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
 
-        } catch (Exception e) {
+			String finalResult = "Name=" + nameVal + " | Email=" + emailVal + " | File=NOT_UPLOADED | Errors => "
+					+ errorMsg;
 
-            System.out.println("❌ Medanta Pharmacy – Upload Form FAIL");
+			writeExcel(22, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+			writeExcel(22, 5, finalResult);
 
-            StringBuilder errorMsg = new StringBuilder();
-
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//label[text()='Name *']/following-sibling::input/../span[contains(@class,'errmsg')])[2]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
-
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//label[text()='Email *']/following-sibling::input/../span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
-
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//label[contains(text(),'Upload Prescription')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("File Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
-
-            String finalResult =
-                    "Name=" + driver.findElement(By.xpath("(//input[@type='text'])[5]")).getAttribute("value") +
-                    " | Email=" + driver.findElement(By.xpath("(//input[@type='email'])[3]")).getAttribute("value") +
-                    " | File=NOT_UPLOADED" +
-                    " | Errors => " + errorMsg;
-
-            writeExcel(22, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-            writeExcel(22, 5, finalResult);
-            Thread.sleep(3000);
-            Assert.fail("Upload Form validation failed: " + finalResult);
-            Thread.sleep(3000);
-        }
-    }
+			System.out.println(finalResult);
+			Assert.fail("Upload Form validation failed: " + finalResult);
+		}
+	}
 }
-

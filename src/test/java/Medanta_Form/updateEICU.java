@@ -13,90 +13,73 @@ import Base.BaseClass;
 
 public class updateEICU extends BaseClass {
 
-	// ================= Excel Helper =================
-	public void writeExcel(int row, int col, String value) {
-		try {
-			if (sheet.getRow(row) == null)
-				sheet.createRow(row);
-			sheet.getRow(row).createCell(col).setCellValue(value);
-		} catch (Exception e) {
-			System.out.println("Excel write error: " + e.getMessage());
-		}
-	}
+	
 
 	@Test(priority = 1)
-	public void EICUPage_RequestACallbackForm() throws Throwable {
+	public void EICUPage_RequestACallbackForm() {
+		 driver.navigate().to("https://www.medanta.org/eicu");
 
-		driver.navigate().to("https://www.medanta.org/eicu");
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-		 Thread.sleep(3000);
-		driver.findElement(By.name("name")).sendKeys("Test");
-		Thread.sleep(1000);
-		driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-		Thread.sleep(1000);
-		driver.findElement(By.name("email")).sendKeys("wakemedantatest@gmail.com");
-		Thread.sleep(1000);
-		driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']"))
-				.sendKeys("Testing the form Please ignore");
-		Thread.sleep(1000);
-		 Thread.sleep(3000);
-		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
+		    // ===== Locate fields =====
+		    WebElement nameField = wait.until(ExpectedConditions.elementToBeClickable(By.name("name")));
+		    WebElement mobileField = driver.findElement(By.name("mobile"));
+		    WebElement emailField = driver.findElement(By.name("email"));
+		    WebElement messageField = driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']"));
+		    WebElement submitBtn = driver.findElement(By.xpath("(//button[@type='submit'])[3]"));
 
-		// ================= Validation =================
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		    // ===== Fill form using slowType =====
+		    slowType(nameField, "Test");
+		    slowType(mobileField, "9876543210");
+		    slowType(emailField, "wakemedantatest@gmail.com");
+		    slowType(messageField, "Testing the form Please ignore");
 
-		try {
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you')]")));
-
-			System.out.println("✅ EICU Page – Request A Callback Form PASS");
-			writeExcel(29, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-
-		} catch (Exception e) {
-
-			// ===== Entered Values =====
-			String nameVal = driver.findElement(By.name("name")).getAttribute("value");
-			String mobileVal = driver.findElement(By.name("mobile")).getAttribute("value");
-			String emailVal = driver.findElement(By.name("email")).getAttribute("value");
-
-			StringBuilder errorMsg = new StringBuilder();
-
-			// ===== Field-wise Error Capture =====
-			try {
-				WebElement err = driver.findElement(
-						By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
+		    // Submit
+		    try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		    submitBtn.click();
 
-			try {
-				WebElement err = driver.findElement(
-						By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
-			}
+		    // ===== Try-catch from Thank You message =====
+		    try {
+		        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you')]")));
+		        writeExcel(29, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+		        System.out.println("✅ EICU Page – Request A Callback Form PASS");
 
-			try {
-				WebElement err = driver.findElement(
-						By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
-			}
+		    } catch (Exception e) {
+		        System.out.println("❌ EICU Page – Request A Callback Form FAIL");
 
-			// ===== Final Result =====
-			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Errors => "
-					+ errorMsg;
+		        // ===== Capture field values =====
+		        String nameVal = nameField.getAttribute("value");
+		        String mobileVal = mobileField.getAttribute("value");
+		        String emailVal = emailField.getAttribute("value");
+		        String msgVal = messageField.getAttribute("value");
 
-			System.out.println("❌ EICU Page – Request A Callback Form FAIL");
+		        // ===== Capture errors =====
+		        StringBuilder errorMsg = new StringBuilder();
+		        try {
+		            WebElement err = driver.findElement(By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
 
-			writeExcel(29, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-			writeExcel(29, 5, finalResult);
-			  Thread.sleep(3000);
-			Assert.fail("EICU Page form validation failed: " + finalResult);
-			  Thread.sleep(3000);
+		        try {
+		            WebElement err = driver.findElement(By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
+
+		        try {
+		            WebElement err = driver.findElement(By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
+
+		        String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message=" + msgVal + " | Errors => " + errorMsg;
+
+		        writeExcel(29, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+		        writeExcel(29, 5, finalResult);
+		        Assert.fail("EICU Page form validation failed: " + finalResult);
+		    }
 		}
-	}
 }

@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
-  <test thread-count="5" name="AirAmbulancePage(failed)">
+  <test thread-count="5" name="ContactUs_Others(failed)">
     <classes>
-      <class name="Medanta_Form.AirAmbulancePage">
+      <class name="Medanta_Form.ContactUs_Others">
         <methods>
-          <include name="AirAmbulance_RequestACallbackForm"/>
+          <include name="OpenBrowser"/>
           <include name="TearDown"/>
-          <include name="Openbrowser"/>
+          <include name="ContactUsPage_OthersForm"/>
         </methods>
-      </class> <!-- Medanta_Form.AirAmbulancePage -->
+      </class> <!-- Medanta_Form.ContactUs_Others -->
     </classes>
-  </test> <!-- AirAmbulancePage(failed) -->
-  <test thread-count="5" name="CPR(failed)">
-    <classes>
-      <class name="Medanta_Form.CPR">
-        <methods>
-          <include name="TearDown"/>
-          <include name="CPRPage_EnrollnowForm"/>
-          <include name="Openbrowser"/>
-        </methods>
-      </class> <!-- Medanta_Form.CPR -->
-    </classes>
-  </test> <!-- CPR(failed) -->
+  </test> <!-- ContactUs_Others(failed) -->
 </suite> <!-- Failed suite [Suite] -->

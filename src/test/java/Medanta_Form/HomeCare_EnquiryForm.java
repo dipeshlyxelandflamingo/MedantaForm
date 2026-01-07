@@ -15,97 +15,100 @@ import Base.BaseClass;
 
 public class HomeCare_EnquiryForm extends BaseClass{
 	
-	// Excel helper
-		public void writeExcel(int rowNum, int cellNum, String value) {
-			try {
-				if (sheet.getRow(rowNum) == null)
-					sheet.createRow(rowNum);
-				sheet.getRow(rowNum).createCell(cellNum).setCellValue(value);
-			} catch (Exception e) {
-				System.out.println("Excel write error: " + e.getMessage());
-			}
-		}
-		@Test(priority = 1)
-		public void HomeCarePage_EnquiryForm() throws Throwable {
-			
-			driver.navigate().to("https://www.medanta.org/home-care");
-			driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-			
-			JavascriptExecutor js = (JavascriptExecutor) driver;
-			js.executeScript("window.scrollBy(0,2000)", "");
-			 Thread.sleep(3000);
-			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[4]")).sendKeys("Dipesh");
-			 Thread.sleep(1000);
-			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[3]")).sendKeys("9876543210"); 
-			 Thread.sleep(1000);
-			driver.findElement(By.xpath("(//input[@placeholder='Enter Your Email'])[4]")).sendKeys("dipesh@yopmail.com");
-			 Thread.sleep(1000);
-			Select location = new Select(driver.findElement(By.xpath("//select[@placeholder='Select Location']")));
-			location.selectByIndex(0); // ❌ default
-			 Thread.sleep(3000);
-			driver.findElement(By.xpath("(//button[@type='submit'])[4]")).click();
+	 
+    @Test(priority = 1)
+    public void HomeCarePage_EnquiryForm() {
 
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.navigate().to("https://www.medanta.org/home-care");
 
-			try {
-				wait.until(ExpectedConditions
-						.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        
+        ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,2000)");
 
-				writeExcel(15, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
+        // -------- Locate fields --------
+        WebElement nameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("(//input[@placeholder='Enter Your Name'])[4]")));
+        WebElement mobileInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[3]")));
+        WebElement emailInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("(//input[@placeholder='Enter Your Email'])[4]")));
+        WebElement locationDD = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//select[@placeholder='Select Location']")));
+        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("(//button[@type='submit'])[4]")));
 
-			} catch (Exception e) {
+        // -------- Scroll to form --------
+        
 
-				StringBuilder errorMsg = new StringBuilder();
+        // -------- Fill form using slow typing --------
+        slowType(nameInput, "Dipesh");
+        slowType(mobileInput, "9876543210");
+        slowType(emailInput, "dipesh@yopmail.com");
+        new Select(locationDD).selectByIndex(1); // default location
 
-				try {
-					WebElement err = driver.findElement(By.xpath(
-							"(//input[@placeholder='Enter Your Name'])[4]/following-sibling::div[contains(@class,'errmsg')]"));
-					if (err.isDisplayed())
-						errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-				} catch (Exception ignored) {
-				}
+        // -------- Submit form --------
+       try {
+		Thread.sleep(1000);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+        submitBtn.click();
+        // ===== Try-catch: success/fail =====
+        try {
+            // -------- PASS: wait for thank you message --------
+            wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-				try {
-					WebElement err = driver.findElement(By.xpath(
-							"(//input[@placeholder='Enter Your Mobile Number'])[3]/following-sibling::div[contains(@class,'errmsg')]"));
-					if (err.isDisplayed())
-						errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-				} catch (Exception ignored) {
-				}
+            writeExcel(15, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+            System.out.println("✅ HomeCare Enquiry Form – PASS");
 
-				try {
-					WebElement err = driver.findElement(By.xpath(
-							"(//input[@placeholder='Enter Your Email'])[4]/following-sibling::div[contains(@class,'errmsg')]"));
-					if (err.isDisplayed())
-						errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-				} catch (Exception ignored) {
-				}
+        } catch (Exception e) {
+            // -------- FAIL: capture values and errors --------
+            String nameVal = nameInput.getAttribute("value");
+            String mobileVal = mobileInput.getAttribute("value");
+            String emailVal = emailInput.getAttribute("value");
 
-				try {
-					WebElement err = driver.findElement(By.xpath(
-							"//select[@placeholder='Select Location']/following-sibling::div[contains(@class,'errmsg')]"));
-					if (err.isDisplayed())
-						errorMsg.append("Location Error: ").append(err.getText()).append(" | ");
-				} catch (Exception ignored) {
-				}
+            String locationVal = "";
+            try {
+                locationVal = new Select(locationDD).getFirstSelectedOption().getText();
+            } catch (Exception ignored) {}
 
-				String finalResult = "Name="
-						+ driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[4]")).getAttribute("value")
-						+ " | Mobile="
-						+ driver.findElement(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[3]"))
-								.getAttribute("value")
-						+ " | Email="
-						+ driver.findElement(By.xpath("(//input[@placeholder='Enter Your Email'])[4]"))
-								.getAttribute("value")
-						+ " | Location=" + location.getFirstSelectedOption().getText() + " | Errors => " + errorMsg;
+            StringBuilder errorMsg = new StringBuilder();
 
-				writeExcel(15, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-				writeExcel(15, 5, finalResult);
-				  Thread.sleep(3000);
-				Assert.fail(finalResult);
-				  Thread.sleep(3000);
-			} 
-		}
+            try {
+                WebElement err = driver.findElement(By.xpath(
+                        "(//input[@placeholder='Enter Your Name'])[4]/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
 
+            try {
+                WebElement err = driver.findElement(By.xpath(
+                        "(//input[@placeholder='Enter Your Mobile Number'])[3]/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
 
+            try {
+                WebElement err = driver.findElement(By.xpath(
+                        "(//input[@placeholder='Enter Your Email'])[4]/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
+
+            try {
+                WebElement err = driver.findElement(By.xpath(
+                        "//select[@placeholder='Select Location']/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Location Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
+
+            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal
+                    + " | Location=" + locationVal + " | Errors => " + errorMsg;
+
+            writeExcel(15, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+            writeExcel(15, 5, finalResult);
+
+            System.out.println(finalResult);
+            Assert.fail("HomeCare Enquiry form validation failed: " + finalResult);
+        }
+    }
 }

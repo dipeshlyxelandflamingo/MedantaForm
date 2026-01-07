@@ -15,46 +15,49 @@ import Base.BaseClass;
 
 public class HomeCare_RequestACallbackForm extends BaseClass {
 
-	// Excel helper
-	public void writeExcel(int rowNum, int cellNum, String value) {
-		try {
-			if (sheet.getRow(rowNum) == null)
-				sheet.createRow(rowNum);
-			sheet.getRow(rowNum).createCell(cellNum).setCellValue(value);
-		} catch (Exception e) {
-			System.out.println("Excel write error: " + e.getMessage());
-		}
-	}
+	
 
-	// ================= Request A Callback =================
 	@Test(priority = 1)
-	public void HomeCarePage_RequestACallbackForm() throws Throwable {
+	public void HomeCarePage_RequestACallbackForm() {
 
 		driver.navigate().to("https://www.medanta.org/home-care");
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-		 Thread.sleep(3000);
-		driver.findElement(By.name("name")).sendKeys("Dipesh");
-		 Thread.sleep(1000);
-		driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-		 Thread.sleep(1000);
-		driver.findElement(By.name("email")).sendKeys("dipesh@yopmail.com");
-		 Thread.sleep(1000);
-		driver.findElement(By.xpath("//textarea[@class='inputbox']")).sendKeys("Test");
-		 Thread.sleep(3000);
-		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
+		// -------- Locate fields --------
+		WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(By.name("name")));
+		WebElement mobileInput = wait.until(ExpectedConditions.elementToBeClickable(By.name("mobile")));
+		WebElement emailInput = wait.until(ExpectedConditions.elementToBeClickable(By.name("email")));
+		WebElement messageInput = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//textarea[@class='inputbox']")));
+		WebElement submitBtn = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@type='submit'])[3]")));
+
+		// -------- Fill form --------
+		slowType(nameInput, "Dipesh");
+		slowType(mobileInput, "9876543210");
+		slowType(emailInput, "dipesh@yopmail.com");
+		slowType(messageInput, "Test");
+
+		submitBtn.click();
+
+		// -------- Try-catch for success/fail (EDP style) --------
 		try {
+
 			wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-			writeExcel(16, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
+			writeExcel(16, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+			System.out.println("✅ HomeCare Request Callback Form PASS");
 
 		} catch (Exception e) {
 
-			StringBuilder errorMsg = new StringBuilder();
+			String nameVal = nameInput.getAttribute("value");
+			String mobileVal = mobileInput.getAttribute("value");
+			String emailVal = emailInput.getAttribute("value");
+			String msgVal = messageInput.getAttribute("value");
 
+			StringBuilder errorMsg = new StringBuilder();
 			try {
 				WebElement err = driver.findElement(
 						By.xpath("//input[@name='name']/following-sibling::span[contains(@class,'errmsg')]"));
@@ -62,7 +65,6 @@ public class HomeCare_RequestACallbackForm extends BaseClass {
 					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
 			} catch (Exception ignored) {
 			}
-
 			try {
 				WebElement err = driver.findElement(
 						By.xpath("//input[@name='mobile']/following-sibling::span[contains(@class,'errmsg')]"));
@@ -70,7 +72,6 @@ public class HomeCare_RequestACallbackForm extends BaseClass {
 					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
 			} catch (Exception ignored) {
 			}
-
 			try {
 				WebElement err = driver.findElement(
 						By.xpath("//input[@name='email']/following-sibling::span[contains(@class,'errmsg')]"));
@@ -78,7 +79,6 @@ public class HomeCare_RequestACallbackForm extends BaseClass {
 					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
 			} catch (Exception ignored) {
 			}
-
 			try {
 				WebElement err = driver.findElement(
 						By.xpath("//textarea[@class='inputbox']/following-sibling::span[contains(@class,'errmsg')]"));
@@ -87,20 +87,14 @@ public class HomeCare_RequestACallbackForm extends BaseClass {
 			} catch (Exception ignored) {
 			}
 
-			String finalResult = "Name=" + driver.findElement(By.name("name")).getAttribute("value") + " | Mobile="
-					+ driver.findElement(By.name("mobile")).getAttribute("value") + " | Email="
-					+ driver.findElement(By.name("email")).getAttribute("value") + " | Errors => " + errorMsg;
+			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message="
+					+ msgVal + " | Errors => " + errorMsg;
 
-			writeExcel(16, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
+			writeExcel(16, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
 			writeExcel(16, 5, finalResult);
-			  Thread.sleep(3000);
-			Assert.fail(finalResult);
-			  Thread.sleep(3000);
+
+			System.out.println(finalResult);
+			Assert.fail("HomeCare Request Callback form validation failed: " + finalResult);
 		}
 	}
-
-	
-
-	
-
 }

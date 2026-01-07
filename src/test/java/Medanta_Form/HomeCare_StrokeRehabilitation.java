@@ -3,6 +3,7 @@ package Medanta_Form;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -13,47 +14,49 @@ import Base.BaseClass;
 
 public class HomeCare_StrokeRehabilitation extends BaseClass {
 
-	// Excel helper
-	public void writeExcel(int rowNum, int cellNum, String value) {
-		try {
-			if (sheet.getRow(rowNum) == null)
-				sheet.createRow(rowNum);
-			sheet.getRow(rowNum).createCell(cellNum).setCellValue(value);
-		} catch (Exception e) {
-			System.out.println("Excel write error: " + e.getMessage());
-		}
-	}
+	
 
 	@Test(priority = 1)
-	public void HomeCare_StrokeRehabilitation_QueryForm() throws Throwable {
-
-		driver.navigate().to("https://www.medanta.org/home-care");
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+	public void HomeCare_StrokeRehabilitation_QueryForm() {
 
 		driver.navigate().to("https://www.medanta.org/home-care-service-program/stroke-rehabilitation-program");
-		 Thread.sleep(3000);
-		 Thread.sleep(1000);
-		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).sendKeys("Dipesh");
-		 Thread.sleep(1000);
-		driver.findElement(By.xpath("(//input[@type='number'])[3]")).sendKeys("9876543210"); 
-		 Thread.sleep(1000);
-		driver.findElement(By.xpath("(//input[@type='email'])[2]")).sendKeys("dipesh@yopmail.com");
-		 Thread.sleep(3000);
-		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
+		// -------- Locate fields --------
+		WebElement nameInput = wait.until(
+				ExpectedConditions.elementToBeClickable(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")));
+		WebElement mobileInput = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//input[@type='number'])[3]")));
+		WebElement emailInput = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//input[@type='email'])[2]")));
+		WebElement submitBtn = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@type='submit'])[3]")));
+
+		// -------- Fill form with slow typing --------
+		slowType(nameInput, "Dipesh");
+		slowType(mobileInput, "9876543210");
+		slowType(emailInput, "dipesh@yopmail.com");
+
+		// -------- Submit form --------
+		submitBtn.click();
+
+		// -------- Try-catch for success/fail (EDP style) --------
 		try {
+
 			wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-			writeExcel(17, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-			System.out.println("✅ Stroke Rehab Form PASS");
+			writeExcel(17, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+			System.out.println("✅ Stroke Rehabilitation Form PASS");
 
 		} catch (Exception e) {
 
-			StringBuilder errorMsg = new StringBuilder();
+			String nameVal = nameInput.getAttribute("value");
+			String mobileVal = mobileInput.getAttribute("value");
+			String emailVal = emailInput.getAttribute("value");
 
+			StringBuilder errorMsg = new StringBuilder();
 			try {
 				WebElement err = driver.findElement(By.xpath(
 						"(//input[@placeholder='Enter Your Name'])[3]/following-sibling::div[contains(@class,'errmsg')]"));
@@ -61,7 +64,6 @@ public class HomeCare_StrokeRehabilitation extends BaseClass {
 					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
 			} catch (Exception ignored) {
 			}
-
 			try {
 				WebElement err = driver.findElement(
 						By.xpath("(//input[@type='number'])[3]/following-sibling::div[contains(@class,'errmsg')]"));
@@ -69,7 +71,6 @@ public class HomeCare_StrokeRehabilitation extends BaseClass {
 					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
 			} catch (Exception ignored) {
 			}
-
 			try {
 				WebElement err = driver.findElement(
 						By.xpath("(//input[@type='email'])[2]/following-sibling::div[contains(@class,'errmsg')]"));
@@ -78,18 +79,14 @@ public class HomeCare_StrokeRehabilitation extends BaseClass {
 			} catch (Exception ignored) {
 			}
 
-			String finalResult = "Name="
-					+ driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).getAttribute("value")
-					+ " | Mobile=" + driver.findElement(By.xpath("(//input[@type='number'])[3]")).getAttribute("value")
-					+ " | Email=" + driver.findElement(By.xpath("(//input[@type='email'])[2]")).getAttribute("value")
-					+ " | Errors => " + errorMsg;
+			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Errors => "
+					+ errorMsg;
 
-			writeExcel(17, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
+			writeExcel(17, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
 			writeExcel(17, 5, finalResult);
-			  Thread.sleep(3000);
-			Assert.fail("Stroke Rehabilitation validation failed: " + finalResult);
-			  Thread.sleep(3000);
+
+			System.out.println(finalResult);
+			Assert.fail("Stroke Rehabilitation form validation failed: " + finalResult);
 		}
 	}
-
 }

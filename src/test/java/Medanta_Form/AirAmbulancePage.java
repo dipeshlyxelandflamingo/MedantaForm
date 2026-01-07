@@ -3,6 +3,7 @@ package Medanta_Form;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -12,89 +13,103 @@ import org.testng.annotations.Test;
 import Base.BaseClass;
 
 public class AirAmbulancePage extends BaseClass {
-	
-	
 
-	  // ================= Excel Helper =================
-  public void writeExcel(int row, int col, String value) {
-      try {
-          if (sheet.getRow(row) == null)
-              sheet.createRow(row);
-          sheet.getRow(row).createCell(col).setCellValue(value);
-      } catch (Exception e) {
-          System.out.println("Excel write error: " + e.getMessage());
-      }
-  }
-  
-  @Test(priority = 1)
-  public void AirAmbulance_RequestACallbackForm() throws Throwable {
+	@Test(priority = 1)
+	public void AirAmbulance_RequestACallbackForm() {
 
-      driver.navigate().to("https://www.medanta.org/air-ambulance");
-      driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-      Thread.sleep(3000);
-      driver.findElement(By.name("name")).sendKeys("Dipesh");
-      Thread.sleep(1000);
-      driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-      Thread.sleep(1000);
-      driver.findElement(By.name("email")).sendKeys("dipesh@yopmail.com");
-      Thread.sleep(1000);
-      driver.findElement(By.xpath("//textarea[@class='inputbox']")).sendKeys("Test");
-      Thread.sleep(3000);
-      driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
+		driver.navigate().to("https://www.medanta.org/air-ambulance");
 
-      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		JavascriptExecutor js = (JavascriptExecutor) driver;
 
-      try {
-          wait.until(ExpectedConditions.visibilityOfElementLocated(
-                  By.xpath("//div[contains(text(),'Thank you')]")));
+		// ---------- Wait & locate fields (clickable) ----------
+		WebElement name = wait.until(
+				ExpectedConditions.elementToBeClickable(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")));
 
-          writeExcel(2, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-          System.out.println("✅ FORM SUBMITTED SUCCSESSFULLY!");
+		WebElement mobile = wait.until(ExpectedConditions
+				.elementToBeClickable(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]")));
 
-      } catch (Exception e) {
+		WebElement email = wait.until(ExpectedConditions.elementToBeClickable(By.name("email")));
 
-          String nameVal = driver.findElement(By.name("name")).getAttribute("value");
-          String mobileVal = driver.findElement(By.name("mobile")).getAttribute("value");
-          String emailVal = driver.findElement(By.name("email")).getAttribute("value");
+		WebElement message = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//textarea[@class='inputbox']")));
 
-          StringBuilder errorMsg = new StringBuilder();
+		// ---------- Scroll to form ----------
+		js.executeScript("arguments[0].scrollIntoView({block:'center'});", name);
 
-          try {
-              WebElement err = driver.findElement(
-                      By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"
-));
-              if (err.isDisplayed())
-                  errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-          } catch (Exception ignored) {}
+		// ---------- Fill form (SLOW TYPE) ----------
+		slowType(name, "Dipesh");
+		slowType(mobile, "9876543210");
+		slowType(email, "dipesh@yopmail.com");
+		slowType(message, "Test");
 
-          try {
-              WebElement err = driver.findElement(
-                      By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-              if (err.isDisplayed())
-                  errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-          } catch (Exception ignored) {}
+		// ---------- Safety check (NO early submit) ----------
+		Assert.assertFalse(name.getAttribute("value").isEmpty(), "Name empty");
+		Assert.assertFalse(mobile.getAttribute("value").isEmpty(), "Mobile empty");
+		Assert.assertFalse(email.getAttribute("value").isEmpty(), "Email empty");
+		Assert.assertFalse(message.getAttribute("value").isEmpty(), "Message empty");
 
-          try {
-              WebElement err = driver.findElement(
-                      By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
-              if (err.isDisplayed())
-                  errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-          } catch (Exception ignored) {}
+		// ---------- Submit ONLY after all fields ----------
+		WebElement submitBtn = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@class='theme-button'])[2]")));
 
-          String finalResult =
-                  "Name=" + nameVal +
-                  " | Mobile=" + mobileVal +
-                  " | Email=" + emailVal +
-                  " | Errors => " + errorMsg;
+		try {
+			Thread.sleep(800);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // UI settle
+		submitBtn.click();
 
-          writeExcel(2, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-          writeExcel(2, 5, finalResult);
-          Thread.sleep(3000);
-          Assert.fail("Air Ambulance validation failed: " + finalResult);
-          Thread.sleep(3000);
-      }
-  }
-  
-  
+		try {
+			// ---------- PASS ----------
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'Thank you')]")));
+
+			writeExcel(2, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+			System.out.println("✅ Air Ambulance – PASS");
+
+		} catch (Exception e) {
+
+			// ---------- FAIL ----------
+			String nameVal = name.getAttribute("value");
+			String mobileVal = mobile.getAttribute("value");
+			String emailVal = email.getAttribute("value");
+
+			StringBuilder errorMsg = new StringBuilder();
+
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//input[@name='name']/ancestor::div[contains(@class,'field')]//span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//input[@name='mobile']/ancestor::div[contains(@class,'field')]//span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+
+			try {
+				WebElement err = driver
+						.findElement(By.xpath("//input[@name='email']/following::div[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+
+			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Errors => "
+					+ errorMsg;
+
+			writeExcel(2, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+			writeExcel(2, 5, finalResult);
+
+			System.out.println(finalResult);
+			Assert.fail("Air Ambulance validation failed");
+		}
+	}
 
 }

@@ -15,118 +15,108 @@ import Base.BaseClass;
 
 public class RequestAnEstimate extends BaseClass {
 
-	// ================= Excel Helper =================
-	public void writeExcel(int row, int col, String value) {
-		try {
-			if (sheet.getRow(row) == null)
-				sheet.createRow(row);
-			sheet.getRow(row).createCell(col).setCellValue(value);
-		} catch (Exception e) {
-			System.out.println("Excel write error: " + e.getMessage());
-		}
-	}
+	
 
 	@Test(priority = 1)
-	public void RequestAnEstimatePage_PriceEstimateForm() throws InterruptedException {
+	public void RequestAnEstimatePage_PriceEstimateForm() {
 
-		driver.navigate().to("https://www.medanta.org/international-patient/services/request-an-estimate");
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		 driver.navigate().to("https://www.medanta.org/international-patient/services/request-an-estimate");
 
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollBy(0,210)", "");
+		    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-		 Thread.sleep(3000);
-		driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")).sendKeys("Dipesh");
-		Thread.sleep(1000);
-		driver.findElement(By.xpath("//input[@placeholder='Enter Your Last Name']")).sendKeys("Singh");
-		Thread.sleep(1000);
-		driver.findElement(By.xpath("//input[@placeholder='Enter Your E-mail']")).sendKeys("dipesh@yopmail.com");
-		Thread.sleep(1000);
-		driver.findElement(By.xpath("//input[@placeholder='Enter Your Mobile No.']")).sendKeys("9876543210"); 
-		Thread.sleep(1000);
+		    // Scroll slightly
+		    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,210)", "");
 
-		Select country = new Select(driver.findElement(By.xpath("//select[@class='inputbox']")));
-		country.selectByIndex(8);
-		Thread.sleep(1000);
-		Select department = new Select(driver.findElement(By.xpath("(//select[@class='inputbox'])[2]")));
-		department.selectByValue("Obstetrics");
-		Thread.sleep(1000);
-		driver.findElement(By.xpath("(//input[@type='file'])[2]")).sendKeys("C:\\Users\\LYXELANDFLAMINGO\\upload.docx");
-		 Thread.sleep(3000);
-		driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
+		    // ===== Locate fields =====
+		    WebElement fnameInput = wait.until(ExpectedConditions
+		            .visibilityOfElementLocated(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")));
+		    WebElement lnameInput = driver.findElement(By.xpath("//input[@placeholder='Enter Your Last Name']"));
+		    WebElement emailInput = driver.findElement(By.xpath("//input[@placeholder='Enter Your E-mail']"));
+		    WebElement mobileInput = driver.findElement(By.xpath("//input[@placeholder='Enter Your Mobile No.']"));
+		    WebElement countryDD = driver.findElement(By.xpath("//select[@class='inputbox']"));
+		    WebElement departmentDD = driver.findElement(By.xpath("(//select[@class='inputbox'])[2]"));
+		    WebElement fileInput = driver.findElement(By.xpath("(//input[@type='file'])[2]"));
+		    WebElement submitBtn = driver.findElement(By.xpath("(//button[@type='submit'])[3]"));
 
-		// ================= Validation =================
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		    // ===== Fill form using slowType =====
+		    slowType(fnameInput, "Dipesh");
+		    slowType(lnameInput, "Singh");
+		    slowType(emailInput, "dipesh@yopmail.com");
+		    slowType(mobileInput, "9876543210");
 
-		try {
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you')]")));
-
-			System.out.println("✅ Request An Estimate PASS");
-			writeExcel(24, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-
-		} catch (Exception e) {
-
-			// ===== Capture entered values =====
-			String fnameVal = driver.findElement(By.xpath("(//input[@placeholder='Enter Your Name'])[3]"))
-					.getAttribute("value");
-			String lnameVal = driver.findElement(By.xpath("//input[@placeholder='Enter Your Last Name']"))
-					.getAttribute("value");
-			String mobileVal = driver.findElement(By.xpath("//input[@placeholder='Enter Your Mobile No.']"))
-					.getAttribute("value");
-			String emailVal = driver.findElement(By.xpath("//input[@placeholder='Enter Your E-mail']"))
-					.getAttribute("value");
-
-			StringBuilder errorMsg = new StringBuilder();
-
-			// ===== Field wise errors =====
-			try {
-				WebElement err = driver.findElement(By.xpath(
-						"//label[contains(text(),'First Name')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("First Name Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
+		    // Select dropdowns
+		    new Select(countryDD).selectByIndex(8);
+		    new Select(departmentDD).selectByValue("Obstetrics");
+		    try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
-			try {
-				WebElement err = driver.findElement(By.xpath(
-						"//label[contains(text(),'Last Name')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("Last Name Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
+		    // Upload file
+		    String filePath = System.getProperty("user.dir") + "\\SampleDocs\\upload.docx";
+		    fileInput.sendKeys(filePath);
+		    
+		    try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		    // ===== Submit =====
+		    submitBtn.click();
 
-			
-			try {
-				WebElement err = driver.findElement(By.xpath("//label[contains(text(),'E-mail')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
-			}
-			
-			
-			
-			
-			try {
-				WebElement err = driver.findElement(By.xpath(
-						"//label[contains(text(),'Mobile')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
-				if (err.isDisplayed())
-					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-			} catch (Exception ignored) {
-			}
+		    // ====== TRY-CATCH starts from thank you message =====
+		    try {
+		        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you')]")));
 
-			
+		        writeExcel(24, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+		        System.out.println("✅ Request An Estimate PASS");
 
-			// ===== Final result =====
-			String finalResult = "FirstName=" + fnameVal + " | LastName=" + lnameVal + " | Mobile=" + mobileVal
-					+ " | Email=" + emailVal + " | Errors => " + errorMsg;
+		    } catch (Exception e) {
 
-			System.out.println("❌ Request An Estimate FAIL");
+		        System.out.println("❌ Request An Estimate FAIL");
 
-			writeExcel(24, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-			writeExcel(24, 5, finalResult);
-			  Thread.sleep(3000);
-			Assert.fail("Request An Estimate validation failed: " + finalResult);
-			  Thread.sleep(3000);
+		        // ===== Capture entered values directly =====
+		        String fnameVal = fnameInput.getAttribute("value");
+		        String lnameVal = lnameInput.getAttribute("value");
+		        String emailVal = emailInput.getAttribute("value");
+		        String mobileVal = mobileInput.getAttribute("value");
+
+		        // ===== Capture field errors using try-catch =====
+		        StringBuilder errorMsg = new StringBuilder();
+
+		        try {
+		            WebElement err = driver.findElement(By.xpath(
+		                    "//label[contains(text(),'First Name')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("First Name Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
+
+		        try {
+		            WebElement err = driver.findElement(By.xpath(
+		                    "//label[contains(text(),'Last Name')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("Last Name Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
+
+		        try {
+		            WebElement err = driver.findElement(By.xpath(
+		                    "//label[contains(text(),'E-mail')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
+
+		        try {
+		            WebElement err = driver.findElement(By.xpath(
+		                    "//label[contains(text(),'Mobile')]/following-sibling::input/../span[contains(@class,'errmsg')]"));
+		            if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+		        } catch (Exception ignored) {}
+
+		        String finalResult = "FirstName=" + fnameVal + " | LastName=" + lnameVal + " | Mobile=" + mobileVal
+		                + " | Email=" + emailVal + " | Errors => " + errorMsg;
+
+		        writeExcel(24, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+		        writeExcel(24, 5, finalResult);
+		        System.out.println(finalResult);
+		        Assert.fail("Request An Estimate validation failed: " + finalResult);
+		    }
 		}
-	}
 }

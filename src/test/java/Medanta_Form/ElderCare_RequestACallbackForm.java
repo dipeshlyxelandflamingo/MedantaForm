@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -16,86 +15,83 @@ import Base.BaseClass;
 public class ElderCare_RequestACallbackForm extends BaseClass {
 
 	
-	// Excel helper
-    public void writeExcel(int rowNum, int cellNum, String value) {
-        try {
-            if (sheet.getRow(rowNum) == null)
-                sheet.createRow(rowNum);
-            sheet.getRow(rowNum).createCell(cellNum).setCellValue(value);
-        } catch (Exception e) {
-            System.out.println("Excel write error: " + e.getMessage());
-        }
-    }
 
-    // ===================== Request a Callback =====================
     @Test(priority = 1)
-    public void ElderCareProgramPage_RequestACallbackForm() throws Exception {
+    public void ElderCareProgramPage_RequestACallbackForm() {
 
         driver.navigate().to("https://www.medanta.org/elder-care-program");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        Thread.sleep(3000);
-        driver.findElement(By.name("name")).sendKeys("Dipesh");
-        Thread.sleep(1000);
-        driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-        Thread.sleep(1000);
-        driver.findElement(By.name("email")).sendKeys("dipesh@yopmail.com");
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//textarea[@class='inputbox']")).sendKeys("Test");
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
+       
+
+        // -------- Locate fields --------
+        WebElement name = wait.until(ExpectedConditions.elementToBeClickable(By.name("name")));
+        WebElement mobile = wait.until(ExpectedConditions.elementToBeClickable(By.name("mobile")));
+        WebElement email = wait.until(ExpectedConditions.elementToBeClickable(By.name("email")));
+        WebElement message = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//textarea[@class='inputbox']")));
+        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@type='submit'])[3]")));
+
+        // -------- Scroll first field into view --------
+        scrollToElement(name);
+
+        // -------- Fill form --------
+        slowType(name, "Dipesh");
+        slowType(mobile, "9876543210");
+        slowType(email, "dipesh@yopmail.com");
+        slowType(message, "Test");
+
+        // -------- Submit --------
+        try { Thread.sleep(800); } catch (Exception ignored) {}
+        submitBtn.click();
+
+        // -------- Try-catch for success/fail --------
         try {
-            WebElement successMsg = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
+            // -------- PASS --------
+            wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-            writeExcel(11, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-            System.out.println("✅ ElderCare_RequestACallbackForm Request Callback PASS");
+            writeExcel(11, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+            System.out.println("✅ ElderCare_RequestACallbackForm – PASS");
 
         } catch (Exception e) {
-
-            System.out.println("❌ ElderCare_RequestACallbackForm Request Callback FAIL");
-
-            String nameVal = driver.findElement(By.name("name")).getAttribute("value");
-            String mobileVal = driver.findElement(By.name("mobile")).getAttribute("value");
-            String emailVal = driver.findElement(By.name("email")).getAttribute("value");
-            String msgVal = driver.findElement(By.xpath("//textarea[@class='inputbox']")).getAttribute("value");
+            // -------- FAIL --------
+            String nameVal = name.getAttribute("value");
+            String mobileVal = mobile.getAttribute("value");
+            String emailVal = email.getAttribute("value");
+            String messageVal = message.getAttribute("value");
 
             StringBuilder errorMsg = new StringBuilder();
-            
-            
+
             try {
-                WebElement nameErr = driver.findElement(
-                        By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (nameErr.isDisplayed())
-                    errorMsg.append("Name Error: ").append(nameErr.getText()).append(" | ");
+                WebElement err = driver.findElement(By.xpath("//input[@name='name']/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
             } catch (Exception ignored) {}
 
             try {
-                WebElement mobileErr = driver.findElement(
-                        By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (mobileErr.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(mobileErr.getText()).append(" | ");
+                WebElement err = driver.findElement(By.xpath("//input[@name='mobile']/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
             } catch (Exception ignored) {}
 
-            String finalResult =
-                    "Name=" + nameVal +
-                    " | Mobile=" + mobileVal +
-                    " | Email=" + emailVal +
-                    " | Message=" + msgVal +
-                    " | Errors => " + errorMsg;
+            try {
+                WebElement err = driver.findElement(By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
 
-            writeExcel(11, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-            Thread.sleep(3000);
+            try {
+                WebElement err = driver.findElement(By.xpath("//textarea[@class='inputbox']/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
+
+            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal
+                    + " | Message=" + messageVal
+                    + " | Errors => " + errorMsg;
+
+            writeExcel(11, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
             writeExcel(11, 5, finalResult);
-            Thread.sleep(3000);
-            Assert.fail("ElderCare_RequestACallbackForm Request Callback validation failed: " + finalResult);
-            Thread.sleep(3000);
+
+            System.out.println(finalResult);
+            Assert.fail("ElderCare_RequestACallbackForm validation failed: " + finalResult);
         }
     }
-
-   
-  
 }

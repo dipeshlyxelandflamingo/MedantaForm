@@ -3,6 +3,7 @@ package Medanta_Form;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -13,92 +14,91 @@ import Base.BaseClass;
 
 public class landingHealth extends BaseClass {
 
-	 // Excel helper method
-    public void writeExcel(int rowNum, int cellNum, String value) {
-        try {
-            if (sheet.getRow(rowNum) == null)
-                sheet.createRow(rowNum);
-            sheet.getRow(rowNum).createCell(cellNum).setCellValue(value);
-        } catch (Exception e) {
-            System.out.println("Excel write error: " + e.getMessage());
-        }
-    }
+	
 
-    @Test(priority = 1)
-    public void LandingHealth_Page_QueryForm() throws Exception {
+	@Test(priority = 1)
+	public void LandingHealth_Page_QueryForm() {
 
-        driver.navigate().to("https://www.medanta.org/ehc/hishealth-checkup/L1gz");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		driver.navigate().to("https://www.medanta.org/ehc/hishealth-checkup/L1gz");
 
-        Thread.sleep(3000);
-        driver.findElement(By.name("name")).sendKeys("Test");
-        Thread.sleep(1000);
-        driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-        Thread.sleep(1000);
-        driver.findElement(By.name("email")).sendKeys("wakemedantatest@gmail.com");
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']"))
-                .sendKeys("Testing the form Please ignore");
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//button[@type='submit'])[2]")).click();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		// -------- Locate fields --------
+		WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(By.name("name")));
+		WebElement mobileInput = driver.findElement(By.name("mobile"));
+		WebElement emailInput = driver.findElement(By.name("email"));
+		WebElement msgInput = driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']"));
+		WebElement submitBtn = driver.findElement(By.xpath("(//button[@type='submit'])[2]"));
 
-        try {
-            // Success message
-            WebElement successMsg = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//div[contains(text(),'Your query has been Successfully Submitted')]")));
+		// -------- Fill form with slow typing --------
+		slowType(nameInput, "Test");
+		slowType(mobileInput, "9876543210");
+		slowType(emailInput, "wakemedantatest@gmail.com");
+		slowType(msgInput, "Testing the form Please ignore");
 
-            System.out.println("✅ Landing Health Query Form PASS");
-            writeExcel(19, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
+		// -------- Submit form --------
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		submitBtn.click();
 
-        } catch (Exception e) {
+		// -------- Try-catch for success/fail (EDP style) --------
+		try {
 
-            System.out.println("❌ Landing Health Query Form FAIL");
+			wait.until(ExpectedConditions.visibilityOfElementLocated(
+					By.xpath("//div[contains(text(),'Your query has been Successfully Submitted')]")));
 
-            // Capture entered values
-            String nameVal = driver.findElement(By.name("name")).getAttribute("value");
-            String mobileVal = driver.findElement(By.name("mobile")).getAttribute("value");
-            String emailVal = driver.findElement(By.name("email")).getAttribute("value");
-            String msgVal = driver.findElement(By.xpath("//textarea[@placeholder='Enter Your Message']")).getAttribute("value");
+			writeExcel(19, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+			System.out.println("✅ Landing Health Query Form PASS");
 
-            // Capture validation errors if any
-            StringBuilder errorMsg = new StringBuilder();
-            
-            
-            try {
-                WebElement nameErr = driver.findElement(
-                        By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (nameErr.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(nameErr.getText()).append(" | ");
-            } catch (Exception ignored) {}
+		} catch (Exception e) {
 
-            try {
-                WebElement mobileErr = driver.findElement(
-                        By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (mobileErr.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(mobileErr.getText()).append(" | ");
-            } catch (Exception ignored) {}
+			String nameVal = nameInput.getAttribute("value");
+			String mobileVal = mobileInput.getAttribute("value");
+			String emailVal = emailInput.getAttribute("value");
+			String msgVal = msgInput.getAttribute("value");
 
-            try {
-                WebElement emailErr = driver.findElement(
-                        By.xpath("//input[@name='email']/following-sibling::span[contains(@class,'errmsg')]"));
-                if (emailErr.isDisplayed())
-                    errorMsg.append("Email Error: ").append(emailErr.getText()).append(" | ");
-            } catch (Exception ignored) {}
+			StringBuilder errorMsg = new StringBuilder();
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(
+						By.xpath("//input[@name='email']/following-sibling::span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//textarea[@placeholder='Enter Your Message']/following-sibling::span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
 
-            String finalResult =
-                    "   Name=" + nameVal +
-                    " | Mobile=" + mobileVal +
-                    " | Email=" + emailVal +
-                    " | Errors => " + errorMsg;
+			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message="
+					+ msgVal + " | Errors => " + errorMsg;
 
-            writeExcel(19, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-            writeExcel(19, 5, finalResult);
-            Thread.sleep(3000);
-            Assert.fail("Landing Health Query form failed: " + finalResult);
-            Thread.sleep(3000);
-        }
-    }
+			writeExcel(19, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+			writeExcel(19, 5, finalResult);
+
+			System.out.println(finalResult);
+			Assert.fail("Landing Health Query form failed: " + finalResult);
+		}
+	}
 }

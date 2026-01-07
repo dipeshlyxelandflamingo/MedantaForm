@@ -13,86 +13,78 @@ import Base.BaseClass;
 
 public class Telemedicine extends BaseClass {
 
-	  // ================= Excel Helper =================
-    public void writeExcel(int row, int col, String value) {
-        try {
-            if (sheet.getRow(row) == null)
-                sheet.createRow(row);
-            sheet.getRow(row).createCell(col).setCellValue(value);
-        } catch (Exception e) {
-            System.out.println("Excel write error: " + e.getMessage());
-        }
-    }
+	
 
-    // ================= TC_01 Telemedicine =================
     @Test(priority = 1)
-    public void Telemedicine_RequestACallbackForm() throws Exception {
+    public void Telemedicine_RequestACallbackForm() {
 
         driver.navigate().to("https://www.medanta.org/tele-medicine");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        Thread.sleep(3000);
-        driver.findElement(By.name("name")).sendKeys("Dipesh");
-        Thread.sleep(1000);
-        driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-        Thread.sleep(1000);
-        driver.findElement(By.name("email")).sendKeys("dipesh@yopmail.com");
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//textarea[@class='inputbox']")).sendKeys("Test");
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        // ===== Locate fields =====
+        WebElement nameField = wait.until(ExpectedConditions.elementToBeClickable(By.name("name")));
+        WebElement mobileField = driver.findElement(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]"));
+        WebElement emailField = driver.findElement(By.name("email"));
+        WebElement messageField = driver.findElement(By.xpath("//textarea[@class='inputbox']"));
+        WebElement submitBtn = driver.findElement(By.xpath("(//button[@type='submit'])[3]"));
 
+        // ===== Fill form using slowType =====
+        slowType(nameField, "Dipesh");
+        slowType(mobileField, "9876543210");
+        slowType(emailField, "dipesh@yopmail.com");
+        slowType(messageField, "Test");
+
+        // Submit
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//div[contains(text(),'Thank you')]")));
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        submitBtn.click();
 
-            writeExcel(27, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
-            System.out.println("✅ Telemedicine PASS");
+        // ===== Try-catch from Thank You message =====
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you')]")));
+            writeExcel(27, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+            System.out.println("✅ Telemedicine – Request A Callback PASS");
 
         } catch (Exception e) {
+            System.out.println("❌ Telemedicine – Request A Callback FAIL");
 
-            String nameVal = driver.findElement(By.name("name")).getAttribute("value");
-            String mobileVal = driver.findElement(By.name("mobile")).getAttribute("value");
-            String emailVal = driver.findElement(By.name("email")).getAttribute("value");
+            // ===== Capture field values =====
+            String nameVal = nameField.getAttribute("value");
+            String mobileVal = mobileField.getAttribute("value");
+            String emailVal = emailField.getAttribute("value");
+            String msgVal = messageField.getAttribute("value");
 
+            // ===== Capture errors =====
             StringBuilder errorMsg = new StringBuilder();
-
             try {
-                WebElement err = driver.findElement(By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"
-));
-                if (err.isDisplayed())
-                    errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+                WebElement err = driver.findElement(By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
             } catch (Exception ignored) {}
 
             try {
-                WebElement err = driver.findElement(By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"
-));
-                if (err.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+                WebElement err = driver.findElement(By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
             } catch (Exception ignored) {}
 
             try {
                 WebElement err = driver.findElement(By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+                if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
             } catch (Exception ignored) {}
 
-            String finalResult =
-                    "Name=" + nameVal +
-                    " | Mobile=" + mobileVal +
-                    " | Email=" + emailVal +
-                    " | Errors => " + errorMsg;
+            try {
+                WebElement err = driver.findElement(By.xpath("//textarea[@class='inputbox']/following-sibling::div[contains(@class,'errmsg')]"));
+                if (err.isDisplayed()) errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
+            } catch (Exception ignored) {}
 
-            writeExcel(27, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
+            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message=" + msgVal + " | Errors => " + errorMsg;
+
+            writeExcel(27, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
             writeExcel(27, 5, finalResult);
-            Thread.sleep(3000);
             Assert.fail("Telemedicine validation failed: " + finalResult);
-            Thread.sleep(3000);
         }
     }
-
-    
-   
-    
 }

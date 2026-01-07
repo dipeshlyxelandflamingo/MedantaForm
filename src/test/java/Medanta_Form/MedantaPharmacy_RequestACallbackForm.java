@@ -14,101 +14,92 @@ import Base.BaseClass;
 
 public class MedantaPharmacy_RequestACallbackForm extends BaseClass {
 
+	
 
-	// Common Excel writer
-    public void writeExcel(int row, int col, String value) {
-        try {
-            if (sheet.getRow(row) == null)
-                sheet.createRow(row);
-            sheet.getRow(row).createCell(col).setCellValue(value);
-        } catch (Exception e) {
-            System.out.println("Excel write error: " + e.getMessage());
-        }
-    }
+	@Test(priority = 1)
+	public void MedantaPharmacyPage_RequestACallbackForm() {
 
-    // ================== TC_01 : Request A Callback ==================
-    @Test(priority = 1)
-    public void MedantaPharmacyPage_RequestACallbackForm() throws Exception {
+		driver.navigate().to("https://www.medanta.org/medanta-pharmacy");
 
-        driver.navigate().to("https://www.medanta.org/medanta-pharmacy");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+		JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        Thread.sleep(3000);
-        driver.findElement(By.name("name")).sendKeys("Dipesh");
-        Thread.sleep(1000);
-        driver.findElement(By.name("mobile")).sendKeys("9876543210"); 
-        Thread.sleep(1000);
-        driver.findElement(By.name("email")).sendKeys("dipesh@yopmail.com");
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//textarea[@class='inputbox']")).sendKeys("Test");
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("(//button[@type='submit'])[3]")).click();
+		// -------- Locate fields --------
+		WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(By.name("name")));
+		WebElement mobileInput = driver.findElement(By.name("mobile"));
+		WebElement emailInput = driver.findElement(By.name("email"));
+		WebElement messageInput = driver.findElement(By.xpath("//textarea[@class='inputbox']"));
+		WebElement submitBtn = driver.findElement(By.xpath("(//button[@type='submit'])[3]"));
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		// -------- Fill form --------
+		// -------- Fill form with slow typing --------
+		slowType(nameInput, "Dipesh");
+		slowType(mobileInput, "9876543210");
+		slowType(emailInput, "dipesh@yopmail.com");
+		slowType(messageInput, "Test");
 
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
+		// Scroll into view and submit
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		submitBtn.click();
 
-            System.out.println("✅ Medanta Pharmacy – Request Callback PASS");
-            writeExcel(21, 4, "✅ FORM SUBMITTED SUCCSESSFULLY!");
+		// -------- Try-catch for success/fail (EDP style) --------
+		try {
+			wait.until(ExpectedConditions
+					.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
-        } catch (Exception e) {
+			writeExcel(21, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
+			System.out.println("✅ Medanta Pharmacy – Request Callback PASS");
 
-            System.out.println("❌ Medanta Pharmacy – Request Callback FAIL");
+		} catch (Exception e) {
 
-            // Capture entered values
-            String nameVal = driver.findElement(By.name("name")).getAttribute("value");
-            String mobileVal = driver.findElement(By.name("mobile")).getAttribute("value");
-            String emailVal = driver.findElement(By.name("email")).getAttribute("value");
-            String msgVal = driver.findElement(By.xpath("//textarea[@class='inputbox']")).getAttribute("value");
+			String nameVal = nameInput.getAttribute("value");
+			String mobileVal = mobileInput.getAttribute("value");
+			String emailVal = emailInput.getAttribute("value");
+			String messageVal = messageInput.getAttribute("value");
 
-            // Capture validation errors
-            StringBuilder errorMsg = new StringBuilder();
+			StringBuilder errorMsg = new StringBuilder();
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(By.xpath(
+						"//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(
+						By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
+			try {
+				WebElement err = driver.findElement(
+						By.xpath("//textarea[@class='inputbox']/following-sibling::div[contains(@class,'errmsg')]"));
+				if (err.isDisplayed())
+					errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
+			} catch (Exception ignored) {
+			}
 
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message="
+					+ messageVal + " | Errors => " + errorMsg;
 
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+			writeExcel(21, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
+			writeExcel(21, 5, finalResult);
 
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//input[@name='email']/following-sibling::div[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
-
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//textarea[@class='inputbox']/following-sibling::div[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
-
-            String finalResult =
-                    "Name=" + nameVal +
-                    " | Mobile=" + mobileVal +
-                    " | Email=" + emailVal +
-                    " | Message=" + msgVal +
-                    " | Errors => " + errorMsg;
-
-            writeExcel(21, 4, "❌ FORM NOT SUBMITTED SUCCSESSFULLY! FAIL");
-            writeExcel(21, 5, finalResult);
-            Thread.sleep(3000);
-            Assert.fail("Request Callback validation failed: " + finalResult);
-            Thread.sleep(3000);
-        }
-    }
-
-  
-    
+			System.out.println(finalResult);
+			Assert.fail("Medanta Pharmacy validation failed: " + finalResult);
+		}
+	}
 }
