@@ -16,7 +16,7 @@ import Base.BaseClass;
 public class HomeCare_ElderCare extends BaseClass {
 
 	@Test(priority = 1)
-	public void HomeCare_ElderCareProgram_QueryForm() {
+	public void HomeCare_ElderCareProgram_QueryForm() throws Throwable {
 
 		driver.navigate().to("https://www.medanta.org/home-care-service-program/elder-care-program");
 
@@ -25,6 +25,7 @@ public class HomeCare_ElderCare extends BaseClass {
 		// -------- Locate fields --------
 		WebElement name = wait.until(
 				ExpectedConditions.elementToBeClickable(By.xpath("(//input[@placeholder='Enter Your Name'])[3]")));
+		Thread.sleep(1000);
 		WebElement mobile = wait
 				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//input[@type='number'])[3]")));
 		WebElement email = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//input[@type='email'])[2]")));
