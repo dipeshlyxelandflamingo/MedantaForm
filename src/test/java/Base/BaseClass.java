@@ -28,14 +28,15 @@ public class BaseClass {
 	public XSSFSheet sheet;
 	public DataFormatter formatter;
 
+	// ✅ EXCEL PATH (SINGLE SOURCE OF TRUTH)
+	private final String EXCEL_PATH = System.getProperty("user.dir") + "/src/test/resources/forms automation.xlsx";
+
 	// ================= EXECUTION DATE (ONCE PER SUITE) =================
 	@BeforeSuite
 	public void writeExecutionDateOnce() {
 
 		try {
-			String path = System.getProperty("user.dir") + "/forms automation.xlsx";
-
-			FileInputStream fis = new FileInputStream(path);
+			FileInputStream fis = new FileInputStream(EXCEL_PATH);
 			XSSFWorkbook wb = new XSSFWorkbook(fis);
 			XSSFSheet sh = wb.getSheet("Sheet1");
 
@@ -43,7 +44,7 @@ public class BaseClass {
 			String runDate = sdf.format(new Date());
 
 			int rowIndex = 32; // Excel Row 33
-			int colIndex = 1;  // Column B
+			int colIndex = 1; // Column B
 
 			if (sh.getRow(rowIndex) == null)
 				sh.createRow(rowIndex);
@@ -52,7 +53,7 @@ public class BaseClass {
 
 			fis.close();
 
-			try (FileOutputStream fos = new FileOutputStream(path)) {
+			try (FileOutputStream fos = new FileOutputStream(EXCEL_PATH)) {
 				wb.write(fos);
 			}
 			wb.close();
@@ -96,8 +97,7 @@ public class BaseClass {
 
 		// ================= EXCEL SETUP =================
 		try {
-			String path = System.getProperty("user.dir") + "/forms automation.xlsx";
-			file = new FileInputStream(path);
+			file = new FileInputStream(EXCEL_PATH);
 			workbook = new XSSFWorkbook(file);
 			sheet = workbook.getSheet("Sheet1");
 			formatter = new DataFormatter();
@@ -134,8 +134,7 @@ public class BaseClass {
 
 			sheet.getRow(row).createCell(col).setCellValue(value);
 
-			String path = System.getProperty("user.dir") + "/forms automation.xlsx";
-			try (FileOutputStream out = new FileOutputStream(path)) {
+			try (FileOutputStream out = new FileOutputStream(EXCEL_PATH)) {
 				workbook.write(out);
 			}
 		} catch (Exception e) {
