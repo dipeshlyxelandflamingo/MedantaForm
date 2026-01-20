@@ -22,143 +22,150 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseClass {
 
-	public WebDriver driver;
-	public FileInputStream file;
-	public XSSFWorkbook workbook;
-	public XSSFSheet sheet;
-	public DataFormatter formatter;
+	protected WebDriver driver;
 
-	// ✅ EXCEL PATH (SINGLE SOURCE OF TRUTH)
-	private final String EXCEL_PATH = System.getProperty("user.dir") + "/src/test/resources/forms automation.xlsx";
+    protected FileInputStream file;
+    protected XSSFWorkbook workbook;
+    protected XSSFSheet sheet;
+    protected DataFormatter formatter;
 
-	// ================= EXECUTION DATE (ONCE PER SUITE) =================
-	@BeforeSuite
-	public void writeExecutionDateOnce() {
+    // ✅ Single source for Excel location
+    protected static final String EXCEL_PATH =
+            System.getProperty("user.dir") + "/src/test/resources/formsautomation.xlsx";
 
-		try {
-			FileInputStream fis = new FileInputStream(EXCEL_PATH);
-			XSSFWorkbook wb = new XSSFWorkbook(fis);
-			XSSFSheet sh = wb.getSheet("Sheet1");
+    /* ================= BEFORE SUITE ================= */
+    @BeforeSuite
+    public void writeExecutionDateOnce() {
 
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-			String runDate = sdf.format(new Date());
+        try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
+             XSSFWorkbook wb = new XSSFWorkbook(fis)) {
 
-			int rowIndex = 32; // Excel Row 33
-			int colIndex = 1; // Column B
+            XSSFSheet sh = wb.getSheet("Sheet1");
 
-			if (sh.getRow(rowIndex) == null)
-				sh.createRow(rowIndex);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            String runDate = sdf.format(new Date());
 
-			sh.getRow(rowIndex).createCell(colIndex).setCellValue(runDate);
+            int rowIndex = 32; // Row 33
+            int colIndex = 1;  // Column B
 
-			fis.close();
+            if (sh.getRow(rowIndex) == null)
+                sh.createRow(rowIndex);
 
-			try (FileOutputStream fos = new FileOutputStream(EXCEL_PATH)) {
-				wb.write(fos);
-			}
-			wb.close();
+            sh.getRow(rowIndex).createCell(colIndex).setCellValue(runDate);
 
-			System.out.println("📅 Execution date written once in Excel");
+            try (FileOutputStream fos = new FileOutputStream(EXCEL_PATH)) {
+                wb.write(fos);
+            }
 
-		} catch (Exception e) {
-			System.err.println("❌ Execution date write failed: " + e.getMessage());
-		}
-	}
+            System.out.println("📅 Execution date written in Excel");
 
-	// ================= BEFORE CLASS =================
-	@BeforeClass
-	public void OpenBrowser() {
+        } catch (Exception e) {
+            System.err.println("❌ Execution date write failed: " + e.getMessage());
+        }
+    }
 
-		WebDriverManager.chromedriver().setup();
+    /* ================= BEFORE CLASS ================= */
+    @BeforeClass
+    public void openBrowser() {
 
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--disable-blink-features=AutomationControlled");
-		options.addArguments("--remote-allow-origins=*");
-		options.addArguments("--disable-notifications");
-		options.addArguments("--disable-infobars");
-		options.addArguments("--disable-extensions");
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver(getChromeOptions());
 
-		// ===== OS based execution =====
-		if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-			System.out.println("🔹 Jenkins / Linux detected → Headless ON");
-			options.addArguments("--headless=new");
-			options.addArguments("--no-sandbox");
-			options.addArguments("--disable-dev-shm-usage");
-			options.addArguments("--disable-gpu");
-			options.addArguments("--window-size=1920,1080");
-		} else {
-			System.out.println("🔹 Windows detected → Headed browser");
-			options.addArguments("start-maximized");
-		}
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
-		driver = new ChromeDriver(options);
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        loadExcel();
+    }
 
-		// ================= EXCEL SETUP =================
-		try {
-			file = new FileInputStream(EXCEL_PATH);
-			workbook = new XSSFWorkbook(file);
-			sheet = workbook.getSheet("Sheet1");
-			formatter = new DataFormatter();
-			System.out.println("✅ Excel loaded successfully");
-		} catch (Exception e) {
-			throw new RuntimeException("❌ Excel file issue: " + e.getMessage());
-		}
-	}
+    /* ================= CHROME OPTIONS ================= */
+    private ChromeOptions getChromeOptions() {
 
-	// ================= SLOW TYPE HELPER =================
-	public void slowType(WebElement element, String text) {
-		element.click();
-		element.clear();
-		for (char c : text.toCharArray()) {
-			element.sendKeys(String.valueOf(c));
-			try {
-				Thread.sleep(120);
-			} catch (InterruptedException e) {
-			}
-		}
-	}
+        ChromeOptions options = new ChromeOptions();
 
-	// ================= SCROLL HELPER =================
-	public void scrollToElement(WebElement element) {
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-	}
+        options.addArguments("--disable-notifications");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--disable-blink-features=AutomationControlled");
 
-	// ================= EXCEL WRITE (STATUS / ERROR) =================
-	public synchronized void writeExcel(int row, int col, String value) {
-		try {
-			if (sheet.getRow(row) == null)
-				sheet.createRow(row);
+        if (isLinux()) {
+            System.out.println("🔹 Jenkins/Linux → Headless Chrome");
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--window-size=1920,1080");
+        } else {
+            System.out.println("🔹 Windows → Normal Chrome");
+            options.addArguments("start-maximized");
+        }
 
-			sheet.getRow(row).createCell(col).setCellValue(value);
+        return options;
+    }
 
-			try (FileOutputStream out = new FileOutputStream(EXCEL_PATH)) {
-				workbook.write(out);
-			}
-		} catch (Exception e) {
-			System.err.println("❌ Excel write failed: " + e.getMessage());
-		}
-	}
+    private boolean isLinux() {
+        return System.getProperty("os.name").toLowerCase().contains("linux");
+    }
 
-	// ================= AFTER CLASS =================
-	@AfterClass(alwaysRun = true)
-	public void TearDown() {
+    /* ================= EXCEL LOAD ================= */
+    private void loadExcel() {
+        try {
+            file = new FileInputStream(EXCEL_PATH);
+            workbook = new XSSFWorkbook(file);
+            sheet = workbook.getSheet("Sheet1");
+            formatter = new DataFormatter();
+            System.out.println("✅ Excel loaded");
+        } catch (Exception e) {
+            throw new RuntimeException("❌ Excel load failed: " + e.getMessage());
+        }
+    }
 
-		try {
-			if (file != null)
-				file.close();
-			if (workbook != null)
-				workbook.close();
-		} catch (IOException e) {
-			System.err.println("❌ Excel close issue: " + e.getMessage());
-		}
+    /* ================= EXCEL WRITE ================= */
+    public synchronized void writeExcel(int row, int col, String value) {
 
-		if (driver != null) {
-			driver.quit();
-		}
+        try {
+            if (sheet.getRow(row) == null)
+                sheet.createRow(row);
 
-		System.out.println("✅ Test finished → Browser closed & Excel saved");
-	}
+            sheet.getRow(row).createCell(col).setCellValue(value);
+
+            try (FileOutputStream out = new FileOutputStream(EXCEL_PATH)) {
+                workbook.write(out);
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ Excel write failed: " + e.getMessage());
+        }
+    }
+
+    /* ================= UTIL METHODS ================= */
+    public void slowType(WebElement element, String text) {
+        element.clear();
+        for (char c : text.toCharArray()) {
+            element.sendKeys(String.valueOf(c));
+            try {
+                Thread.sleep(120);
+            } catch (InterruptedException ignored) {}
+        }
+    }
+
+    public void scrollToElement(WebElement element) {
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+    }
+
+    /* ================= AFTER CLASS ================= */
+    @AfterClass(alwaysRun = true)
+    public void tearDown() {
+
+        try {
+            if (file != null) file.close();
+            if (workbook != null) workbook.close();
+        } catch (IOException e) {
+            System.err.println("❌ Excel close issue: " + e.getMessage());
+        }
+
+        if (driver != null) {
+            driver.quit();
+        }
+
+        System.out.println("✅ Test finished cleanly");
+    }
 }
