@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,6 +17,7 @@ public class Headerform extends BaseClass {
 
 	@Test(priority = 1)
 	public void Header_RequestACallBackForm() {
+
 		driver.navigate().to("https://www.medanta.org");
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -25,44 +27,47 @@ public class Headerform extends BaseClass {
 				ExpectedConditions.elementToBeClickable(By.xpath("//span[normalize-space()='Request Call Back']")));
 		js.executeScript("arguments[0].click();", callbackBtn);
 
-		// -------- Locate fields --------
-		WebElement name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fname")));
-		WebElement mobile = wait.until(ExpectedConditions
-				.visibilityOfElementLocated(By.xpath("//input[@placeholder='Enter Your Mobile Number']")));
-		// WebElement email =
-		// wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lname")));
-		WebElement submitBtn = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='submitpopupbt']")));
+		// -------- By locators (same as your code) --------
+		By nameBy = By.id("fname");
+		By mobileBy = By.xpath("//input[@placeholder='Enter Your Mobile Number']");
+		By submitBy = By.xpath("//button[@class='submitpopupbt']");
+		By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
 
 		// -------- Scroll first field into view --------
-		scrollToElement(name);
+		WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+		scrollToElement(nameForScroll);
 
-		// -------- Fill form --------
-		slowType(name, "Test");
-		slowType(mobile, "9876543211");
-		// slowType(email, "wakemedantatest@gmail.com");
+		// -------- Fill form (SAFE TYPE) --------
+		typeAndEnsureValue(wait, js, nameBy, "Test");
+		typeAndEnsureValue(wait, js, mobileBy, "9876543211");
 
 		// -------- Submit --------
+		WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		submitBtn.click();
 
-		try {// -------- PASS --------
-			wait.until(ExpectedConditions
-					.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
+		try {
+			submitBtn.click();
+		} catch (Exception e) {
+			js.executeScript("arguments[0].click();", submitBtn);
+		}
+
+		try {
+			// -------- PASS --------
+			wait.until(ExpectedConditions.visibilityOfElementLocated(successBy));
 
 			writeExcel(12, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
 			System.out.println("✅ Header Request Call Back – PASS");
 
 		} catch (Exception e) {
 			// -------- FAIL --------
-			String nameVal = safeGetValue(By.id("fname"));
-			String mobileVal = safeGetValue(By.xpath("//input[@placeholder='Enter Your Mobile Number']"));
-			String emailVal = safeGetValue(By.id("lname"));
+			String nameVal = safeGetValue(nameBy);
+			String mobileVal = safeGetValue(mobileBy);
+			String emailVal = safeGetValue(By.id("lname")); // kept as you had (even though you don't fill it)
 
 			StringBuilder errorMsg = new StringBuilder();
 			try {
@@ -98,6 +103,39 @@ public class Headerform extends BaseClass {
 			System.out.println(finalResult);
 			Assert.fail("Header Request Call Back validation failed: " + finalResult);
 		}
+	}
+
+	// ✅ same helper (paste in every form for now)
+	private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+		for (int attempt = 1; attempt <= 3; attempt++) {
+			try {
+				WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+				js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+
+				try {
+					el.click();
+				} catch (Exception ignored) {
+				}
+				try {
+					el.clear();
+				} catch (Exception ignored) {
+				}
+
+				slowType(el, value);
+
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException ignored) {
+				}
+				String actual = el.getAttribute("value");
+				if (actual != null && actual.trim().equals(value))
+					return;
+
+			} catch (StaleElementReferenceException ignored) {
+			} catch (Exception ignored) {
+			}
+		}
+		Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
 	}
 
 	// ================= Helper Methods =================

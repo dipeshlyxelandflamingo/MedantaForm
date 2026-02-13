@@ -1,5 +1,6 @@
 package Medanta_Form;
 
+import java.io.File;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -47,8 +48,10 @@ public class SecondOpiniun extends BaseClass {
 			e.printStackTrace();
 		}
 
-		// ===== File upload =====
-		String filePath = System.getProperty("user.dir") + "/SampleDocs/upload.docx";
+		// ===== File upload (✅ OS safe path) =====
+		String filePath = System.getProperty("user.dir") + File.separator + "SampleDocs" + File.separator
+				+ "upload.docx";
+
 		WebElement fileInput = wait.until(ExpectedConditions.presenceOfElementLocated(fileBy));
 		fileInput.sendKeys(filePath);
 
