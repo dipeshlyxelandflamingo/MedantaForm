@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -23,60 +24,63 @@ public class BlogDP extends BaseClass {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 
-		// ---------- Locate fields ----------
-		WebElement name = wait.until(ExpectedConditions
-				.elementToBeClickable(By.xpath("(//label[normalize-space()='Name *']/parent::div/input)[2]")));
-		WebElement mobile = wait.until(ExpectedConditions
-				.elementToBeClickable(By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]")));
-		WebElement email = wait.until(ExpectedConditions
-				.elementToBeClickable(By.xpath("(//label[normalize-space()='Email *']/parent::div/input)[2]")));
+		// ---------- By locators (same xpath as your code) ----------
+		By nameBy = By.xpath("(//label[normalize-space()='Name *']/parent::div/input)[2]");
+		By mobileBy = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]");
+		By emailBy = By.xpath("(//label[normalize-space()='Email *']/parent::div/input)[2]");
+		By submitBy = By.xpath("(//button[@type='submit'])[3]");
+		By thankYouBy = By.xpath("//*[contains(text(),'Thank you')]");
 
 		// ---------- Scroll first field into view ----------
-		scrollToElement(name);
+		WebElement nameElForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+		scrollToElement(nameElForScroll);
 
-		// ---------- Fill form (SLOW TYPE) ----------
-		slowType(name, "Test");
-		slowType(mobile, "9876543210");
-		slowType(email, "dipesh@yopmail.com");
+		// ---------- Fill form (SAFE TYPE) ----------
+		typeAndEnsureValue(wait, js, nameBy, "Test");
+		typeAndEnsureValue(wait, js, mobileBy, "9876543210");
+		typeAndEnsureValue(wait, js, emailBy, "dipesh@yopmail.com");
 
-		// ---------- Safety check ----------
-		Assert.assertFalse(name.getAttribute("value").isEmpty(), "Name empty");
-		Assert.assertFalse(mobile.getAttribute("value").isEmpty(), "Mobile empty");
-		Assert.assertFalse(email.getAttribute("value").isEmpty(), "Email empty");
+		// ---------- Safety check (fresh fetch) ----------
+		Assert.assertFalse(driver.findElement(nameBy).getAttribute("value").isEmpty(), "Name empty");
+		Assert.assertFalse(driver.findElement(mobileBy).getAttribute("value").isEmpty(), "Mobile empty");
+		Assert.assertFalse(driver.findElement(emailBy).getAttribute("value").isEmpty(), "Email empty");
 
 		// ---------- Submit ----------
-		WebElement submitBtn = wait
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@type='submit'])[3]")));
+		WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
 		try {
 			Thread.sleep(800);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // UI settle
-		submitBtn.click();
+		} catch (InterruptedException ignored) {
+		}
+		try {
+			submitBtn.click();
+		} catch (Exception e) {
+			js.executeScript("arguments[0].click();", submitBtn);
+		}
 
 		try {
 			// ---------- PASS ----------
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'Thank you')]")));
+			wait.until(ExpectedConditions.visibilityOfElementLocated(thankYouBy));
 
 			writeExcel(4, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
 			System.out.println("✅ BLOG FORM SUBMITTED SUCCESSFULLY!");
 
 		} catch (Exception e) {
 			// ---------- FAIL ----------
-			String nameVal = name.getAttribute("value");
-			String mobileVal = mobile.getAttribute("value");
-			String emailVal = email.getAttribute("value");
+			String nameVal = safeGetValue(nameBy);
+			String mobileVal = safeGetValue(mobileBy);
+			String emailVal = safeGetValue(emailBy);
 
 			StringBuilder errorMsg = new StringBuilder();
 
 			try {
-				String nameErr = name.getAttribute("validationMessage");
+				String nameErr = driver.findElement(nameBy).getAttribute("validationMessage");
 				if (nameErr != null && !nameErr.isEmpty())
 					errorMsg.append("Name Error: ").append(nameErr).append(" | ");
 			} catch (Exception ignored) {
 			}
 
+			// NOTE: your FAIL xpath had no [2] earlier; keeping your exact one,
+			// but if this page has 2 forms then you may need [2] here too.
 			try {
 				WebElement err = driver.findElement(By.xpath(
 						"//input[@placeholder='Enter Your Mobile Number']/following-sibling::div[contains(@class,'errmsg')]"));
@@ -104,4 +108,46 @@ public class BlogDP extends BaseClass {
 		}
 	}
 
+	// ✅ same helper (paste in every form for now)
+	private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+		for (int attempt = 1; attempt <= 3; attempt++) {
+			try {
+				WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+				js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+
+				try {
+					el.click();
+				} catch (Exception ignored) {
+				}
+				try {
+					el.clear();
+				} catch (Exception ignored) {
+				}
+
+				slowType(el, value);
+
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException ignored) {
+				}
+				String actual = el.getAttribute("value");
+				if (actual != null && actual.trim().equals(value))
+					return;
+
+			} catch (StaleElementReferenceException ignored) {
+			} catch (Exception ignored) {
+			}
+		}
+		Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	}
+
+	private String safeGetValue(By locator) {
+		try {
+			WebElement el = driver.findElement(locator);
+			String v = el.getAttribute("value");
+			return v == null ? "" : v;
+		} catch (Exception e) {
+			return "";
+		}
+	}
 }

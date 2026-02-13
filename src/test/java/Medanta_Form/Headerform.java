@@ -20,39 +20,38 @@ public class Headerform extends BaseClass {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 
-		
-			// -------- Open Request Call Back modal --------
-			WebElement callbackBtn = wait.until(
-					ExpectedConditions.elementToBeClickable(By.xpath("//span[normalize-space()='Request Call Back']")));
-			js.executeScript("arguments[0].click();", callbackBtn);
+		// -------- Open Request Call Back modal --------
+		WebElement callbackBtn = wait.until(
+				ExpectedConditions.elementToBeClickable(By.xpath("//span[normalize-space()='Request Call Back']")));
+		js.executeScript("arguments[0].click();", callbackBtn);
 
-			// -------- Locate fields --------
-			WebElement name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fname")));
-			WebElement mobile = wait.until(ExpectedConditions
-					.visibilityOfElementLocated(By.xpath("//input[@placeholder='Enter Your Mobile Number']")));
-			// WebElement email =
-			// wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lname")));
-			WebElement submitBtn = wait
-					.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='submitpopupbt']")));
+		// -------- Locate fields --------
+		WebElement name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fname")));
+		WebElement mobile = wait.until(ExpectedConditions
+				.visibilityOfElementLocated(By.xpath("//input[@placeholder='Enter Your Mobile Number']")));
+		// WebElement email =
+		// wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lname")));
+		WebElement submitBtn = wait
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='submitpopupbt']")));
 
-			// -------- Scroll first field into view --------
-			scrollToElement(name);
+		// -------- Scroll first field into view --------
+		scrollToElement(name);
 
-			// -------- Fill form --------
-			slowType(name, "Test");
-			slowType(mobile, "9876543211");
-			// slowType(email, "wakemedantatest@gmail.com");
+		// -------- Fill form --------
+		slowType(name, "Test");
+		slowType(mobile, "9876543211");
+		// slowType(email, "wakemedantatest@gmail.com");
 
-			// -------- Submit --------
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			submitBtn.click();
+		// -------- Submit --------
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		submitBtn.click();
 
-			try{// -------- PASS --------
+		try {// -------- PASS --------
 			wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.xpath("//div[contains(text(),'Thank you for filling the form')]")));
 
