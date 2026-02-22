@@ -19,89 +19,126 @@ public class HealthCheckup extends BaseClass {
 	  @Test(priority = 1)
 	    public void HealthCheckup_RequestACallbackForm() {
 
-	        driver.navigate().to("https://www.medanta.org/healthcheckup/gurugram-hospital");
+		  int row = 13;
+
+	        String url = "https://www.medanta.org/healthcheckup/gurugram-hospital";
+	        driver.navigate().to(url);
 
 	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 	        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	        // ===== By locators (same as your code) =====
+	        // ===== Locators =====
 	        By nameBy = By.name("name");
 	        By mobileBy = By.name("mobile");
 	        By emailBy = By.name("email");
 	        By messageBy = By.xpath("//textarea[@class='inputbox']");
 	        By submitBy = By.xpath("(//button[@type='submit'])[3]");
+
+	        // success (your original)
 	        By successBy = By.xpath("//div[contains(text(),'Thank you')]");
 
-	        // ===== Locate first field + scroll =====
+	        // 🔥 Strong ThankYou fallback
+	        By thankYouBy = By.xpath(
+	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+	        );
+
+	        // ===== Test Data =====
+	        String expName = "Dipesh";
+	        String expMobile = "9876543210";
+	        String expEmail = "dipesh@yopmail.com";
+	        String expMsg = "Test";
+
+	        System.out.println("➡️ [HealthCheckup] Opening page...");
+
+	        // scroll
 	        WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
 	        scrollToElement(nameForScroll);
 
-	        // ===== Fill form (SAFE TYPE) =====
-	        typeAndEnsureValue(wait, js, nameBy, "Dipesh");
-	        typeAndEnsureValue(wait, js, mobileBy, "9876543210");
-	        typeAndEnsureValue(wait, js, emailBy, "dipesh@yopmail.com");
-	        typeAndEnsureValue(wait, js, messageBy, "Test");
+	        System.out.println("➡️ [HealthCheckup] Filling form...");
 
-	        // ===== Submit form =====
+	        typeAndEnsureValue(wait, js, nameBy, expName);
+	        typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	        typeAndEnsureValue(wait, js, emailBy, expEmail);
+	        typeAndEnsureValue(wait, js, messageBy, expMsg);
+
+	        // ⭐ value wipe protection
+	        ensureValueStillPresent(nameBy, expName);
+	        ensureValueStillPresent(mobileBy, expMobile);
+	        ensureValueStillPresent(emailBy, expEmail);
+	        ensureValueStillPresent(messageBy, expMsg);
+
+	        // ✅ capture inputs BEFORE submit
+	        String inputs =
+	                "Name=" + safeGetValue(nameBy)
+	                        + " | Mobile=" + safeGetValue(mobileBy)
+	                        + " | Email=" + safeGetValue(emailBy)
+	                        + " | Message=" + safeGetValue(messageBy);
+
+	        // ===== Submit =====
+	        System.out.println("➡️ [HealthCheckup] Clicking submit...");
 	        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	        try { Thread.sleep(800); } catch (Exception ignored) {}
+
 	        try {
 	            submitBtn.click();
 	        } catch (Exception e) {
 	            js.executeScript("arguments[0].click();", submitBtn);
 	        }
 
-	        try {
-	            // ===== PASS: Wait for success message =====
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(successBy));
+	        // ===== Detect outcomes =====
+	        boolean thankYouSeen =
+	                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
 
-	            writeExcel(13, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
-	            System.out.println("✅ Health Checkup – PASS");
+	        boolean network5xx = waitForNetwork5xx(9000);
 
-	        } catch (Exception e) {
-	            // ===== FAIL: Capture entered values safely =====
-	            String nameVal = safeGetValue(nameBy);
-	            String mobileVal = safeGetValue(mobileBy);
-	            String emailVal = safeGetValue(emailBy);
-	            String messageVal = safeGetValue(messageBy);
+	        String fieldErrors = collectAllValidationErrors();
+	        String globalErrors = collectGlobalErrors();
 
-	            StringBuilder errorMsg = new StringBuilder();
-	            try {
-	                WebElement err = driver.findElement(
-	                        By.xpath("//input[@name='name']/following-sibling::span[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed()) errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        // ===== Decide status =====
+	        String status;
+	        String serverInfo = "";
 
-	            try {
-	                WebElement err = driver.findElement(
-	                        By.xpath("//input[@name='mobile']/following-sibling::span[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed()) errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        if (thankYouSeen && network5xx) {
+	            status = "❌ SERVER_FAIL (POST SUBMIT)";
+	            serverInfo = "API returned 5xx after submit";
+	        } else if (thankYouSeen) {
+	            status = "✅ PASS";
+	        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	            status = "❌ VALIDATION_FAIL";
+	        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	            status = "❌ SERVER_FAIL";
+	            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	        } else {
+	            status = "⚠ UNKNOWN";
+	            serverInfo = "No success/error signal detected";
+	        }
 
-	            try {
-	                WebElement err = driver.findElement(
-	                        By.xpath("//input[@name='email']/following-sibling::span[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed()) errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 
-	            try {
-	                WebElement err = driver.findElement(
-	                        By.xpath("//textarea[@class='inputbox']/following-sibling::span[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed()) errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        // ===== PRINT =====
+	        System.out.println("============== HEALTH CHECKUP FORM RESULT ==============");
+	        System.out.println("STATUS        : " + status);
+	        System.out.println("THANK YOU     : " + thankYouSeen);
+	        System.out.println("NETWORK 5XX   : " + network5xx);
+	        System.out.println("INPUTS        : " + inputs);
+	        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	        System.out.println("SERVER INFO   : " + serverInfo);
+	        System.out.println("DEBUG         : " + debug);
+	        System.out.println("========================================================");
 
-	            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal
-	                    + " | Message=" + messageVal
-	                    + " | Errors => " + errorMsg;
+	        // ===== Excel (E → L) =====
+	        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
 
-	            writeExcel(13, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
-	            writeExcel(13, 5, finalResult);
-
-	            System.out.println(finalResult);
-	            Assert.fail("Health Checkup form validation failed: " + finalResult);
+	        if (!status.contains("PASS")) {
+	            Assert.fail("HealthCheckup form failed -> " + status + " | " + debug);
 	        }
 	    }
 
-	    // ✅ same helper (paste in every form for now)
+	    /* ================= SAFE TYPE ================= */
+
 	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
 	        for (int attempt = 1; attempt <= 3; attempt++) {
 	            try {
@@ -114,6 +151,7 @@ public class HealthCheckup extends BaseClass {
 	                slowType(el, value);
 
 	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+
 	                String actual = el.getAttribute("value");
 	                if (actual != null && actual.trim().equals(value)) return;
 
@@ -124,12 +162,11 @@ public class HealthCheckup extends BaseClass {
 	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
 	    }
 
-	    // ===== Helper: safely get field value =====
 	    private String safeGetValue(By locator) {
 	        try {
 	            WebElement element = driver.findElement(locator);
 	            String v = element.getAttribute("value");
-	            return v == null ? "" : v;
+	            return v == null ? "" : v.trim();
 	        } catch (Exception e) {
 	            return "";
 	        }

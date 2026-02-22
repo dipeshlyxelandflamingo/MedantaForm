@@ -6,19 +6,27 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.logging.Level;
+
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+
 
 public class BaseClass {
 
@@ -29,7 +37,6 @@ public class BaseClass {
     protected XSSFSheet sheet;
     protected DataFormatter formatter;
 
-    // ✅ Single source for Excel location
     protected static final String EXCEL_PATH =
             System.getProperty("user.dir") + "/src/test/resources/formsautomation.xlsx";
 
@@ -45,12 +52,10 @@ public class BaseClass {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String runDate = sdf.format(new Date());
 
-            int rowIndex = 32; // Row 33
-            int colIndex = 1;  // Column B
+            int rowIndex = 32; // Row 33 (0-based)
+            int colIndex = 1;  // Column B (0-based)
 
-            if (sh.getRow(rowIndex) == null)
-                sh.createRow(rowIndex);
-
+            if (sh.getRow(rowIndex) == null) sh.createRow(rowIndex);
             sh.getRow(rowIndex).createCell(colIndex).setCellValue(runDate);
 
             try (FileOutputStream fos = new FileOutputStream(EXCEL_PATH)) {
@@ -86,6 +91,11 @@ public class BaseClass {
         options.addArguments("--disable-extensions");
         options.addArguments("--disable-blink-features=AutomationControlled");
 
+        // ✅ IMPORTANT: Enable PERFORMANCE logs to catch Network 5xx
+        LoggingPreferences logPrefs = new LoggingPreferences();
+        logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
+        options.setCapability("goog:loggingPrefs", logPrefs);
+
         if (isLinux()) {
             System.out.println("🔹 Jenkins/Linux → Headless Chrome");
             options.addArguments("--headless=new");
@@ -119,17 +129,13 @@ public class BaseClass {
 
     /* ================= EXCEL WRITE ================= */
     public synchronized void writeExcel(int row, int col, String value) {
-
         try {
-            if (sheet.getRow(row) == null)
-                sheet.createRow(row);
-
+            if (sheet.getRow(row) == null) sheet.createRow(row);
             sheet.getRow(row).createCell(col).setCellValue(value);
 
             try (FileOutputStream out = new FileOutputStream(EXCEL_PATH)) {
                 workbook.write(out);
             }
-
         } catch (Exception e) {
             System.err.println("❌ Excel write failed: " + e.getMessage());
         }
@@ -137,18 +143,154 @@ public class BaseClass {
 
     /* ================= UTIL METHODS ================= */
     public void slowType(WebElement element, String text) {
-        element.clear();
+        try { element.clear(); } catch (Exception ignored) {}
         for (char c : text.toCharArray()) {
             element.sendKeys(String.valueOf(c));
-            try {
-                Thread.sleep(120);
-            } catch (InterruptedException ignored) {}
+            try { Thread.sleep(120); } catch (InterruptedException ignored) {}
         }
     }
 
     public void scrollToElement(WebElement element) {
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+    }
+
+    public String nowStamp() {
+        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
+    }
+
+    /* ================= THANK YOU FLASH DETECT ================= */
+    public boolean waitForFlashPresence(By locator, int maxMillis) {
+        long end = System.currentTimeMillis() + maxMillis;
+        while (System.currentTimeMillis() < end) {
+            try {
+                if (!driver.findElements(locator).isEmpty()) return true;
+            } catch (Exception ignored) {}
+            try { Thread.sleep(150); } catch (InterruptedException ignored) {}
+        }
+        return false;
+    }
+
+    /* ================= FIELD ERRORS (MULTIPLE) ================= */
+    public String collectAllValidationErrors() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (WebElement e : driver.findElements(By.xpath(
+                    "//*[contains(@class,'errmsg') or contains(@class,'error') or contains(@class,'invalid')][normalize-space()!='']"))) {
+                if (e.isDisplayed()) {
+                    String t = e.getText();
+                    if (t != null && !t.trim().isEmpty()) sb.append(t.trim()).append(" | ");
+                }
+            }
+        } catch (Exception ignored) {}
+        return sb.toString().trim();
+    }
+
+    /* ================= GLOBAL ERRORS (TOAST/ALERT) ================= */
+    public String collectGlobalErrors() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (WebElement e : driver.findElements(By.xpath(
+                    "//*[@role='alert' or contains(@class,'toast') or contains(@class,'alert') or contains(@class,'notification')][normalize-space()!='']"))) {
+                if (e.isDisplayed()) {
+                    String t = e.getText();
+                    if (t != null && !t.trim().isEmpty()) sb.append(t.trim()).append(" | ");
+                }
+            }
+        } catch (Exception ignored) {}
+        return sb.toString().trim();
+    }
+
+    /* ================= BASIC 500 DETECT (PAGE SOURCE) ================= */
+    public boolean isServer500Like() {
+        try {
+            String src = driver.getPageSource();
+            if (src == null) return false;
+            String s = src.toLowerCase();
+            return (s.contains("server error") && (s.contains(">500<") || s.contains(" 500 ")))
+                    || s.contains("internal server error")
+                    || s.contains("http status 500");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /* ================= ✅ NETWORK 5XX DETECT (MOST RELIABLE) =================
+       Checks Chrome performance logs for any Network.responseReceived with status 5xx.
+       Returns TRUE if any 500/502/503/504 seen within maxMillis.
+    ======================================================================== */
+    public boolean waitForNetwork5xx(int maxMillis) {
+        long end = System.currentTimeMillis() + maxMillis;
+
+        while (System.currentTimeMillis() < end) {
+            try {
+                LogEntries logs = driver.manage().logs().get(LogType.PERFORMANCE);
+                for (LogEntry entry : logs) {
+                    String msg = entry.getMessage();
+                    if (msg == null) continue;
+
+                    // Chrome DevTools event: Network.responseReceived
+                    if (msg.contains("\"Network.responseReceived\"") &&
+                        (msg.contains("\"status\":500") ||
+                         msg.contains("\"status\":502") ||
+                         msg.contains("\"status\":503") ||
+                         msg.contains("\"status\":504"))) {
+
+                        System.out.println("🧨 Network 5xx detected: " + msg);
+                        return true;
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            try { Thread.sleep(300); } catch (InterruptedException ignored) {}
+        }
+        return false;
+    }
+
+    /* ================= VALUE LOST DETECT + REFILL ================= */
+    public boolean ensureValueStillPresent(By locator, String expected) {
+        try {
+            WebElement el = driver.findElement(locator);
+
+            String actual = el.getAttribute("value");
+            if (actual == null) actual = "";
+            if (expected.equals(actual.trim())) return true;
+
+            try { el.click(); } catch (Exception ignored) {}
+            try { el.clear(); } catch (Exception ignored) {}
+
+            for (char c : expected.toCharArray()) {
+                el.sendKeys(String.valueOf(c));
+                try { Thread.sleep(80); } catch (InterruptedException ignored) {}
+            }
+
+            String after = el.getAttribute("value");
+            return after != null && expected.equals(after.trim());
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /* ================= WRITE RESULT (E to L) ================= */
+    public void writeFormResult(
+            int row,
+            String status,
+            String inputs,
+            String fieldErrors,
+            String globalErrors,
+            String serverInfo,
+            boolean thankYouSeen,
+            String debugUrlTitle
+    ) {
+        writeExcel(row, 4, status);                           // E
+        writeExcel(row, 5, inputs);                           // F
+        writeExcel(row, 6, fieldErrors);                      // G
+        writeExcel(row, 7, globalErrors);                     // H
+        writeExcel(row, 8, serverInfo);                       // I
+        writeExcel(row, 9, String.valueOf(thankYouSeen));     // J
+        writeExcel(row, 10, debugUrlTitle);                   // K
+        writeExcel(row, 11, nowStamp());                      // L
     }
 
     /* ================= AFTER CLASS ================= */

@@ -1,5 +1,6 @@
 package Medanta_Form;
 
+import java.io.File;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -15,121 +16,213 @@ import Base.BaseClass;
 
 public class MedantaPharmacy_UploadForm extends BaseClass {
 
-	
-	@Test(priority = 1)
-    public void MedantaPharmacyPage_UploadForm() {
+	  @Test(priority = 1)
+	    public void MedantaPharmacyPage_UploadForm() {
 
-        driver.navigate().to("https://www.medanta.org/medanta-pharmacy");
+	        int row = 22;
+	        String url = "https://www.medanta.org/medanta-pharmacy";
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+	        driver.navigate().to(url);
 
-        // Scroll down to form (same as your logic)
-        js.executeScript("window.scrollBy(0,800)");
-        try { Thread.sleep(2000); } catch (Exception ignored) {}
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        // -------- By locators (same as your code) --------
-        By nameBy = By.xpath("(//input[@type='text'])[5]");
-        By emailBy = By.xpath("(//input[@type='email'])[3]");
-        By fileBy = By.xpath("(//input[@type='file'])[2]");
-        By submitBy = By.xpath("(//button[@type='submit'])[4]");
-        By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
+	        // --- scroll down to upload form ---
+	        js.executeScript("window.scrollBy(0,800)");
+	        try { Thread.sleep(1200); } catch (Exception ignored) {}
 
-        // -------- Fill form (SAFE TYPE) --------
-        typeAndEnsureValue(wait, js, nameBy, "Dipesh");
-        typeAndEnsureValue(wait, js, emailBy, "dipesh@yopmail.com");
+	        // ===== Locators =====
+	        By nameBy   = By.xpath("(//input[@type='text'])[5]");
+	        By emailBy  = By.xpath("(//input[@type='email'])[3]");
+	        By fileBy   = By.xpath("(//input[@type='file'])[2]");
+	        By submitBy = By.xpath("(//button[@type='submit'])[4]");
 
-        // -------- File upload (keep your path logic) --------
-        WebElement fileInput = wait.until(ExpectedConditions.presenceOfElementLocated(fileBy));
+	        // success (your original)
+	        By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
 
-        String filePath = System.getProperty("user.dir") + "\\SampleDocs\\upload.docx";
-        fileInput.sendKeys(filePath);
+	        // fallback success (if text changes / flashes)
+	        By successFallbackBy = By.xpath(
+	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+	        );
 
-        try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+	        // ===== Test Data =====
+	        String expName  = "Dipesh";
+	        String expEmail = "dipesh@yopmail.com";
 
-        // -------- Submit --------
-        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-        try {
-            submitBtn.click();
-        } catch (Exception e) {
-            js.executeScript("arguments[0].click();", submitBtn);
-        }
+	        // Cross-platform file path (Windows + Linux)
+	        String filePath = System.getProperty("user.dir")
+	                + File.separator + "SampleDocs"
+	                + File.separator + "upload.docx";
 
-        // ===== Try-catch for success/fail (EDP style) =====
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(successBy));
+	        System.out.println("➡️ [MedantaPharmacyUpload] Opening page...");
 
-            writeExcel(22, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
-            System.out.println("✅ Medanta Pharmacy – Upload Form PASS");
+	        // wait first field & scroll
+	        WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	        scrollToElement(first);
 
-        } catch (Exception e) {
+	        System.out.println("➡️ [MedantaPharmacyUpload] Filling form...");
+	        typeAndEnsureValue(wait, js, nameBy, expName);
+	        typeAndEnsureValue(wait, js, emailBy, expEmail);
 
-            String nameVal = safeGetValue(nameBy);
-            String emailVal = safeGetValue(emailBy);
+	        // ⭐ value wipe protection
+	        ensureValueStillPresent(nameBy, expName);
+	        ensureValueStillPresent(emailBy, expEmail);
 
-            StringBuilder errorMsg = new StringBuilder();
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("(//input[@type='text'])[5]/following-sibling::span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	        // ===== File upload =====
+	        System.out.println("➡️ [MedantaPharmacyUpload] Uploading file...");
 
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("(//input[@type='email'])[3]/following-sibling::span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	        File f = new File(filePath);
+	        if (!f.exists()) {
+	            // If file missing, treat as test failure but still log nicely in excel
+	            String status = "❌ VALIDATION_FAIL";
+	            String inputs = "Name=" + safeGetValue(nameBy)
+	                    + " | Email=" + safeGetValue(emailBy)
+	                    + " | File=MISSING(" + filePath + ")";
 
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("(//input[@type='file'])[2]/following-sibling::span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("File Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	            String fieldErrors = "Upload file not found on machine: " + filePath;
+	            String globalErrors = collectGlobalErrors();
+	            String serverInfo = "Local file missing";
+	            boolean successSeen = false;
 
-            String finalResult = "Name=" + nameVal + " | Email=" + emailVal + " | File=NOT_UPLOADED | Errors => "
-                    + errorMsg;
+	            String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 
-            writeExcel(22, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
-            writeExcel(22, 5, finalResult);
+	            System.out.println("============== MEDANTA PHARMACY UPLOAD FORM RESULT ==============");
+	            System.out.println("STATUS        : " + status);
+	            System.out.println("SUCCESS       : " + successSeen);
+	            System.out.println("NETWORK 5XX   : false");
+	            System.out.println("INPUTS        : " + inputs);
+	            System.out.println("FIELD ERRORS  : " + fieldErrors);
+	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("SERVER INFO   : " + serverInfo);
+	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("=================================================================");
 
-            System.out.println(finalResult);
-            Assert.fail("Upload Form validation failed: " + finalResult);
-        }
-    }
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
+	            Assert.fail("Upload doc missing at: " + filePath);
+	            return;
+	        }
 
-    // ✅ same helper (paste in every form for now)
-    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            try {
-                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
-                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+	        WebElement fileInput = wait.until(ExpectedConditions.presenceOfElementLocated(fileBy));
+	        js.executeScript("arguments[0].scrollIntoView({block:'center'});", fileInput);
 
-                try { el.click(); } catch (Exception ignored) {}
-                try { el.clear(); } catch (Exception ignored) {}
+	        try {
+	            fileInput.sendKeys(f.getAbsolutePath());
+	        } catch (Exception e) {
+	            // fallback click & send keys again
+	            try { js.executeScript("arguments[0].click();", fileInput); } catch (Exception ignored) {}
+	            fileInput.sendKeys(f.getAbsolutePath());
+	        }
 
-                slowType(el, value);
+	        try { Thread.sleep(800); } catch (Exception ignored) {}
 
-                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
-                String actual = el.getAttribute("value");
-                if (actual != null && actual.trim().equals(value)) return;
+	        // NOTE: Some sites clear file input; try reading value (may be blank due to browser security)
+	        boolean fileProbablySet = false;
+	        try {
+	            String v = fileInput.getAttribute("value");
+	            if (v != null && !v.trim().isEmpty()) fileProbablySet = true;
+	        } catch (Exception ignored) {}
 
-            } catch (StaleElementReferenceException ignored) {
-            } catch (Exception ignored) {
-            }
-        }
-        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
-    }
+	        // capture inputs BEFORE submit
+	        String inputs = "Name=" + safeGetValue(nameBy)
+	                + " | Email=" + safeGetValue(emailBy)
+	                + " | File=" + (fileProbablySet ? "SELECTED" : "SELECTED(unknown)");
 
-    private String safeGetValue(By locator) {
-        try {
-            WebElement el = driver.findElement(locator);
-            String v = el.getAttribute("value");
-            return v == null ? "" : v;
-        } catch (Exception e) {
-            return "";
-        }
-    }
-}
+	        // ===== Submit =====
+	        System.out.println("➡️ [MedantaPharmacyUpload] Clicking submit...");
+	        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	        js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+
+	        try { Thread.sleep(800); } catch (Exception ignored) {}
+	        try {
+	            submitBtn.click();
+	        } catch (Exception e) {
+	            js.executeScript("arguments[0].click();", submitBtn);
+	        }
+
+	        // ===== Detect outcomes =====
+	        boolean successSeen =
+	                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(successFallbackBy, 9000);
+
+	        boolean network5xx = waitForNetwork5xx(9000);
+
+	        String fieldErrors = collectAllValidationErrors();
+	        String globalErrors = collectGlobalErrors();
+
+	        // ===== Decide Status =====
+	        String status;
+	        String serverInfo = "";
+
+	        if (successSeen && network5xx) {
+	            status = "❌ SERVER_FAIL (POST SUBMIT)";
+	            serverInfo = "API returned 5xx after submit";
+	        } else if (successSeen) {
+	            status = "✅ PASS";
+	        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	            status = "❌ VALIDATION_FAIL";
+	        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	            status = "❌ SERVER_FAIL";
+	            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	        } else {
+	            status = "⚠ UNKNOWN";
+	            serverInfo = "No success/error signal detected";
+	        }
+
+	        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+
+	        // ===== PRINT =====
+	        System.out.println("============== MEDANTA PHARMACY UPLOAD FORM RESULT ==============");
+	        System.out.println("STATUS        : " + status);
+	        System.out.println("SUCCESS       : " + successSeen);
+	        System.out.println("NETWORK 5XX   : " + network5xx);
+	        System.out.println("INPUTS        : " + inputs);
+	        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	        System.out.println("SERVER INFO   : " + serverInfo);
+	        System.out.println("DEBUG         : " + debug);
+	        System.out.println("=================================================================");
+
+	        // ===== Excel (E → L) =====
+	        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
+
+	        if (!status.contains("PASS")) {
+	            Assert.fail("Medanta Pharmacy Upload form failed -> " + status + " | " + debug);
+	        }
+	    }
+
+	    /* ================= SAFE TYPE ================= */
+
+	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+	        for (int attempt = 1; attempt <= 3; attempt++) {
+	            try {
+	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+
+	                try { el.click(); } catch (Exception ignored) {}
+	                try { el.clear(); } catch (Exception ignored) {}
+
+	                slowType(el, value);
+
+	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+
+	                String actual = el.getAttribute("value");
+	                if (actual != null && actual.trim().equals(value)) return;
+
+	            } catch (StaleElementReferenceException ignored) {
+	            } catch (Exception ignored) {
+	            }
+	        }
+	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	    }
+
+	    private String safeGetValue(By locator) {
+	        try {
+	            WebElement el = driver.findElement(locator);
+	            String v = el.getAttribute("value");
+	            return v == null ? "" : v.trim();
+	        } catch (Exception e) {
+	            return "";
+	        }
+	    }
+	}

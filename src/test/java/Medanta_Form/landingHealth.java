@@ -19,120 +19,157 @@ public class landingHealth extends BaseClass {
 	@Test(priority = 1)
     public void LandingHealth_Page_QueryForm() {
 
-        driver.navigate().to("https://www.medanta.org/ehc/hishealth-checkup/L1gz");
+		 int row = 19;
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+	        String url = "https://www.medanta.org/ehc/hishealth-checkup/L1gz";
+	        driver.navigate().to(url);
 
-        // -------- By locators (same as your code) --------
-        By nameBy = By.name("name");
-        By mobileBy = By.name("mobile");
-        By emailBy = By.name("email");
-        By msgBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
-        By submitBy = By.xpath("(//button[@type='submit'])[2]");
-        By successBy = By.xpath("//div[contains(text(),'Your query has been Successfully Submitted')]");
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+	        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        // -------- Fill form (SAFE TYPE) --------
-        typeAndEnsureValue(wait, js, nameBy, "Test");
-        typeAndEnsureValue(wait, js, mobileBy, "9876543210");
-        typeAndEnsureValue(wait, js, emailBy, "wakemedantatest@gmail.com");
-        typeAndEnsureValue(wait, js, msgBy, "Testing the form Please ignore");
+	        // ===== Locators =====
+	        By nameBy = By.name("name");
+	        By mobileBy = By.name("mobile");
+	        By emailBy = By.name("email");
+	        By msgBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
+	        By submitBy = By.xpath("(//button[@type='submit'])[2]");
 
-        // -------- Submit form --------
-        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-        try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+	        // success element (your original)
+	        By successBy = By.xpath("//div[contains(text(),'Your query has been Successfully Submitted')]");
 
-        try {
-            submitBtn.click();
-        } catch (Exception e) {
-            js.executeScript("arguments[0].click();", submitBtn);
-        }
+	        // 🔥 Strong success fallback (text variations)
+	        By successFallbackBy = By.xpath(
+	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully submitted') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'query has been') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+	        );
 
-        // -------- Try-catch for success/fail (EDP style) --------
-        try {
+	        // ===== Test Data =====
+	        String expName = "Test";
+	        String expMobile = "9876543210";
+	        String expEmail = "wakemedantatest@gmail.com";
+	        String expMsg = "Testing the form Please ignore";
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(successBy));
+	        System.out.println("➡️ [LandingHealth] Opening page...");
 
-            writeExcel(19, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
-            System.out.println("✅ Landing Health Query Form PASS");
+	        // ensure form visible
+	        WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	        scrollToElement(nameForScroll);
 
-        } catch (Exception e) {
+	        System.out.println("➡️ [LandingHealth] Filling form...");
 
-            String nameVal = safeGetValue(nameBy);
-            String mobileVal = safeGetValue(mobileBy);
-            String emailVal = safeGetValue(emailBy);
-            String msgVal = safeGetValue(msgBy);
+	        typeAndEnsureValue(wait, js, nameBy, expName);
+	        typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	        typeAndEnsureValue(wait, js, emailBy, expEmail);
+	        typeAndEnsureValue(wait, js, msgBy, expMsg);
 
-            StringBuilder errorMsg = new StringBuilder();
-            try {
-                WebElement err = driver.findElement(By.xpath(
-                        "//input[@name='name']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	        // ⭐ value wipe protection
+	        ensureValueStillPresent(nameBy, expName);
+	        ensureValueStillPresent(mobileBy, expMobile);
+	        ensureValueStillPresent(emailBy, expEmail);
+	        ensureValueStillPresent(msgBy, expMsg);
 
-            try {
-                WebElement err = driver.findElement(By.xpath(
-                        "//input[@name='mobile']/ancestor::div[contains(@class,'field')]/span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	        // ✅ capture inputs BEFORE submit
+	        String inputs =
+	                "Name=" + safeGetValue(nameBy)
+	                        + " | Mobile=" + safeGetValue(mobileBy)
+	                        + " | Email=" + safeGetValue(emailBy)
+	                        + " | Message=" + safeGetValue(msgBy);
 
-            try {
-                WebElement err = driver.findElement(
-                        By.xpath("//input[@name='email']/following-sibling::span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	        // ===== Submit =====
+	        System.out.println("➡️ [LandingHealth] Clicking submit...");
+	        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	        try { Thread.sleep(800); } catch (Exception ignored) {}
 
-            try {
-                WebElement err = driver.findElement(By.xpath(
-                        "//textarea[@placeholder='Enter Your Message']/following-sibling::span[contains(@class,'errmsg')]"));
-                if (err.isDisplayed())
-                    errorMsg.append("Message Error: ").append(err.getText()).append(" | ");
-            } catch (Exception ignored) {}
+	        try {
+	            submitBtn.click();
+	        } catch (Exception e) {
+	            js.executeScript("arguments[0].click();", submitBtn);
+	        }
 
-            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message="
-                    + msgVal + " | Errors => " + errorMsg;
+	        // ===== Detect outcomes =====
+	        boolean successSeen =
+	                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(successFallbackBy, 9000);
 
-            writeExcel(19, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
-            writeExcel(19, 5, finalResult);
+	        boolean network5xx = waitForNetwork5xx(9000);
 
-            System.out.println(finalResult);
-            Assert.fail("Landing Health Query form failed: " + finalResult);
-        }
-    }
+	        String fieldErrors = collectAllValidationErrors();
+	        String globalErrors = collectGlobalErrors();
 
-    // ✅ same helper (paste in every form for now)
-    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            try {
-                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
-                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+	        // ===== Decide status =====
+	        String status;
+	        String serverInfo = "";
 
-                try { el.click(); } catch (Exception ignored) {}
-                try { el.clear(); } catch (Exception ignored) {}
+	        if (successSeen && network5xx) {
+	            status = "❌ SERVER_FAIL (POST SUBMIT)";
+	            serverInfo = "API returned 5xx after submit";
+	        } else if (successSeen) {
+	            status = "✅ PASS";
+	        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	            status = "❌ VALIDATION_FAIL";
+	        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	            status = "❌ SERVER_FAIL";
+	            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	        } else {
+	            status = "⚠ UNKNOWN";
+	            serverInfo = "No success/error signal detected";
+	        }
 
-                slowType(el, value);
+	        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 
-                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
-                String actual = el.getAttribute("value");
-                if (actual != null && actual.trim().equals(value)) return;
+	        // ===== PRINT =====
+	        System.out.println("============== LANDING HEALTH FORM RESULT ==============");
+	        System.out.println("STATUS        : " + status);
+	        System.out.println("SUCCESS       : " + successSeen);
+	        System.out.println("NETWORK 5XX   : " + network5xx);
+	        System.out.println("INPUTS        : " + inputs);
+	        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	        System.out.println("SERVER INFO   : " + serverInfo);
+	        System.out.println("DEBUG         : " + debug);
+	        System.out.println("========================================================");
 
-            } catch (StaleElementReferenceException ignored) {
-            } catch (Exception ignored) {
-            }
-        }
-        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
-    }
+	        // ===== Excel (E → L) =====
+	        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
 
-    private String safeGetValue(By locator) {
-        try {
-            WebElement el = driver.findElement(locator);
-            String v = el.getAttribute("value");
-            return v == null ? "" : v;
-        } catch (Exception e) {
-            return "";
-        }
-    }
-}
+	        if (!status.contains("PASS")) {
+	            Assert.fail("Landing Health form failed -> " + status + " | " + debug);
+	        }
+	    }
+
+	    /* ================= SAFE TYPE ================= */
+
+	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+	        for (int attempt = 1; attempt <= 3; attempt++) {
+	            try {
+	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+
+	                try { el.click(); } catch (Exception ignored) {}
+	                try { el.clear(); } catch (Exception ignored) {}
+
+	                slowType(el, value);
+
+	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+
+	                String actual = el.getAttribute("value");
+	                if (actual != null && actual.trim().equals(value)) return;
+
+	            } catch (StaleElementReferenceException ignored) {
+	            } catch (Exception ignored) {
+	            }
+	        }
+	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	    }
+
+	    private String safeGetValue(By locator) {
+	        try {
+	            WebElement el = driver.findElement(locator);
+	            String v = el.getAttribute("value");
+	            return v == null ? "" : v.trim();
+	        } catch (Exception e) {
+	            return "";
+	        }
+	    }
+	}

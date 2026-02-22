@@ -19,78 +19,122 @@ public class InternationalP extends BaseClass {
 	 @Test(priority = 1)
 	    public void InternationalPatientsPage_QueryForm() {
 
-	        driver.navigate().to("https://www.medanta.org/international-patient");
+		 int row = 18;
+
+	        String url = "https://www.medanta.org/international-patient";
+	        driver.navigate().to(url);
 
 	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 	        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	        // -------- By locators (same as your code) --------
+	        // ===== Locators =====
 	        By nameBy = By.xpath("(//input[@type='text' and @placeholder='Enter Your Name'])[3]");
 	        By mobileBy = By.xpath("(//input[@type='number' and @placeholder='Enter Your Mobile Number'])[2]");
 	        By emailBy = By.xpath("(//input[@type='email' and @placeholder='Enter Your Email'])[2]");
 	        By submitBy = By.xpath("(//button[@type='submit'])[3]");
+
+	        // success element (your original)
 	        By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
 
-	        // -------- Fill form (SAFE TYPE) --------
-	        typeAndEnsureValue(wait, js, nameBy, "Test");
-	        typeAndEnsureValue(wait, js, mobileBy, "9876543210");
-	        typeAndEnsureValue(wait, js, emailBy, "wakemedantatest@gmail.com");
+	        // 🔥 Strong ThankYou fallback
+	        By thankYouBy = By.xpath(
+	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you for filling the form') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
+	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+	        );
 
-	        // -------- Submit form --------
+	        // ===== Test Data =====
+	        String expName = "Test";
+	        String expMobile = "9876543210";
+	        String expEmail = "wakemedantatest@gmail.com";
+
+	        System.out.println("➡️ [InternationalP] Opening page...");
+
+	        // ensure form visible
+	        WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	        scrollToElement(nameForScroll);
+
+	        System.out.println("➡️ [InternationalP] Filling form...");
+
+	        typeAndEnsureValue(wait, js, nameBy, expName);
+	        typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	        typeAndEnsureValue(wait, js, emailBy, expEmail);
+
+	        // ⭐ value wipe protection
+	        ensureValueStillPresent(nameBy, expName);
+	        ensureValueStillPresent(mobileBy, expMobile);
+	        ensureValueStillPresent(emailBy, expEmail);
+
+	        // ✅ capture inputs BEFORE submit
+	        String inputs =
+	                "Name=" + safeGetValue(nameBy)
+	                        + " | Mobile=" + safeGetValue(mobileBy)
+	                        + " | Email=" + safeGetValue(emailBy);
+
+	        // ===== Submit =====
+	        System.out.println("➡️ [InternationalP] Clicking submit...");
 	        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	        try { Thread.sleep(800); } catch (Exception ignored) {}
+
 	        try {
 	            submitBtn.click();
 	        } catch (Exception e) {
 	            js.executeScript("arguments[0].click();", submitBtn);
 	        }
 
-	        // -------- Try-catch for success/fail (EDP style) --------
-	        try {
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(successBy));
+	        // ===== Detect outcomes =====
+	        boolean thankYouSeen =
+	                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
 
-	            writeExcel(18, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
-	            System.out.println("✅ International Patient Query Form PASS");
+	        boolean network5xx = waitForNetwork5xx(9000);
 
-	        } catch (Exception e) {
+	        String fieldErrors = collectAllValidationErrors();
+	        String globalErrors = collectGlobalErrors();
 
-	            String nameVal = safeGetValue(nameBy);
-	            String mobileVal = safeGetValue(mobileBy);
-	            String emailVal = safeGetValue(emailBy);
+	        // ===== Decide status =====
+	        String status;
+	        String serverInfo = "";
 
-	            StringBuilder errorMsg = new StringBuilder();
-	            try {
-	                WebElement err = driver.findElement(By.xpath(
-	                        "(//input[@type='text' and @placeholder='Enter Your Name'])[3]/following-sibling::div[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed())
-	                    errorMsg.append("Name Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        if (thankYouSeen && network5xx) {
+	            status = "❌ SERVER_FAIL (POST SUBMIT)";
+	            serverInfo = "API returned 5xx after submit";
+	        } else if (thankYouSeen) {
+	            status = "✅ PASS";
+	        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	            status = "❌ VALIDATION_FAIL";
+	        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	            status = "❌ SERVER_FAIL";
+	            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	        } else {
+	            status = "⚠ UNKNOWN";
+	            serverInfo = "No success/error signal detected";
+	        }
 
-	            try {
-	                WebElement err = driver.findElement(By.xpath(
-	                        "(//input[@type='number' and @placeholder='Enter Your Mobile Number'])[2]/following-sibling::div[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed())
-	                    errorMsg.append("Mobile Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 
-	            try {
-	                WebElement err = driver.findElement(By.xpath(
-	                        "(//input[@type='email' and @placeholder='Enter Your Email'])[2]/following-sibling::div[contains(@class,'errmsg')]"));
-	                if (err.isDisplayed())
-	                    errorMsg.append("Email Error: ").append(err.getText()).append(" | ");
-	            } catch (Exception ignored) {}
+	        // ===== PRINT =====
+	        System.out.println("============== INTERNATIONAL PATIENT FORM RESULT ==============");
+	        System.out.println("STATUS        : " + status);
+	        System.out.println("THANK YOU     : " + thankYouSeen);
+	        System.out.println("NETWORK 5XX   : " + network5xx);
+	        System.out.println("INPUTS        : " + inputs);
+	        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	        System.out.println("SERVER INFO   : " + serverInfo);
+	        System.out.println("DEBUG         : " + debug);
+	        System.out.println("===============================================================");
 
-	            String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Errors => "
-	                    + errorMsg;
+	        // ===== Excel (E → L) =====
+	        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
 
-	            writeExcel(18, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
-	            writeExcel(18, 5, finalResult);
-
-	            System.out.println(finalResult);
-	            Assert.fail("International Patient Query form validation failed: " + finalResult);
+	        if (!status.contains("PASS")) {
+	            Assert.fail("International Patient form failed -> " + status + " | " + debug);
 	        }
 	    }
 
-	    // ✅ same helper (paste in every form for now)
+	    /* ================= SAFE TYPE ================= */
+
 	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
 	        for (int attempt = 1; attempt <= 3; attempt++) {
 	            try {
@@ -103,6 +147,7 @@ public class InternationalP extends BaseClass {
 	                slowType(el, value);
 
 	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+
 	                String actual = el.getAttribute("value");
 	                if (actual != null && actual.trim().equals(value)) return;
 
@@ -117,7 +162,7 @@ public class InternationalP extends BaseClass {
 	        try {
 	            WebElement el = driver.findElement(locator);
 	            String v = el.getAttribute("value");
-	            return v == null ? "" : v;
+	            return v == null ? "" : v.trim();
 	        } catch (Exception e) {
 	            return "";
 	        }

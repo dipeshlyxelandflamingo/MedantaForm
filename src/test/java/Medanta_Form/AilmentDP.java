@@ -16,176 +16,176 @@ import Base.BaseClass;
 public class AilmentDP extends BaseClass {
 
 	@Test(priority = 1)
-	public void AilmentDetailPage_RequestCallBackForm() {
+    public void AilmentDetailPage_RequestCallBackForm() {
 
-		driver.navigate().to(
-				"https://www.medanta.org/hospitals-near-me/gurugram-hospital/speciality/orthopaedics/disease/achilles-tendon-injury-symptoms-causes-treatment-recovery");
+        int row = 1;
 
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-		JavascriptExecutor js = (JavascriptExecutor) driver;
+        String url =
+                "https://www.medanta.org/hospitals-near-me/gurugram-hospital/speciality/orthopaedics/disease/achilles-tendon-injury-symptoms-causes-treatment-recovery";
 
-		// ---------- Locators (By use karenge; WebElement store nahi) ----------
-		By nameBy = By.name("name");
-		By mobileBy = By.name("mobile");
-		By emailBy = By.name("email");
-		By messageBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
-		By submitBy = By.xpath("(//button[@type='submit'])[3]");
-		By thankYouBy = By.xpath("//*[contains(text(),'Thank you')]");
+        driver.navigate().to(url);
 
-		// ---------- Wait for form ----------
-		wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-		// ---------- Scroll to form ----------
-		WebElement nameElForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-		js.executeScript("arguments[0].scrollIntoView({block:'center'});", nameElForScroll);
+        // ===== Locators =====
+        By nameBy = By.name("name");
+        By mobileBy = By.name("mobile");
+        By emailBy = By.name("email");
+        By messageBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
+        By submitBy = By.xpath("(//button[@type='submit'])[3]");
 
-		// ---------- Fill Form (type + verify + retry) ----------
-		typeAndEnsureValue(wait, js, nameBy, "dipesh");
-		typeAndEnsureValue(wait, js, mobileBy, "9876543210");
-		typeAndEnsureValue(wait, js, emailBy, "dipesh@yopmail.com");
-		typeAndEnsureValue(wait, js, messageBy, "test message");
+        // 🔥 Strong thank you locator (handles toast/modal/text variations)
+        By thankYouBy = By.xpath(
+                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+        );
 
-		// ---------- Final safety check (re-find fresh elements) ----------
-		Assert.assertEquals(driver.findElement(nameBy).getAttribute("value"), "dipesh", "Name changed unexpectedly");
-		Assert.assertEquals(driver.findElement(mobileBy).getAttribute("value"), "9876543210",
-				"Mobile changed unexpectedly");
-		Assert.assertEquals(driver.findElement(emailBy).getAttribute("value"), "dipesh@yopmail.com",
-				"Email changed unexpectedly");
-		Assert.assertEquals(driver.findElement(messageBy).getAttribute("value"), "test message",
-				"Message changed unexpectedly");
+        // ===== Test Data =====
+        String expName = "dipesh";
+        String expMobile = "9876543210";
+        String expEmail = "dipesh@yopmail.com";
+        String expMsg = "test message";
 
-		// ---------- Submit ONLY after all fields ----------
-		WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-		js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+        System.out.println("➡️ [AilmentDP] Opening page...");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
 
-		try {
-			Thread.sleep(800);
-		} catch (InterruptedException ignored) {
-		}
+        // Scroll to form
+        WebElement nameElForScroll =
+                wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", nameElForScroll);
 
-		try {
-			submitBtn.click();
-		} catch (Exception e) {
-			js.executeScript("arguments[0].click();", submitBtn);
-		}
+        System.out.println("➡️ [AilmentDP] Filling form...");
 
-		try {
-			// ---------- PASS condition ----------
-			wait.until(ExpectedConditions.visibilityOfElementLocated(thankYouBy));
+        typeAndEnsureValue(wait, js, nameBy, expName);
+        typeAndEnsureValue(wait, js, mobileBy, expMobile);
+        typeAndEnsureValue(wait, js, emailBy, expEmail);
+        typeAndEnsureValue(wait, js, messageBy, expMsg);
 
-			writeExcel(1, 4, "✅ FORM SUBMITTED SUCCESSFULLY!");
-			System.out.println("✅ FORM SUBMITTED SUCCESSFULLY!");
+        // ⭐ value wipe protection
+        ensureValueStillPresent(nameBy, expName);
+        ensureValueStillPresent(mobileBy, expMobile);
+        ensureValueStillPresent(emailBy, expEmail);
+        ensureValueStillPresent(messageBy, expMsg);
 
-		} catch (Exception e) {
+        // ✅ IMPORTANT — capture inputs BEFORE submit
+        String inputs =
+                "Name=" + safeGetValue(nameBy)
+                        + " | Mobile=" + safeGetValue(mobileBy)
+                        + " | Email=" + safeGetValue(emailBy)
+                        + " | Message=" + safeGetValue(messageBy);
 
-			System.out.println("❌ FORM FAIL");
+        // ===== Submit =====
+        System.out.println("➡️ [AilmentDP] Clicking submit...");
 
-			// ---------- Get filled values (fresh find) ----------
-			String nameVal = safeGetValue(nameBy);
-			String mobileVal = safeGetValue(mobileBy);
-			String emailVal = safeGetValue(emailBy);
-			String msgVal = safeGetValue(messageBy);
+        WebElement submitBtn =
+                wait.until(ExpectedConditions.elementToBeClickable(submitBy));
 
-			// ---------- Get errors ----------
-			StringBuilder errorMsg = new StringBuilder();
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
 
-			try {
-				WebElement nameError = driver.findElement(
-						By.xpath("//input[@name='name']/following-sibling::span[contains(@class,'error')]"));
-				if (nameError.isDisplayed()) {
-					errorMsg.append("Name Error: ").append(nameError.getText()).append(" | ");
-				}
-			} catch (Exception ignored) {
-			}
+        try { Thread.sleep(800); } catch (InterruptedException ignored) {}
 
-			try {
-				WebElement mobileError = driver.findElement(
-						By.xpath("//input[@name='mobile']/following-sibling::span[contains(@class,'error')]"));
-				if (mobileError.isDisplayed()) {
-					errorMsg.append("Mobile Error: ").append(mobileError.getText()).append(" | ");
-				}
-			} catch (Exception ignored) {
-			}
+        try {
+            submitBtn.click();
+        } catch (Exception e) {
+            js.executeScript("arguments[0].click();", submitBtn);
+        }
 
-			try {
-				WebElement emailEl = driver.findElement(emailBy);
-				String emailError = emailEl.getAttribute("validationMessage");
-				if (emailError != null && !emailError.isEmpty()) {
-					errorMsg.append("Email Error: ").append(emailError).append(" | ");
-				}
-			} catch (Exception ignored) {
-			}
+        // ===== Detect results =====
+        boolean thankYouSeen = waitForFlashPresence(thankYouBy, 8000);
+        boolean network5xx = waitForNetwork5xx(9000);
 
-			String finalResult = "Name=" + nameVal + " | Mobile=" + mobileVal + " | Email=" + emailVal + " | Message="
-					+ msgVal + " | Errors => " + errorMsg;
+        String fieldErrors = collectAllValidationErrors();
+        String globalErrors = collectGlobalErrors();
 
-			// ---------- Write to Excel ----------
-			writeExcel(1, 4, "❌ FORM NOT SUBMITTED SUCCESSFULLY! FAIL");
-			writeExcel(1, 5, finalResult);
+        // ===== Decide status =====
+        String status;
+        String serverInfo = "";
 
-			System.out.println(finalResult);
-			Assert.fail("Form validation failed");
-		}
-	}
+        if (thankYouSeen && network5xx) {
+            status = "❌ SERVER_FAIL (POST SUBMIT)";
+            serverInfo = "API returned 5xx after submit";
+        } else if (thankYouSeen) {
+            status = "✅ PASS";
+        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+            status = "❌ VALIDATION_FAIL";
+        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+            status = "❌ SERVER_FAIL";
+            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+        } else {
+            status = "⚠ UNKNOWN";
+            serverInfo = "No success/error signal detected";
+        }
 
-	// ============================================================
-	// ✅ Helper: Type + verify value persists (handles re-render/value reset)
-	// ============================================================
-	private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 
-		for (int attempt = 1; attempt <= 3; attempt++) {
-			try {
-				WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
-				js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+        // ===== PRINT =====
+        System.out.println("============== AILMENTDP FORM RESULT ==============");
+        System.out.println("STATUS        : " + status);
+        System.out.println("THANK YOU     : " + thankYouSeen);
+        System.out.println("NETWORK 5XX   : " + network5xx);
+        System.out.println("INPUTS        : " + inputs);
+        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+        System.out.println("SERVER INFO   : " + serverInfo);
+        System.out.println("DEBUG         : " + debug);
+        System.out.println("===================================================");
 
-				try {
-					el.click();
-				} catch (Exception ignored) {
-				}
-				try {
-					el.clear();
-				} catch (Exception ignored) {
-				}
+        // ===== Excel =====
+        writeFormResult(
+                row,
+                status,
+                inputs,
+                fieldErrors,
+                globalErrors,
+                serverInfo,
+                thankYouSeen,
+                debug
+        );
 
-				// Use your existing slowType from BaseClass
-				slowType(el, value);
+        if (!status.contains("PASS")) {
+            Assert.fail("AilmentDP form failed -> " + status + " | " + debug);
+        }
+    }
 
-				// small settle
-				try {
-					Thread.sleep(250);
-				} catch (InterruptedException ignored) {
-				}
+    /* ================= SAFE TYPE ================= */
 
-				// re-check value
-				String actual = el.getAttribute("value");
-				if (actual != null && actual.trim().equals(value)) {
-					return; // ✅ OK
-				}
+    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
 
-				System.out.println("⚠ Retry " + attempt + " | locator=" + locator + " | expected='" + value
-						+ "' | actual='" + actual + "'");
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
 
-			} catch (StaleElementReferenceException sere) {
-				// re-render case: retry
-				System.out.println("⚠ Stale element, retry " + attempt + " | locator=" + locator);
-			} catch (Exception ex) {
-				System.out.println("⚠ Exception, retry " + attempt + " | locator=" + locator + " | " + ex.getMessage());
-			}
-		}
+                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
-		Assert.fail("Value did not persist after retries for locator: " + locator + " expected='" + value + "'");
-	}
+                try { el.click(); } catch (Exception ignored) {}
+                try { el.clear(); } catch (Exception ignored) {}
 
-	// ============================================================
-	// ✅ Helper: Safe get value (so failure logs don't crash)
-	// ============================================================
-	private String safeGetValue(By locator) {
-		try {
-			WebElement el = driver.findElement(locator);
-			String v = el.getAttribute("value");
-			return v == null ? "" : v;
-		} catch (Exception e) {
-			return "";
-		}
-	}
+                slowType(el, value);
+
+                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+
+                String actual = el.getAttribute("value");
+
+                if (actual != null && actual.trim().equals(value))
+                    return;
+
+            } catch (StaleElementReferenceException ignored) {
+            } catch (Exception ignored) {
+            }
+        }
+
+        Assert.fail("Value did not persist for locator: " + locator);
+    }
+
+    private String safeGetValue(By locator) {
+        try {
+            WebElement el = driver.findElement(locator);
+            String v = el.getAttribute("value");
+            return v == null ? "" : v.trim();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }
