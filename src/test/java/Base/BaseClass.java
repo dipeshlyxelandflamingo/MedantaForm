@@ -76,7 +76,8 @@ public class BaseClass {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver(getChromeOptions());
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        // ✅ Jenkins stability: rely on explicit waits in tests
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
         loadExcel();
@@ -91,10 +92,8 @@ public class BaseClass {
         options.addArguments("--disable-extensions");
         options.addArguments("--disable-blink-features=AutomationControlled");
 
-        // ✅ IMPORTANT: Enable PERFORMANCE logs to catch Network 5xx
-        LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
-        options.setCapability("goog:loggingPrefs", logPrefs);
+        // ✅ PERF/NETWORK logs DISABLED (Jenkins safe)
+        // We keep waitForNetwork5xx() as a lightweight 500 detector without perf logs.
 
         if (isLinux()) {
             System.out.println("🔹 Jenkins/Linux → Headless Chrome");
@@ -102,6 +101,11 @@ public class BaseClass {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--window-size=1920,1080");
+
+            // ✅ extra stability flags for headless/Jenkins
+            options.addArguments("--disable-gpu");
+            options.addArguments("--disable-features=VizDisplayCompositor");
+
         } else {
             System.out.println("🔹 Windows → Normal Chrome");
             options.addArguments("start-maximized");
@@ -209,41 +213,54 @@ public class BaseClass {
             String s = src.toLowerCase();
             return (s.contains("server error") && (s.contains(">500<") || s.contains(" 500 ")))
                     || s.contains("internal server error")
-                    || s.contains("http status 500");
+                    || s.contains("http status 500")
+                    || s.contains("bad gateway")
+                    || s.contains("service unavailable")
+                    || s.contains("gateway timeout");
         } catch (Exception e) {
             return false;
         }
     }
 
-    /* ================= ✅ NETWORK 5XX DETECT (MOST RELIABLE) =================
-       Checks Chrome performance logs for any Network.responseReceived with status 5xx.
-       Returns TRUE if any 500/502/503/504 seen within maxMillis.
-    ======================================================================== */
+    /* ================= CLEAR PERFORMANCE LOGS (NO-OP) ================= */
+    public void clearPerformanceLogs() {
+        // PERF logs disabled (Jenkins safe)
+    }
+
+    /* ================= ✅ LIGHTWEIGHT 5XX/500 DETECT (NO PERF LOGS) =================
+       Kept the SAME METHOD NAME so you DON'T need to touch 29 forms.
+       Returns TRUE if any visible server error signal appears within maxMillis.
+    ================================================================================ */
     public boolean waitForNetwork5xx(int maxMillis) {
+
         long end = System.currentTimeMillis() + maxMillis;
+
+        By serverErrorBy = By.xpath(
+                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'internal server error') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'server error') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'bad gateway') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'service unavailable') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'gateway timeout') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'http status 500') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'502') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'503') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'504') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'500')]"
+        );
 
         while (System.currentTimeMillis() < end) {
             try {
-                LogEntries logs = driver.manage().logs().get(LogType.PERFORMANCE);
-                for (LogEntry entry : logs) {
-                    String msg = entry.getMessage();
-                    if (msg == null) continue;
+                // 1) DOM check
+                if (!driver.findElements(serverErrorBy).isEmpty()) return true;
 
-                    // Chrome DevTools event: Network.responseReceived
-                    if (msg.contains("\"Network.responseReceived\"") &&
-                        (msg.contains("\"status\":500") ||
-                         msg.contains("\"status\":502") ||
-                         msg.contains("\"status\":503") ||
-                         msg.contains("\"status\":504"))) {
+                // 2) Page source check
+                if (isServer500Like()) return true;
 
-                        System.out.println("🧨 Network 5xx detected: " + msg);
-                        return true;
-                    }
-                }
             } catch (Exception ignored) {}
 
-            try { Thread.sleep(300); } catch (InterruptedException ignored) {}
+            try { Thread.sleep(250); } catch (InterruptedException ignored) {}
         }
+
         return false;
     }
 

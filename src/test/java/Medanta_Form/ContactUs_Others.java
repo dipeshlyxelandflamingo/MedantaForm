@@ -16,141 +16,169 @@ import Base.BaseClass;
 
 public class ContactUs_Others extends BaseClass {
 
-	 @Test(priority = 1)
+	  @Test(priority = 1)
 	    public void ContactUsPage_OthersForm() {
 
 	        int row = 7;
 
-	        String url = "https://www.medanta.org/contact-us";
-	        driver.navigate().to(url);
-
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-	        JavascriptExecutor js = (JavascriptExecutor) driver;
-
-	        System.out.println("➡️ [ContactUs_Others] Opening page...");
-
-	        try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
-
-	        // loader disappear
-	        try {
-	            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".form-loader.loading")));
-	        } catch (Exception ignored) {}
-
-	        // Open Others Form
-	        WebElement otherFormBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("other-form")));
-	        otherFormBtn.click();
-
-	        try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
-
-	        // ===== Locators =====
-	        By nameBy = By.xpath("(//input[@placeholder='Enter Your Name'])[5]");
-	        By emailBy = By.xpath("(//input[@placeholder='Enter Your E-mail'])[3]");
-	        By hospitalBy = By.xpath("(//select[@name='hospital'])[2]");
-	        By mobileBy = By.xpath("(//input[@placeholder='Enter Your Phone Number'])[3]");
-	        By messageBy = By.xpath("(//textarea[@placeholder='Enter Your Message Here'])[2]");
-	        By submitBy = By.xpath("(//button[@type='submit'])[5]");
-
-	        // Success element (your original)
-	        By successBy = By.xpath("//div[contains(@class,'successmsg') and contains(text(),'Thank you')]");
-
-	        // 🔥 Strong ThankYou fallback
-	        By thankYouBy = By.xpath(
-	                "//*[contains(@class,'successmsg') and contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank')]"
-	                        + " | //*[(contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted'))]"
-	        );
-
-	        // ===== Test Data =====
-	        String expName = "dipesh";
-	        String expEmail = "dipesh@yopmail.com";
-	        int hospitalIndex = 1;
-	        String expMobile = "9876543210";
-	        String expMsg = "Test";
-
-	        System.out.println("➡️ [ContactUs_Others] Filling form...");
-
-	        typeAndEnsureValue(wait, js, nameBy, expName);
-	        typeAndEnsureValue(wait, js, emailBy, expEmail);
-
-	        // Dropdown
-	        selectByIndexAndEnsure(wait, hospitalBy, hospitalIndex);
-	        String hospitalVal = safeGetSelectedText(wait, hospitalBy);
-
-	        typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	        typeAndEnsureValue(wait, js, messageBy, expMsg);
-
-	        // ⭐ value wipe protection for text fields
-	        ensureValueStillPresent(nameBy, expName);
-	        ensureValueStillPresent(emailBy, expEmail);
-	        ensureValueStillPresent(mobileBy, expMobile);
-	        ensureValueStillPresent(messageBy, expMsg);
-
-	        // ✅ capture inputs BEFORE submit
-	        String inputs =
-	                "Name=" + safeGetValue(nameBy)
-	                        + " | Email=" + safeGetValue(emailBy)
-	                        + " | Hospital=" + hospitalVal
-	                        + " | Mobile=" + safeGetValue(mobileBy)
-	                        + " | Message=" + safeGetValue(messageBy);
-
-	        // ===== Submit =====
-	        System.out.println("➡️ [ContactUs_Others] Clicking submit...");
-	        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-
-	        try { Thread.sleep(800); } catch (Exception ignored) {}
-
-	        try {
-	            submitBtn.click();
-	        } catch (Exception e) {
-	            js.executeScript("arguments[0].click();", submitBtn);
-	        }
-
-	        // ===== Detect outcomes =====
-	        boolean thankYouSeen =
-	                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
-
-	        boolean network5xx = waitForNetwork5xx(9000);
-
-	        String fieldErrors = collectAllValidationErrors();
-	        String globalErrors = collectGlobalErrors();
-
-	        // ===== Decide status =====
-	        String status;
+	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
+	        String status = "⚠ UNKNOWN";
+	        String inputs = "";
+	        String fieldErrors = "";
+	        String globalErrors = "";
 	        String serverInfo = "";
+	        boolean thankYouSeen = false;
+	        String debug = "";
 
-	        if (thankYouSeen && network5xx) {
-	            status = "❌ SERVER_FAIL (POST SUBMIT)";
-	            serverInfo = "API returned 5xx after submit";
-	        } else if (thankYouSeen) {
-	            status = "✅ PASS";
-	        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-	            status = "❌ VALIDATION_FAIL";
-	        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	            status = "❌ SERVER_FAIL";
-	            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
-	        } else {
-	            status = "⚠ UNKNOWN";
-	            serverInfo = "No success/error signal detected";
+	        try {
+	            String url = "https://www.medanta.org/contact-us";
+	            driver.navigate().to(url);
+
+	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	            JavascriptExecutor js = (JavascriptExecutor) driver;
+
+	            System.out.println("➡️ [ContactUs_Others] Opening page...");
+
+	            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+
+	            // loader disappear
+	            try {
+	                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".form-loader.loading")));
+	            } catch (Exception ignored) {}
+
+	            // Open Others Form
+	            WebElement otherFormBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("other-form")));
+	            otherFormBtn.click();
+
+	            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+
+	            // ===== Locators =====
+	            By nameBy = By.xpath("(//input[@placeholder='Enter Your Name'])[5]");
+	            By emailBy = By.xpath("(//input[@placeholder='Enter Your E-mail'])[3]");
+	            By hospitalBy = By.xpath("(//select[@name='hospital'])[2]");
+	            By mobileBy = By.xpath("(//input[@placeholder='Enter Your Phone Number'])[3]");
+	            By messageBy = By.xpath("(//textarea[@placeholder='Enter Your Message Here'])[2]");
+	            By submitBy = By.xpath("(//button[@type='submit'])[5]");
+
+	            // Success element (your original)
+	            By successBy = By.xpath("//div[contains(@class,'successmsg') and contains(text(),'Thank you')]");
+
+	            // 🔥 Strong ThankYou fallback
+	            By thankYouBy = By.xpath(
+	                    "//*[contains(@class,'successmsg') and contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank')]"
+	                            + " | //*[(contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted'))]"
+	            );
+
+	            // ===== Test Data =====
+	            String expName = "dipesh";
+	            String expEmail = "dipesh@yopmail.com";
+	            int hospitalIndex = 1;
+	            String expMobile = "9876543210";
+	            String expMsg = "Test";
+
+	            System.out.println("➡️ [ContactUs_Others] Filling form...");
+
+	            typeAndEnsureValue(wait, js, nameBy, expName);
+	            typeAndEnsureValue(wait, js, emailBy, expEmail);
+
+	            // Dropdown
+	            selectByIndexAndEnsure(wait, hospitalBy, hospitalIndex);
+	            String hospitalVal = safeGetSelectedText(wait, hospitalBy);
+
+	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	            typeAndEnsureValue(wait, js, messageBy, expMsg);
+
+	            // ⭐ value wipe protection for text fields
+	            ensureValueStillPresent(nameBy, expName);
+	            ensureValueStillPresent(emailBy, expEmail);
+	            ensureValueStillPresent(mobileBy, expMobile);
+	            ensureValueStillPresent(messageBy, expMsg);
+
+	            // ✅ capture inputs BEFORE submit
+	            inputs =
+	                    "Name=" + safeGetValue(nameBy)
+	                            + " | Email=" + safeGetValue(emailBy)
+	                            + " | Hospital=" + hospitalVal
+	                            + " | Mobile=" + safeGetValue(mobileBy)
+	                            + " | Message=" + safeGetValue(messageBy);
+
+	            // ===== Submit =====
+	            System.out.println("➡️ [ContactUs_Others] Clicking submit...");
+	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+
+	            try { Thread.sleep(800); } catch (Exception ignored) {}
+
+	            // ✅ Recommended: clear perf logs before submit, so only post-submit 5xx is captured
+	            clearPerformanceLogs();
+
+	            try {
+	                submitBtn.click();
+	            } catch (Exception e) {
+	                js.executeScript("arguments[0].click();", submitBtn);
+	            }
+
+	            // ===== Detect outcomes =====
+	            thankYouSeen =
+	                    waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
+
+	            boolean network5xx = waitForNetwork5xx(9000);
+
+	            fieldErrors = collectAllValidationErrors();
+	            globalErrors = collectGlobalErrors();
+
+	            // ===== Decide status =====
+	            if (thankYouSeen && network5xx) {
+	                status = "❌ SERVER_FAIL (POST SUBMIT)";
+	                serverInfo = "API returned 5xx after submit";
+	            } else if (thankYouSeen) {
+	                status = "✅ PASS";
+	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	                status = "❌ VALIDATION_FAIL";
+	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	                status = "❌ SERVER_FAIL";
+	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	            } else {
+	                status = "⚠ UNKNOWN";
+	                serverInfo = "No success/error signal detected";
+	            }
+
+	        } catch (Exception e) {
+
+	            status = "❌ EXCEPTION";
+	            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
+
+	            if (isServer500Like()) {
+	                status = "❌ SERVER_FAIL (PAGE 500)";
+	                serverInfo = "500 page detected during flow";
+	            }
+
+	        } finally {
+
+	            // Always compute debug safely
+	            try {
+	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+	            } catch (Exception ignored) {
+	                debug = "Debug not available";
+	            }
+
+	            // ===== PRINT =====
+	            System.out.println("============== CONTACT US OTHERS FORM RESULT ==============");
+	            System.out.println("STATUS        : " + status);
+	            System.out.println("THANK YOU     : " + thankYouSeen);
+	            System.out.println("INPUTS        : " + inputs);
+	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("SERVER INFO   : " + serverInfo);
+	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("===========================================================");
+
+	            // ✅ Excel ALWAYS writes
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
 	        }
 
-	        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
-
-	        // ===== PRINT =====
-	        System.out.println("============== CONTACT US OTHERS FORM RESULT ==============");
-	        System.out.println("STATUS        : " + status);
-	        System.out.println("THANK YOU     : " + thankYouSeen);
-	        System.out.println("NETWORK 5XX   : " + network5xx);
-	        System.out.println("INPUTS        : " + inputs);
-	        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	        System.out.println("SERVER INFO   : " + serverInfo);
-	        System.out.println("DEBUG         : " + debug);
-	        System.out.println("===========================================================");
-
-	        // ===== Excel (E → L) =====
-	        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
-
+	        // ✅ Fail AFTER excel write
 	        if (!status.contains("PASS")) {
 	            Assert.fail("ContactUs_Others form failed -> " + status + " | " + debug);
 	        }

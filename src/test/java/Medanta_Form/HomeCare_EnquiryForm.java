@@ -16,196 +16,224 @@ import Base.BaseClass;
 
 public class HomeCare_EnquiryForm extends BaseClass{
 	
-	@Test(priority = 1)
-    public void HomeCarePage_EnquiryForm() {
+	 @Test(priority = 1)
+	    public void HomeCarePage_EnquiryForm() {
 
-		int row = 15;
+	        int row = 15;
 
-        String url = "https://www.medanta.org/home-care";
-        driver.navigate().to(url);
+	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
+	        String status = "⚠ UNKNOWN";
+	        String inputs = "";
+	        String fieldErrors = "";
+	        String globalErrors = "";
+	        String serverInfo = "";
+	        boolean thankYouSeen = false;
+	        String debug = "";
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+	        try {
+	            String url = "https://www.medanta.org/home-care";
+	            driver.navigate().to(url);
 
-        // scroll to form section
-        js.executeScript("window.scrollBy(0,2000)");
-        try { Thread.sleep(800); } catch (Exception ignored) {}
+	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+	            JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        // ===== Locators =====
-        By nameBy = By.xpath("(//input[@placeholder='Enter Your Name'])[4]");
-        By mobileBy = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[3]");
-        By emailBy = By.xpath("(//input[@placeholder='Enter Your Email'])[4]");
-        By locationBy = By.xpath("//select[@placeholder='Select Location']");
-        By submitBy = By.xpath("(//button[@type='submit'])[4]");
+	            // scroll to form section
+	            js.executeScript("window.scrollBy(0,2000)");
+	            try { Thread.sleep(800); } catch (Exception ignored) {}
 
-        // success element (your original)
-        By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
+	            // ===== Locators =====
+	            By nameBy = By.xpath("(//input[@placeholder='Enter Your Name'])[4]");
+	            By mobileBy = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[3]");
+	            By emailBy = By.xpath("(//input[@placeholder='Enter Your Email'])[4]");
+	            By locationBy = By.xpath("//select[@placeholder='Select Location']");
+	            By submitBy = By.xpath("(//button[@type='submit'])[4]");
 
-        // 🔥 Strong ThankYou fallback
-        By thankYouBy = By.xpath(
-                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you for filling the form') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
-        );
+	            // success element (your original)
+	            By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
 
-        // ===== Test Data =====
-        String expName = "Dipesh";
-        String expMobile = "9876543210";
-        String expEmail = "dipesh@yopmail.com";
-        int locationIndex = 1;
+	            // 🔥 Strong ThankYou fallback
+	            By thankYouBy = By.xpath(
+	                    "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you for filling the form') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+	            );
 
-        System.out.println("➡️ [HomeCare_Enquiry] Opening page...");
+	            // ===== Test Data =====
+	            String expName = "Dipesh";
+	            String expMobile = "9876543210";
+	            String expEmail = "dipesh@yopmail.com";
+	            int locationIndex = 1;
 
-        // make sure first field is visible (safer than only scrollBy)
-        WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-        scrollToElement(nameForScroll);
+	            System.out.println("➡️ [HomeCare_Enquiry] Opening page...");
 
-        System.out.println("➡️ [HomeCare_Enquiry] Filling form...");
+	            // make sure first field is visible (safer than only scrollBy)
+	            WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	            scrollToElement(nameForScroll);
 
-        typeAndEnsureValue(wait, js, nameBy, expName);
-        typeAndEnsureValue(wait, js, mobileBy, expMobile);
-        typeAndEnsureValue(wait, js, emailBy, expEmail);
+	            System.out.println("➡️ [HomeCare_Enquiry] Filling form...");
 
-        // dropdown (ensure)
-        selectByIndexAndEnsure(wait, locationBy, locationIndex);
-        String locationVal = safeGetSelectedText(wait, locationBy);
+	            typeAndEnsureValue(wait, js, nameBy, expName);
+	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	            typeAndEnsureValue(wait, js, emailBy, expEmail);
 
-        // ⭐ value wipe protection
-        ensureValueStillPresent(nameBy, expName);
-        ensureValueStillPresent(mobileBy, expMobile);
-        ensureValueStillPresent(emailBy, expEmail);
+	            // dropdown (ensure)
+	            selectByIndexAndEnsure(wait, locationBy, locationIndex);
+	            String locationVal = safeGetSelectedText(wait, locationBy);
 
-        // ✅ capture inputs BEFORE submit
-        String inputs =
-                "Name=" + safeGetValue(nameBy)
-                        + " | Mobile=" + safeGetValue(mobileBy)
-                        + " | Email=" + safeGetValue(emailBy)
-                        + " | Location=" + locationVal;
+	            // ⭐ value wipe protection
+	            ensureValueStillPresent(nameBy, expName);
+	            ensureValueStillPresent(mobileBy, expMobile);
+	            ensureValueStillPresent(emailBy, expEmail);
 
-        // ===== Submit =====
-        System.out.println("➡️ [HomeCare_Enquiry] Clicking submit...");
-        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-        try { Thread.sleep(800); } catch (Exception ignored) {}
+	            // ✅ capture inputs BEFORE submit
+	            inputs =
+	                    "Name=" + safeGetValue(nameBy)
+	                            + " | Mobile=" + safeGetValue(mobileBy)
+	                            + " | Email=" + safeGetValue(emailBy)
+	                            + " | Location=" + locationVal;
 
-        try {
-            submitBtn.click();
-        } catch (Exception e) {
-            js.executeScript("arguments[0].click();", submitBtn);
-        }
+	            // ===== Submit =====
+	            System.out.println("➡️ [HomeCare_Enquiry] Clicking submit...");
+	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	            try { Thread.sleep(800); } catch (Exception ignored) {}
 
-        // ===== Detect outcomes =====
-        boolean thankYouSeen =
-                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
+	            // ✅ clear perf logs before submit, so only post-submit 5xx is captured
+	            clearPerformanceLogs();
 
-        boolean network5xx = waitForNetwork5xx(9000);
+	            try {
+	                submitBtn.click();
+	            } catch (Exception e) {
+	                js.executeScript("arguments[0].click();", submitBtn);
+	            }
 
-        String fieldErrors = collectAllValidationErrors();
-        String globalErrors = collectGlobalErrors();
+	            // ===== Detect outcomes =====
+	            thankYouSeen =
+	                    waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
 
-        // ===== Decide status =====
-        String status;
-        String serverInfo = "";
+	            boolean network5xx = waitForNetwork5xx(9000);
 
-        if (thankYouSeen && network5xx) {
-            status = "❌ SERVER_FAIL (POST SUBMIT)";
-            serverInfo = "API returned 5xx after submit";
-        } else if (thankYouSeen) {
-            status = "✅ PASS";
-        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-            status = "❌ VALIDATION_FAIL";
-        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-            status = "❌ SERVER_FAIL";
-            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
-        } else {
-            status = "⚠ UNKNOWN";
-            serverInfo = "No success/error signal detected";
-        }
+	            fieldErrors = collectAllValidationErrors();
+	            globalErrors = collectGlobalErrors();
 
-        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+	            // ===== Decide status =====
+	            if (thankYouSeen && network5xx) {
+	                status = "❌ SERVER_FAIL (POST SUBMIT)";
+	                serverInfo = "API returned 5xx after submit";
+	            } else if (thankYouSeen) {
+	                status = "✅ PASS";
+	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	                status = "❌ VALIDATION_FAIL";
+	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	                status = "❌ SERVER_FAIL";
+	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	            } else {
+	                status = "⚠ UNKNOWN";
+	                serverInfo = "No success/error signal detected";
+	            }
 
-        // ===== PRINT =====
-        System.out.println("============== HOMECARE ENQUIRY FORM RESULT ==============");
-        System.out.println("STATUS        : " + status);
-        System.out.println("THANK YOU     : " + thankYouSeen);
-        System.out.println("NETWORK 5XX   : " + network5xx);
-        System.out.println("INPUTS        : " + inputs);
-        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-        System.out.println("SERVER INFO   : " + serverInfo);
-        System.out.println("DEBUG         : " + debug);
-        System.out.println("=========================================================");
+	        } catch (Exception e) {
 
-        // ===== Excel (E → L) =====
-        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
+	            status = "❌ EXCEPTION";
+	            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
 
-        if (!status.contains("PASS")) {
-            Assert.fail("HomeCare Enquiry form failed -> " + status + " | " + debug);
-        }
-    }
+	            if (isServer500Like()) {
+	                status = "❌ SERVER_FAIL (PAGE 500)";
+	                serverInfo = "500 page detected during flow";
+	            }
 
-    /* ================= SAFE TYPE ================= */
+	        } finally {
 
-    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            try {
-                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
-                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+	            // Always compute debug safely
+	            try {
+	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+	            } catch (Exception ignored) {
+	                debug = "Debug not available";
+	            }
 
-                try { el.click(); } catch (Exception ignored) {}
-                try { el.clear(); } catch (Exception ignored) {}
+	            // ===== PRINT =====
+	            System.out.println("============== HOMECARE ENQUIRY FORM RESULT ==============");
+	            System.out.println("STATUS        : " + status);
+	            System.out.println("THANK YOU     : " + thankYouSeen);
+	            System.out.println("INPUTS        : " + inputs);
+	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("SERVER INFO   : " + serverInfo);
+	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("=========================================================");
 
-                slowType(el, value);
+	            // ✅ Excel ALWAYS writes
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
+	        }
 
-                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+	        // ✅ Fail AFTER excel write
+	        if (!status.contains("PASS")) {
+	            Assert.fail("HomeCare Enquiry form failed -> " + status + " | " + debug);
+	        }
+	    }
 
-                String actual = el.getAttribute("value");
-                if (actual != null && actual.trim().equals(value)) return;
+	    /* ================= SAFE TYPE ================= */
 
-            } catch (StaleElementReferenceException ignored) {
-            } catch (Exception ignored) {
-            }
-        }
-        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
-    }
+	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+	        for (int attempt = 1; attempt <= 3; attempt++) {
+	            try {
+	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
-    /* ================= DROPDOWN HELPERS ================= */
+	                try { el.click(); } catch (Exception ignored) {}
+	                try { el.clear(); } catch (Exception ignored) {}
 
-    private void selectByIndexAndEnsure(WebDriverWait wait, By selectLocator, int index) {
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            try {
-                WebElement dd = wait.until(ExpectedConditions.visibilityOfElementLocated(selectLocator));
-                Select s = new Select(dd);
-                s.selectByIndex(index);
+	                slowType(el, value);
 
-                String selected = s.getFirstSelectedOption().getText();
-                if (selected != null && !selected.trim().isEmpty()) return;
+	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
 
-            } catch (StaleElementReferenceException ignored) {
-            } catch (Exception ignored) {
-            }
-        }
-        Assert.fail("Dropdown selection did not persist for locator: " + selectLocator + " index=" + index);
-    }
+	                String actual = el.getAttribute("value");
+	                if (actual != null && actual.trim().equals(value)) return;
 
-    private String safeGetSelectedText(WebDriverWait wait, By selectLocator) {
-        try {
-            WebElement dd = wait.until(ExpectedConditions.visibilityOfElementLocated(selectLocator));
-            Select s = new Select(dd);
-            String txt = s.getFirstSelectedOption().getText();
-            return txt == null ? "" : txt.trim();
-        } catch (Exception e) {
-            return "";
-        }
-    }
+	            } catch (StaleElementReferenceException ignored) {
+	            } catch (Exception ignored) {
+	            }
+	        }
+	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	    }
 
-    private String safeGetValue(By locator) {
-        try {
-            WebElement el = driver.findElement(locator);
-            String v = el.getAttribute("value");
-            return v == null ? "" : v.trim();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-}
+	    /* ================= DROPDOWN HELPERS ================= */
+
+	    private void selectByIndexAndEnsure(WebDriverWait wait, By selectLocator, int index) {
+	        for (int attempt = 1; attempt <= 3; attempt++) {
+	            try {
+	                WebElement dd = wait.until(ExpectedConditions.visibilityOfElementLocated(selectLocator));
+	                Select s = new Select(dd);
+	                s.selectByIndex(index);
+
+	                String selected = s.getFirstSelectedOption().getText();
+	                if (selected != null && !selected.trim().isEmpty()) return;
+
+	            } catch (StaleElementReferenceException ignored) {
+	            } catch (Exception ignored) {
+	            }
+	        }
+	        Assert.fail("Dropdown selection did not persist for locator: " + selectLocator + " index=" + index);
+	    }
+
+	    private String safeGetSelectedText(WebDriverWait wait, By selectLocator) {
+	        try {
+	            WebElement dd = wait.until(ExpectedConditions.visibilityOfElementLocated(selectLocator));
+	            Select s = new Select(dd);
+	            String txt = s.getFirstSelectedOption().getText();
+	            return txt == null ? "" : txt.trim();
+	        } catch (Exception e) {
+	            return "";
+	        }
+	    }
+
+	    private String safeGetValue(By locator) {
+	        try {
+	            WebElement el = driver.findElement(locator);
+	            String v = el.getAttribute("value");
+	            return v == null ? "" : v.trim();
+	        } catch (Exception e) {
+	            return "";
+	        }
+	    }
+	}

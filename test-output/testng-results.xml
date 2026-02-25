@@ -2,28 +2,28 @@
 <testng-results ignored="0" total="1" passed="0" failed="1" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2026-02-22T18:17:50 IST" name="Default suite" finished-at="2026-02-22T18:18:33 IST" duration-ms="43089">
+  <suite started-at="2026-02-25T15:14:37 IST" name="Default suite" finished-at="2026-02-25T15:15:05 IST" duration-ms="28751">
     <groups>
     </groups>
-    <test started-at="2026-02-22T18:17:50 IST" name="Default test" finished-at="2026-02-22T18:18:33 IST" duration-ms="43089">
-      <class name="Medanta_Form.SecondOpiniun">
-        <test-method is-config="true" signature="writeExecutionDateOnce()[pri:0, instance:Medanta_Form.SecondOpiniun@451001e5]" started-at="2026-02-22T18:17:49 IST" name="writeExecutionDateOnce" finished-at="2026-02-22T18:17:50 IST" duration-ms="998" status="PASS">
+    <test started-at="2026-02-25T15:14:37 IST" name="Default test" finished-at="2026-02-25T15:15:05 IST" duration-ms="28751">
+      <class name="Medanta_Form.BecomeAPartner">
+        <test-method is-config="true" signature="writeExecutionDateOnce()[pri:0, instance:Medanta_Form.BecomeAPartner@2b40ff9c]" started-at="2026-02-25T15:14:36 IST" name="writeExecutionDateOnce" finished-at="2026-02-25T15:14:37 IST" duration-ms="1067" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- writeExecutionDateOnce -->
-        <test-method is-config="true" signature="openBrowser()[pri:0, instance:Medanta_Form.SecondOpiniun@451001e5]" started-at="2026-02-22T18:17:50 IST" name="openBrowser" finished-at="2026-02-22T18:17:53 IST" duration-ms="2520" status="PASS">
+        <test-method is-config="true" signature="openBrowser()[pri:0, instance:Medanta_Form.BecomeAPartner@2b40ff9c]" started-at="2026-02-25T15:14:37 IST" name="openBrowser" finished-at="2026-02-25T15:14:39 IST" duration-ms="2498" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openBrowser -->
-        <test-method signature="SecondOpinionPage_RequestACallbackForm()[pri:1, instance:Medanta_Form.SecondOpiniun@451001e5]" started-at="2026-02-22T18:17:53 IST" name="SecondOpinionPage_RequestACallbackForm" finished-at="2026-02-22T18:18:33 IST" duration-ms="39768" status="FAIL">
+        <test-method signature="BecomeAPartnerPage_BusinessModelForm()[pri:1, instance:Medanta_Form.BecomeAPartner@2b40ff9c]" started-at="2026-02-25T15:14:39 IST" name="BecomeAPartnerPage_BusinessModelForm" finished-at="2026-02-25T15:15:03 IST" duration-ms="23991" status="FAIL">
           <exception class="java.lang.AssertionError">
             <message>
-              <![CDATA[Second Opinion form failed -> ❌ SERVER_FAIL | https://www.medanta.org/second-opinion | Get a Second Opinion from Leading Medical Experts | Medanta]]>
+              <![CDATA[BecomeAPartner form failed -> ❌ SERVER_FAIL (POST SUBMIT) | https://www.medanta.org/medanta-labs/become-a-partner | Become a Partner with Medanta Labs - Collaboration Opportunities | Medanta]]>
             </message>
             <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: Second Opinion form failed -> ❌ SERVER_FAIL | https://www.medanta.org/second-opinion | Get a Second Opinion from Leading Medical Experts | Medanta
+              <![CDATA[java.lang.AssertionError: BecomeAPartner form failed -> ❌ SERVER_FAIL (POST SUBMIT) | https://www.medanta.org/medanta-labs/become-a-partner | Become a Partner with Medanta Labs - Collaboration Opportunities | Medanta
 at org.testng.Assert.fail(Assert.java:110)
-at Medanta_Form.SecondOpiniun.SecondOpinionPage_RequestACallbackForm(SecondOpiniun.java:146)
+at Medanta_Form.BecomeAPartner.BecomeAPartnerPage_BusinessModelForm(BecomeAPartner.java:166)
 at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -57,12 +57,12 @@ at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:91)
           </exception> <!-- java.lang.AssertionError -->
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- SecondOpinionPage_RequestACallbackForm -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:Medanta_Form.SecondOpiniun@451001e5]" started-at="2026-02-22T18:18:33 IST" name="tearDown" finished-at="2026-02-22T18:18:33 IST" duration-ms="725" status="PASS">
+        </test-method> <!-- BecomeAPartnerPage_BusinessModelForm -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:Medanta_Form.BecomeAPartner@2b40ff9c]" started-at="2026-02-25T15:15:03 IST" name="tearDown" finished-at="2026-02-25T15:15:05 IST" duration-ms="2116" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-      </class> <!-- Medanta_Form.SecondOpiniun -->
+      </class> <!-- Medanta_Form.BecomeAPartner -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>

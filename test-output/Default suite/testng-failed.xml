@@ -3,14 +3,14 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="Medanta_Form.SecondOpiniun">
+      <class name="Medanta_Form.BecomeAPartner">
         <methods>
-          <include name="SecondOpinionPage_RequestACallbackForm"/>
           <include name="writeExecutionDateOnce"/>
           <include name="tearDown"/>
+          <include name="BecomeAPartnerPage_BusinessModelForm"/>
           <include name="openBrowser"/>
         </methods>
-      </class> <!-- Medanta_Form.SecondOpiniun -->
+      </class> <!-- Medanta_Form.BecomeAPartner -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

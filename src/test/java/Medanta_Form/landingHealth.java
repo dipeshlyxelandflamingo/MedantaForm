@@ -16,123 +16,153 @@ import Base.BaseClass;
 public class landingHealth extends BaseClass {
 
 	
-	@Test(priority = 1)
-    public void LandingHealth_Page_QueryForm() {
+	 @Test(priority = 1)
+	    public void LandingHealth_Page_QueryForm() {
 
-		 int row = 19;
+	        int row = 19;
 
-	        String url = "https://www.medanta.org/ehc/hishealth-checkup/L1gz";
-	        driver.navigate().to(url);
-
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-	        JavascriptExecutor js = (JavascriptExecutor) driver;
-
-	        // ===== Locators =====
-	        By nameBy = By.name("name");
-	        By mobileBy = By.name("mobile");
-	        By emailBy = By.name("email");
-	        By msgBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
-	        By submitBy = By.xpath("(//button[@type='submit'])[2]");
-
-	        // success element (your original)
-	        By successBy = By.xpath("//div[contains(text(),'Your query has been Successfully Submitted')]");
-
-	        // 🔥 Strong success fallback (text variations)
-	        By successFallbackBy = By.xpath(
-	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully submitted') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'query has been') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
-	        );
-
-	        // ===== Test Data =====
-	        String expName = "Test";
-	        String expMobile = "9876543210";
-	        String expEmail = "wakemedantatest@gmail.com";
-	        String expMsg = "Testing the form Please ignore";
-
-	        System.out.println("➡️ [LandingHealth] Opening page...");
-
-	        // ensure form visible
-	        WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-	        scrollToElement(nameForScroll);
-
-	        System.out.println("➡️ [LandingHealth] Filling form...");
-
-	        typeAndEnsureValue(wait, js, nameBy, expName);
-	        typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	        typeAndEnsureValue(wait, js, emailBy, expEmail);
-	        typeAndEnsureValue(wait, js, msgBy, expMsg);
-
-	        // ⭐ value wipe protection
-	        ensureValueStillPresent(nameBy, expName);
-	        ensureValueStillPresent(mobileBy, expMobile);
-	        ensureValueStillPresent(emailBy, expEmail);
-	        ensureValueStillPresent(msgBy, expMsg);
-
-	        // ✅ capture inputs BEFORE submit
-	        String inputs =
-	                "Name=" + safeGetValue(nameBy)
-	                        + " | Mobile=" + safeGetValue(mobileBy)
-	                        + " | Email=" + safeGetValue(emailBy)
-	                        + " | Message=" + safeGetValue(msgBy);
-
-	        // ===== Submit =====
-	        System.out.println("➡️ [LandingHealth] Clicking submit...");
-	        WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	        try { Thread.sleep(800); } catch (Exception ignored) {}
+	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
+	        String status = "⚠ UNKNOWN";
+	        String inputs = "";
+	        String fieldErrors = "";
+	        String globalErrors = "";
+	        String serverInfo = "";
+	        boolean successSeen = false;
+	        String debug = "";
 
 	        try {
-	            submitBtn.click();
+
+	            String url = "https://www.medanta.org/ehc/hishealth-checkup/L1gz";
+	            driver.navigate().to(url);
+
+	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+	            JavascriptExecutor js = (JavascriptExecutor) driver;
+
+	            // ===== Locators =====
+	            By nameBy = By.name("name");
+	            By mobileBy = By.name("mobile");
+	            By emailBy = By.name("email");
+	            By msgBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
+	            By submitBy = By.xpath("(//button[@type='submit'])[2]");
+
+	            // success element (your original)
+	            By successBy = By.xpath("//div[contains(text(),'Your query has been Successfully Submitted')]");
+
+	            // 🔥 Strong success fallback (text variations)
+	            By successFallbackBy = By.xpath(
+	                    "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully submitted') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'query has been') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+	            );
+
+	            // ===== Test Data =====
+	            String expName = "Test";
+	            String expMobile = "9876543210";
+	            String expEmail = "wakemedantatest@gmail.com";
+	            String expMsg = "Testing the form Please ignore";
+
+	            System.out.println("➡️ [LandingHealth] Opening page...");
+
+	            // ensure form visible
+	            WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	            scrollToElement(nameForScroll);
+
+	            System.out.println("➡️ [LandingHealth] Filling form...");
+
+	            typeAndEnsureValue(wait, js, nameBy, expName);
+	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	            typeAndEnsureValue(wait, js, emailBy, expEmail);
+	            typeAndEnsureValue(wait, js, msgBy, expMsg);
+
+	            // ⭐ value wipe protection
+	            ensureValueStillPresent(nameBy, expName);
+	            ensureValueStillPresent(mobileBy, expMobile);
+	            ensureValueStillPresent(emailBy, expEmail);
+	            ensureValueStillPresent(msgBy, expMsg);
+
+	            // ✅ capture inputs BEFORE submit
+	            inputs =
+	                    "Name=" + safeGetValue(nameBy)
+	                            + " | Mobile=" + safeGetValue(mobileBy)
+	                            + " | Email=" + safeGetValue(emailBy)
+	                            + " | Message=" + safeGetValue(msgBy);
+
+	            // ===== Submit =====
+	            System.out.println("➡️ [LandingHealth] Clicking submit...");
+	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	            try { Thread.sleep(800); } catch (Exception ignored) {}
+
+	            // ✅ clear perf logs before submit (post-submit only check)
+	            clearPerformanceLogs();
+
+	            try {
+	                submitBtn.click();
+	            } catch (Exception e) {
+	                js.executeScript("arguments[0].click();", submitBtn);
+	            }
+
+	            // ===== Detect outcomes =====
+	            successSeen =
+	                    waitForFlashPresence(successBy, 4000)
+	                            || waitForFlashPresence(successFallbackBy, 9000);
+
+	            boolean network5xx = waitForNetwork5xx(9000);
+
+	            fieldErrors = collectAllValidationErrors();
+	            globalErrors = collectGlobalErrors();
+
+	            // ===== Decide status =====
+	            if (successSeen && network5xx) {
+	                status = "❌ SERVER_FAIL (POST SUBMIT)";
+	                serverInfo = "API returned 5xx after submit";
+	            } else if (successSeen) {
+	                status = "✅ PASS";
+	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	                status = "❌ VALIDATION_FAIL";
+	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
+	                status = "❌ SERVER_FAIL";
+	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	            } else {
+	                status = "⚠ UNKNOWN";
+	                serverInfo = "No success/error signal detected";
+	            }
+
 	        } catch (Exception e) {
-	            js.executeScript("arguments[0].click();", submitBtn);
+
+	            status = "❌ EXCEPTION";
+	            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
+
+	            if (isServer500Like()) {
+	                status = "❌ SERVER_FAIL (PAGE 500)";
+	                serverInfo = "500 page detected during flow";
+	            }
+
+	        } finally {
+
+	            // always compute debug safely
+	            try {
+	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+	            } catch (Exception ignored) {
+	                debug = "Debug not available";
+	            }
+
+	            // ===== PRINT =====
+	            System.out.println("============== LANDING HEALTH FORM RESULT ==============");
+	            System.out.println("STATUS        : " + status);
+	            System.out.println("SUCCESS       : " + successSeen);
+	            System.out.println("INPUTS        : " + inputs);
+	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
+	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("SERVER INFO   : " + serverInfo);
+	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("========================================================");
+
+	            // ✅ Excel ALWAYS writes
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
 	        }
 
-	        // ===== Detect outcomes =====
-	        boolean successSeen =
-	                waitForFlashPresence(successBy, 4000) || waitForFlashPresence(successFallbackBy, 9000);
-
-	        boolean network5xx = waitForNetwork5xx(9000);
-
-	        String fieldErrors = collectAllValidationErrors();
-	        String globalErrors = collectGlobalErrors();
-
-	        // ===== Decide status =====
-	        String status;
-	        String serverInfo = "";
-
-	        if (successSeen && network5xx) {
-	            status = "❌ SERVER_FAIL (POST SUBMIT)";
-	            serverInfo = "API returned 5xx after submit";
-	        } else if (successSeen) {
-	            status = "✅ PASS";
-	        } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-	            status = "❌ VALIDATION_FAIL";
-	        } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	            status = "❌ SERVER_FAIL";
-	            serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
-	        } else {
-	            status = "⚠ UNKNOWN";
-	            serverInfo = "No success/error signal detected";
-	        }
-
-	        String debug = driver.getCurrentUrl() + " | " + driver.getTitle();
-
-	        // ===== PRINT =====
-	        System.out.println("============== LANDING HEALTH FORM RESULT ==============");
-	        System.out.println("STATUS        : " + status);
-	        System.out.println("SUCCESS       : " + successSeen);
-	        System.out.println("NETWORK 5XX   : " + network5xx);
-	        System.out.println("INPUTS        : " + inputs);
-	        System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	        System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	        System.out.println("SERVER INFO   : " + serverInfo);
-	        System.out.println("DEBUG         : " + debug);
-	        System.out.println("========================================================");
-
-	        // ===== Excel (E → L) =====
-	        writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
-
+	        // ✅ Fail AFTER excel write
 	        if (!status.contains("PASS")) {
 	            Assert.fail("Landing Health form failed -> " + status + " | " + debug);
 	        }
