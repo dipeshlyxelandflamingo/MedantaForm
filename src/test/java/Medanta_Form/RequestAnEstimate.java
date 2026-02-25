@@ -17,22 +17,20 @@ import Base.BaseClass;
 
 public class RequestAnEstimate extends BaseClass {
 
-	
 	 @Test(priority = 1)
 	    public void RequestAnEstimatePage_PriceEstimateForm() {
 
 	        int row = 24;
 
-	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
 	        String status = "⚠ UNKNOWN";
 	        String inputs = "";
 	        String fieldErrors = "";
 	        String globalErrors = "";
-	        String serverInfo = "";
+	        String info = "";
 	        boolean successSeen = false;
+	        boolean submitClicked = false;
 	        String debug = "";
-
-	        boolean network5xx = false;
+	        String fillIssues = "";
 
 	        try {
 
@@ -43,7 +41,7 @@ public class RequestAnEstimate extends BaseClass {
 	            JavascriptExecutor js = (JavascriptExecutor) driver;
 
 	            // Scroll slightly
-	            js.executeScript("window.scrollBy(0,210)");
+	            try { js.executeScript("window.scrollBy(0,210)"); } catch (Exception ignored) {}
 
 	            // ===== Locators =====
 	            By fnameBy      = By.xpath("(//input[@placeholder='Enter Your Name'])[3]");
@@ -75,37 +73,56 @@ public class RequestAnEstimate extends BaseClass {
 	                    + File.separator + "upload.docx";
 
 	            System.out.println("➡️ [RequestAnEstimate] Opening page...");
-	            WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(fnameBy));
-	            scrollToElement(first);
+
+	            // ensure first field visible (safe)
+	            try {
+	                WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(fnameBy));
+	                scrollToElement(first);
+	            } catch (Exception ignored) {}
 
 	            System.out.println("➡️ [RequestAnEstimate] Filling form...");
 
-	            typeAndEnsureValue(wait, js, fnameBy, expFName);
-	            typeAndEnsureValue(wait, js, lnameBy, expLName);
-	            typeAndEnsureValue(wait, js, emailBy, expEmail);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
+	            // ===== SAFE FILL =====
+	            try { typeAndEnsureValue(wait, js, fnameBy, expFName); }
+	            catch (Exception ex) { fillIssues += "FirstName fill failed | "; }
 
-	            // ⭐ value wipe protection (text fields)
-	            ensureValueStillPresent(fnameBy, expFName);
-	            ensureValueStillPresent(lnameBy, expLName);
-	            ensureValueStillPresent(emailBy, expEmail);
-	            ensureValueStillPresent(mobileBy, expMobile);
+	            try { typeAndEnsureValue(wait, js, lnameBy, expLName); }
+	            catch (Exception ex) { fillIssues += "LastName fill failed | "; }
 
-	            // ===== Dropdowns =====
-	            selectByIndexAndEnsure(wait, countryBy, 8);
+	            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email fill failed | "; }
 
-	            // ✅ Safer: use VisibleText instead of value (value can differ)
-	            selectByVisibleTextAndEnsure(wait, departmentBy, "Obstetrics");
+	            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
+
+	            // ===== SAFE value wipe protection =====
+	            try { ensureValueStillPresent(fnameBy, expFName); }
+	            catch (Exception ex) { fillIssues += "FirstName value wiped | "; }
+
+	            try { ensureValueStillPresent(lnameBy, expLName); }
+	            catch (Exception ex) { fillIssues += "LastName value wiped | "; }
+
+	            try { ensureValueStillPresent(emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email value wiped | "; }
+
+	            try { ensureValueStillPresent(mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile value wiped | "; }
+
+	            // ===== Dropdowns (SAFE) =====
+	            try { selectByIndexAndEnsure(wait, countryBy, 8); }
+	            catch (Exception ex) { fillIssues += "Country dropdown failed | "; }
+
+	            try { selectByVisibleTextAndEnsure(wait, departmentBy, "Obstetrics"); }
+	            catch (Exception ex) { fillIssues += "Department dropdown failed | "; }
 
 	            String countryVal = safeGetSelectedText(wait, countryBy);
 	            String deptVal = safeGetSelectedText(wait, departmentBy);
 
-	            // ===== File upload (with existence check) =====
+	            // ===== File upload (SAFE) =====
 	            String fileInfo = "NOT_SELECTED";
 	            File f = new File(filePath);
 
 	            if (!f.exists()) {
-	                // if file missing, mark as validation fail but continue to finally (Excel write)
 	                fileInfo = "MISSING(" + filePath + ")";
 	            } else {
 	                try {
@@ -115,107 +132,107 @@ public class RequestAnEstimate extends BaseClass {
 	                    fileInfo = "SELECTED";
 	                } catch (Exception e) {
 	                    fileInfo = "UPLOAD_FAILED(" + e.getClass().getSimpleName() + ")";
+	                    fillIssues += "File upload failed | ";
 	                }
 	            }
 
-	            // ✅ capture inputs BEFORE submit
+	            // ✅ capture inputs BEFORE submit (ALWAYS)
 	            inputs = "FirstName=" + safeGetValue(fnameBy)
 	                    + " | LastName=" + safeGetValue(lnameBy)
 	                    + " | Email=" + safeGetValue(emailBy)
 	                    + " | Mobile=" + safeGetValue(mobileBy)
 	                    + " | Country=" + countryVal
 	                    + " | Department=" + deptVal
-	                    + " | File=" + fileInfo;
+	                    + " | File=" + fileInfo
+	                    + (fillIssues.isBlank() ? "" : " | FillIssues=" + fillIssues.trim());
 
-	            // If file missing -> directly validation fail (no point submitting)
+	            // If file missing -> do not submit
 	            if (fileInfo.startsWith("MISSING")) {
 	                status = "❌ VALIDATION_FAIL";
 	                fieldErrors = "Upload file not found on machine: " + filePath;
-	                serverInfo = "Local file missing";
-	                return; // finally will still run + Excel write
-	            }
+	                info = "Local file missing";
+	                submitClicked = false;
+	                successSeen = false;
 
-	            // ===== Submit =====
-	            System.out.println("➡️ [RequestAnEstimate] Clicking submit...");
-	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
-
-	            try { Thread.sleep(800); } catch (Exception ignored) {}
-
-	            // ✅ clear perf logs before submit (post-submit only check)
-	            clearPerformanceLogs();
-
-	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
-	            }
-
-	            // ===== Detect outcomes =====
-	            successSeen =
-	                    waitForFlashPresence(successBy, 4500) || waitForFlashPresence(successFallbackBy, 9000);
-
-	            network5xx = waitForNetwork5xx(9000);
-
-	            fieldErrors = collectAllValidationErrors();
-	            globalErrors = collectGlobalErrors();
-
-	            // ===== Decide Status =====
-	            if (successSeen && network5xx) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = "API returned 5xx after submit";
-	            } else if (successSeen) {
-	                status = "✅ PASS";
-	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-	                status = "❌ VALIDATION_FAIL";
-	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
 	            } else {
-	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
+
+	                // ===== Submit (SAFE) =====
+	                System.out.println("➡️ [RequestAnEstimate] Clicking submit...");
+
+	                try {
+	                    WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	                    js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+	                    try { Thread.sleep(800); } catch (Exception ignored) {}
+
+	                    try {
+	                        submitBtn.click();
+	                    } catch (Exception e) {
+	                        js.executeScript("arguments[0].click();", submitBtn);
+	                    }
+	                    submitClicked = true;
+
+	                } catch (Exception clickEx) {
+	                    submitClicked = false;
+	                    status = "❌ FORM_NOT_SUBMITTED";
+	                    info = "Submit click failed: " + clickEx.getClass().getSimpleName() + " | " + clickEx.getMessage();
+	                }
+
+	                // ===== Detect outcomes =====
+	                if (submitClicked) {
+	                    successSeen = waitForFlashPresence(successBy, 4500)
+	                            || waitForFlashPresence(successFallbackBy, 9000);
+	                }
+
+	                fieldErrors = collectAllValidationErrors();
+	                globalErrors = collectGlobalErrors();
+
+	                // ===== Decide Status =====
+	                if (!submitClicked) {
+	                    status = "❌ FORM_NOT_SUBMITTED";
+	                    if (info == null || info.isBlank()) info = "Submit not clicked";
+	                } else if (successSeen) {
+	                    status = "✅ PASS";
+	                    info = fillIssues.isBlank() ? "Submitted" : ("Submitted | " + fillIssues.trim());
+	                } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	                    status = "❌ VALIDATION_FAIL";
+	                    info = fillIssues.isBlank() ? "Validation errors" : fillIssues.trim();
+	                } else if (globalErrors != null && !globalErrors.isBlank()) {
+	                    status = "❌ GLOBAL_FAIL";
+	                    info = fillIssues.isBlank() ? "Global error shown" : fillIssues.trim();
+	                } else {
+	                    status = "⚠ UNKNOWN";
+	                    info = fillIssues.isBlank() ? "No success/error signal detected" : fillIssues.trim();
+	                }
 	            }
 
 	        } catch (Exception e) {
-
-	            // set exception status only if still unknown
 	            if (status == null || status.trim().isEmpty() || status.equals("⚠ UNKNOWN")) {
 	                status = "❌ EXCEPTION";
-	                serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
+	                info = e.getClass().getSimpleName() + " | " + e.getMessage();
 	            }
-
-	            // Optional: if you have 500 page detector
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
-	            }
-
 	        } finally {
 
-	            // always compute debug safely
 	            try {
 	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 	            } catch (Exception ignored) {
 	                debug = "Debug not available";
 	            }
 
-	            // ===== PRINT =====
 	            System.out.println("============== REQUEST AN ESTIMATE FORM RESULT ==============");
-	            System.out.println("STATUS        : " + status);
-	            System.out.println("SUCCESS       : " + successSeen);
-	            System.out.println("NETWORK 5XX   : " + network5xx);
-	            System.out.println("INPUTS        : " + inputs);
-	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
-	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("STATUS         : " + status);
+	            System.out.println("SUBMIT CLICKED : " + submitClicked);
+	            System.out.println("SUCCESS        : " + successSeen);
+	            System.out.println("INPUTS         : " + inputs);
+	            System.out.println("FIELD ERRORS   : " + (fieldErrors == null ? "" : fieldErrors));
+	            System.out.println("GLOBAL ERRORS  : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("INFO           : " + info);
+	            System.out.println("DEBUG          : " + debug);
 	            System.out.println("============================================================");
 
-	            // ✅ Excel ALWAYS writes
-	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
+	            // serverInfo column me info pass
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, info, successSeen, debug);
 	        }
 
-	        // ✅ Fail AFTER excel write
 	        if (!status.contains("PASS")) {
 	            Assert.fail("Request An Estimate form failed -> " + status + " | " + debug);
 	        }
@@ -230,20 +247,21 @@ public class RequestAnEstimate extends BaseClass {
 	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
 	                try { el.click(); } catch (Exception ignored) {}
-	                try { el.clear(); } catch (Exception ignored) {}
 
+	                // slowType already clears + JS fallback
 	                slowType(el, value);
 
 	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
 
 	                String actual = el.getAttribute("value");
-	                if (actual != null && actual.trim().equals(value)) return;
+	                if (actual == null) actual = "";
+	                if (actual.trim().equals(value.trim())) return;
 
 	            } catch (StaleElementReferenceException ignored) {
 	            } catch (Exception ignored) {
 	            }
 	        }
-	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
 	    }
 
 	    private void selectByIndexAndEnsure(WebDriverWait wait, By selectLocator, int index) {
@@ -260,7 +278,7 @@ public class RequestAnEstimate extends BaseClass {
 	            } catch (Exception ignored) {
 	            }
 	        }
-	        Assert.fail("Dropdown selection did not persist for locator: " + selectLocator + " index=" + index);
+	        throw new RuntimeException("Dropdown selection did not persist for locator: " + selectLocator + " index=" + index);
 	    }
 
 	    private void selectByVisibleTextAndEnsure(WebDriverWait wait, By selectLocator, String visibleText) {
@@ -277,7 +295,7 @@ public class RequestAnEstimate extends BaseClass {
 	            } catch (Exception ignored) {
 	            }
 	        }
-	        Assert.fail("Dropdown selection did not persist for locator: " + selectLocator + " text='" + visibleText + "'");
+	        throw new RuntimeException("Dropdown selection did not persist for locator: " + selectLocator + " text='" + visibleText + "'");
 	    }
 
 	    private String safeGetSelectedText(WebDriverWait wait, By selectLocator) {

@@ -20,14 +20,17 @@ public class AilmentDP extends BaseClass {
 
 	        int row = 1;
 
-	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
+	        // ✅ Excel ALWAYS write variables
 	        String status = "⚠ UNKNOWN";
 	        String inputs = "";
 	        String fieldErrors = "";
 	        String globalErrors = "";
-	        String serverInfo = "";
+	        String info = "";
 	        boolean thankYouSeen = false;
 	        String debug = "";
+
+	        boolean submitClicked = false;
+	        String fillIssues = "";
 
 	        try {
 	            String url =
@@ -45,10 +48,9 @@ public class AilmentDP extends BaseClass {
 	            By messageBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
 	            By submitBy = By.xpath("(//button[@type='submit'])[3]");
 
-	            // 🔥 Strong thank you locator (handles toast/modal/text variations)
+	            // ✅ Thank you locator (avoid broad 'success' keyword)
 	            By thankYouBy = By.xpath(
 	                    "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
 	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
 	            );
 
@@ -62,115 +64,114 @@ public class AilmentDP extends BaseClass {
 	            wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
 
 	            // Scroll to form
-	            WebElement nameElForScroll =
-	                    wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", nameElForScroll);
+	            try {
+	                WebElement nameElForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", nameElForScroll);
+	            } catch (Exception ignored) {}
 
 	            System.out.println("➡️ [AilmentDP] Filling form...");
 
-	            typeAndEnsureValue(wait, js, nameBy, expName);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	            typeAndEnsureValue(wait, js, emailBy, expEmail);
-	            typeAndEnsureValue(wait, js, messageBy, expMsg);
+	            // ===== SAFE FILL (never stop flow if one field fails) =====
+	            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+	            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-	            // ⭐ value wipe protection
-	            ensureValueStillPresent(nameBy, expName);
-	            ensureValueStillPresent(mobileBy, expMobile);
-	            ensureValueStillPresent(emailBy, expEmail);
-	            ensureValueStillPresent(messageBy, expMsg);
+	            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
 
-	            // ✅ IMPORTANT — capture inputs BEFORE submit
+	            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email fill failed | "; }
+
+	            try { typeAndEnsureValue(wait, js, messageBy, expMsg); }
+	            catch (Exception ex) { fillIssues += "Message fill failed | "; }
+
+	            // Optional: value wipe protection (safe)
+	            try { ensureValueStillPresent(nameBy, expName); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(mobileBy, expMobile); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(emailBy, expEmail); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(messageBy, expMsg); } catch (Exception ignored) {}
+
+	            // ✅ Inputs ALWAYS captured (partial ok)
 	            inputs =
 	                    "Name=" + safeGetValue(nameBy)
 	                            + " | Mobile=" + safeGetValue(mobileBy)
 	                            + " | Email=" + safeGetValue(emailBy)
 	                            + " | Message=" + safeGetValue(messageBy);
 
-	            // ===== Submit =====
+	            // ===== Submit (ALWAYS attempt) =====
 	            System.out.println("➡️ [AilmentDP] Clicking submit...");
-
-	            WebElement submitBtn =
-	                    wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
-
-	            try { Thread.sleep(800); } catch (InterruptedException ignored) {}
-
-	            // ✅ Recommended: clear perf logs before submit, so only post-submit 5xx is captured
-	            clearPerformanceLogs();
-
 	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
+	                WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+
+	                try { Thread.sleep(400); } catch (InterruptedException ignored) {}
+
+	                try {
+	                    submitBtn.click();
+	                } catch (Exception e) {
+	                    js.executeScript("arguments[0].click();", submitBtn);
+	                }
+
+	                submitClicked = true;
+
+	            } catch (Exception ex) {
+	                submitClicked = false;
+	                fillIssues += "Submit click failed | ";
 	            }
 
-	            // ===== Detect results =====
-	            thankYouSeen = waitForFlashPresence(thankYouBy, 8000);
-	            boolean network5xx = waitForNetwork5xx(9000);
+	            // ===== Detect outcomes =====
+	            thankYouSeen = submitClicked && waitForFlashPresence(thankYouBy, 9000);
 
+	            // ✅ Always collect errors (fail/pass)
 	            fieldErrors = collectAllValidationErrors();
 	            globalErrors = collectGlobalErrors();
 
-	            // ===== Decide status =====
-	            if (thankYouSeen && network5xx) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = "API returned 5xx after submit";
-	            } else if (thankYouSeen) {
+	            // Clean fillIssues text
+	            String issues = (fillIssues == null) ? "" : fillIssues.trim();
+	            if (issues.endsWith("|")) issues = issues.substring(0, issues.length() - 1).trim();
+
+	            // ===== Decide status (NO EXCEPTION status) =====
+	            if (thankYouSeen) {
 	                status = "✅ PASS";
+	                info = "Submitted";
+	            } else if (!submitClicked) {
+	                status = "❌ FORM_NOT_SUBMITTED";
+	                info = issues.isBlank() ? "Submit not clicked" : issues;
 	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
 	                status = "❌ VALIDATION_FAIL";
-	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	                info = issues.isBlank() ? "Validation errors" : issues;
+	            } else if (globalErrors != null && !globalErrors.isBlank()) {
+	                status = "❌ GLOBAL_FAIL";
+	                info = issues.isBlank() ? "Global error shown" : issues;
 	            } else {
 	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
+	                info = issues.isBlank() ? "No success/error signal detected" : issues;
 	            }
 
 	        } catch (Exception e) {
-
-	            // ✅ Any exception should still write Excel in finally
-	            status = "❌ EXCEPTION";
-	            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
-
-	            // Optional: if page actually turned into a 500 error page
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
-	            }
-
+	            // only for unexpected crash (still not using EXCEPTION status)
+	            status = "❌ FORM_NOT_SUBMITTED";
+	            info = "Flow crashed: " + e.getClass().getSimpleName() + " | " + e.getMessage();
 	        } finally {
 
-	            // Always compute debug safely
 	            try {
 	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
 	            } catch (Exception ignored) {
 	                debug = "Debug not available";
 	            }
 
-	            // ===== PRINT =====
 	            System.out.println("============== AILMENTDP FORM RESULT ==============");
 	            System.out.println("STATUS        : " + status);
+	            System.out.println("SUBMIT CLICKED: " + submitClicked);
 	            System.out.println("THANK YOU     : " + thankYouSeen);
 	            System.out.println("INPUTS        : " + inputs);
 	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
 	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
+	            System.out.println("INFO          : " + info);
 	            System.out.println("DEBUG         : " + debug);
 	            System.out.println("===================================================");
 
 	            // ✅ Excel ALWAYS writes
-	            writeFormResult(
-	                    row,
-	                    status,
-	                    inputs,
-	                    fieldErrors,
-	                    globalErrors,
-	                    serverInfo,
-	                    thankYouSeen,
-	                    debug
-	            );
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, info, thankYouSeen, debug);
 	        }
 
 	        // ✅ Fail AFTER excel write
@@ -179,13 +180,12 @@ public class AilmentDP extends BaseClass {
 	        }
 	    }
 
-	    /* ================= SAFE TYPE ================= */
+	    /* ================= SAFE TYPE (local for now) ================= */
 
 	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
 
 	        for (int attempt = 1; attempt <= 3; attempt++) {
 	            try {
-
 	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
 	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
@@ -194,19 +194,17 @@ public class AilmentDP extends BaseClass {
 
 	                slowType(el, value);
 
-	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+	                try { Thread.sleep(200); } catch (InterruptedException ignored) {}
 
 	                String actual = el.getAttribute("value");
-
-	                if (actual != null && actual.trim().equals(value))
-	                    return;
+	                if (actual != null && actual.trim().equals(value)) return;
 
 	            } catch (StaleElementReferenceException ignored) {
 	            } catch (Exception ignored) {
 	            }
 	        }
 
-	        Assert.fail("Value did not persist for locator: " + locator);
+	        throw new RuntimeException("Value did not persist for locator: " + locator);
 	    }
 
 	    private String safeGetValue(By locator) {

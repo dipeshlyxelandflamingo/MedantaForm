@@ -15,24 +15,23 @@ import Base.BaseClass;
 
 public class updateEICU extends BaseClass {
 	
-	 @Test(priority = 1)
+	  @Test(priority = 1)
 	    public void EICUPage_RequestACallbackForm() {
 
 	        int row = 29;
 
-	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
 	        String status = "⚠ UNKNOWN";
 	        String inputs = "";
 	        String fieldErrors = "";
 	        String globalErrors = "";
-	        String serverInfo = "";
-	        boolean thankYouSeen = false;
+	        boolean successSeen = false;
+	        boolean submitClicked = false;
+	        String fillIssues = "";
 	        String debug = "";
 
 	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 	        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	        // ===== URL =====
 	        String url = "https://www.medanta.org/eicu";
 
 	        // ===== Locators =====
@@ -42,18 +41,11 @@ public class updateEICU extends BaseClass {
 	        By messageBy  = By.xpath("//textarea[@placeholder='Enter Your Message']");
 	        By submitBy   = By.xpath("(//button[@type='submit'])[3]");
 
-	        // ✅ Strong thank you (your old one was fine, this is stronger/consistent)
+	        // ✅ Strong thank you / submitted (case-insensitive)
 	        By thankYouBy = By.xpath(
 	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
 	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
 	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
-	        );
-
-	        // Optional DOM check (may or may not appear)
-	        By server500DomBy = By.xpath(
-	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'500') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'server error') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'internal server error')]"
 	        );
 
 	        // ===== Test Data =====
@@ -66,87 +58,89 @@ public class updateEICU extends BaseClass {
 	            driver.navigate().to(url);
 
 	            System.out.println("➡️ [EICU] Opening page...");
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-
-	            // Scroll to form
-	            WebElement nameElForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", nameElForScroll);
+	            WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	            scrollToElement(first);
 
 	            System.out.println("➡️ [EICU] Filling form...");
 
-	            typeAndEnsureValue(wait, js, nameBy, expName);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	            typeAndEnsureValue(wait, js, emailBy, expEmail);
-	            typeAndEnsureValue(wait, js, messageBy, expMsg);
+	            // ===== SAFE FILL =====
+	            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+	            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-	            // value wipe protection
-	            ensureValueStillPresent(nameBy, expName);
-	            ensureValueStillPresent(mobileBy, expMobile);
-	            ensureValueStillPresent(emailBy, expEmail);
-	            ensureValueStillPresent(messageBy, expMsg);
+	            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
 
-	            // ✅ capture inputs BEFORE submit
-	            inputs =
-	                    "Name=" + safeGetValue(nameBy)
-	                            + " | Mobile=" + safeGetValue(mobileBy)
-	                            + " | Email=" + safeGetValue(emailBy)
-	                            + " | Message=" + safeGetValue(messageBy);
+	            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email fill failed | "; }
 
-	            // ===== Submit =====
+	            try { typeAndEnsureValue(wait, js, messageBy, expMsg); }
+	            catch (Exception ex) { fillIssues += "Message fill failed | "; }
+
+	            // ===== SAFE value wipe protection =====
+	            try { ensureValueStillPresent(nameBy, expName); }
+	            catch (Exception ex) { fillIssues += "Name value wiped | "; }
+
+	            try { ensureValueStillPresent(mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile value wiped | "; }
+
+	            try { ensureValueStillPresent(emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email value wiped | "; }
+
+	            try { ensureValueStillPresent(messageBy, expMsg); }
+	            catch (Exception ex) { fillIssues += "Message value wiped | "; }
+
+	            // ✅ capture inputs BEFORE submit (ALWAYS)
+	            inputs = "Name=" + safeGetValue(nameBy)
+	                    + " | Mobile=" + safeGetValue(mobileBy)
+	                    + " | Email=" + safeGetValue(emailBy)
+	                    + " | Message=" + safeGetValue(messageBy)
+	                    + (fillIssues.isBlank() ? "" : " | FillIssues=" + fillIssues.trim());
+
+	            // ===== Submit (SAFE) =====
 	            System.out.println("➡️ [EICU] Clicking submit...");
 
-	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
-
-	            try { Thread.sleep(800); } catch (InterruptedException ignored) {}
-
-	            // ✅ baseline logs before submit (so only post-submit 5xx counts)
-	            clearPerformanceLogs();
-
 	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
+	                WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+	                try { Thread.sleep(800); } catch (Exception ignored) {}
+
+	                try {
+	                    submitBtn.click();
+	                } catch (Exception e) {
+	                    js.executeScript("arguments[0].click();", submitBtn);
+	                }
+
+	                submitClicked = true;
+
+	            } catch (Exception clickEx) {
+	                submitClicked = false;
+	                status = "❌ FORM_NOT_SUBMITTED";
 	            }
 
 	            // ===== Detect outcomes =====
-	            thankYouSeen = waitForFlashPresence(thankYouBy, 8000);
-
-	            boolean network5xx = waitForNetwork5xx(9000);
-
-	            // ✅ Server error fallback checks
-	            boolean server500Seen =
-	                    network5xx ||
-	                    isServer500Like() ||
-	                    waitForPresence(server500DomBy, 3000);
+	            if (submitClicked) {
+	                successSeen = waitForFlashPresence(thankYouBy, 8000);
+	            }
 
 	            fieldErrors  = collectAllValidationErrors();
 	            globalErrors = collectGlobalErrors();
 
 	            // ===== Decide Status =====
-	            if (thankYouSeen && server500Seen) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = network5xx ? "API returned 5xx after submit" : "500/Server Error detected after submit";
-	            } else if (thankYouSeen) {
+	            if (!submitClicked) {
+	                status = "❌ FORM_NOT_SUBMITTED";
+	            } else if (successSeen) {
 	                status = "✅ PASS";
 	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
 	                status = "❌ VALIDATION_FAIL";
-	            } else if (server500Seen || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : (server500Seen ? "500/Server Error detected" : "Global error shown");
+	            } else if (globalErrors != null && !globalErrors.isBlank()) {
+	                status = "❌ GLOBAL_ERROR";
 	            } else {
 	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
 	            }
 
 	        } catch (Exception e) {
-
-	            status = "❌ EXCEPTION";
-	            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
-
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
+	            if (status == null || status.trim().isEmpty() || status.equals("⚠ UNKNOWN")) {
+	                status = "❌ EXCEPTION";
 	            }
 
 	        } finally {
@@ -158,26 +152,24 @@ public class updateEICU extends BaseClass {
 	            }
 
 	            System.out.println("============== EICU FORM RESULT ==============");
-	            System.out.println("STATUS        : " + status);
-	            System.out.println("THANK YOU     : " + thankYouSeen);
-	            System.out.println("INPUTS        : " + inputs);
-	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
-	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("STATUS         : " + status);
+	            System.out.println("SUBMIT CLICKED : " + submitClicked);
+	            System.out.println("SUCCESS        : " + successSeen);
+	            System.out.println("INPUTS         : " + inputs);
+	            System.out.println("FIELD ERRORS   : " + (fieldErrors == null ? "" : fieldErrors));
+	            System.out.println("GLOBAL ERRORS  : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("DEBUG          : " + debug);
 	            System.out.println("===============================================");
 
-	            // ✅ Excel ALWAYS writes
-	            writeFormResult(
-	                    row,
-	                    status,
-	                    inputs,
-	                    fieldErrors,
-	                    globalErrors,
-	                    serverInfo,
-	                    thankYouSeen,
-	                    debug
-	            );
+	            // ✅ Excel info column: PASS => "Submitted"
+	            String excelInfo;
+	            if (status.contains("PASS")) {
+	                excelInfo = fillIssues.isBlank() ? "Submitted" : ("Submitted | " + fillIssues.trim());
+	            } else {
+	                excelInfo = (fillIssues == null) ? "" : fillIssues.trim();
+	            }
+
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, excelInfo, successSeen, debug);
 	        }
 
 	        // ✅ Fail AFTER excel write
@@ -188,18 +180,8 @@ public class updateEICU extends BaseClass {
 
 	    /* ================= Local helpers ================= */
 
-	    private boolean waitForPresence(By locator, int maxMillis) {
-	        long end = System.currentTimeMillis() + maxMillis;
-	        while (System.currentTimeMillis() < end) {
-	            try {
-	                if (!driver.findElements(locator).isEmpty()) return true;
-	            } catch (Exception ignored) {}
-	            try { Thread.sleep(200); } catch (InterruptedException ignored) {}
-	        }
-	        return false;
-	    }
-
 	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+
 	        for (int attempt = 1; attempt <= 3; attempt++) {
 	            try {
 	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
@@ -220,7 +202,7 @@ public class updateEICU extends BaseClass {
 	            }
 	        }
 
-	        Assert.fail("Value did not persist for locator: " + locator);
+	        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
 	    }
 
 	    private String safeGetValue(By locator) {

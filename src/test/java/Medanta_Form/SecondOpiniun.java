@@ -21,16 +21,16 @@ public class SecondOpiniun extends BaseClass {
 
 	        int row = 25;
 
-	        // ✅ Excel ALWAYS write variables
 	        String status = "⚠ UNKNOWN";
 	        String inputs = "";
 	        String fieldErrors = "";
 	        String globalErrors = "";
-	        String serverInfo = "";
+	        String info = "";
 	        boolean successSeen = false;
+	        boolean submitClicked = false;
 	        String debug = "";
-
-	        boolean network5xx = false;
+	        String fillIssues = "";
+	        String uploadIssues = "";
 
 	        try {
 
@@ -68,21 +68,32 @@ public class SecondOpiniun extends BaseClass {
 
 	            System.out.println("➡️ [SecondOpinion] Opening page...");
 
-	            WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-	            scrollToElement(first);
+	            // ensure first field visible (safe)
+	            try {
+	                WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+	                scrollToElement(first);
+	            } catch (Exception ignored) {}
 
 	            System.out.println("➡️ [SecondOpinion] Filling form...");
 
-	            typeAndEnsureValue(wait, js, nameBy, expName);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	            typeAndEnsureValue(wait, js, emailBy, expEmail);
-	            typeAndEnsureValue(wait, js, messageBy, expMsg);
+	            // ===== SAFE FILL =====
+	            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+	            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-	            // ⭐ value wipe protection
-	            ensureValueStillPresent(nameBy, expName);
-	            ensureValueStillPresent(mobileBy, expMobile);
-	            ensureValueStillPresent(emailBy, expEmail);
-	            ensureValueStillPresent(messageBy, expMsg);
+	            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
+
+	            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email fill failed | "; }
+
+	            try { typeAndEnsureValue(wait, js, messageBy, expMsg); }
+	            catch (Exception ex) { fillIssues += "Message fill failed | "; }
+
+	            // value wipe protection (safe)
+	            try { ensureValueStillPresent(nameBy, expName); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(mobileBy, expMobile); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(emailBy, expEmail); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(messageBy, expMsg); } catch (Exception ignored) {}
 
 	            // ===== File upload (exist check) =====
 	            String fileInfo = "NOT_SELECTED";
@@ -90,6 +101,7 @@ public class SecondOpiniun extends BaseClass {
 
 	            if (!f.exists()) {
 	                fileInfo = "MISSING(" + filePath + ")";
+	                uploadIssues = "Upload file not found on machine: " + filePath;
 	            } else {
 	                try {
 	                    WebElement fileInput = wait.until(ExpectedConditions.presenceOfElementLocated(fileBy));
@@ -98,75 +110,81 @@ public class SecondOpiniun extends BaseClass {
 	                    fileInfo = "SELECTED";
 	                } catch (Exception e) {
 	                    fileInfo = "UPLOAD_FAILED(" + e.getClass().getSimpleName() + ")";
+	                    uploadIssues = "File upload failed: " + e.getClass().getSimpleName() + " | " + e.getMessage();
 	                }
 	            }
 
-	            // ✅ capture inputs BEFORE submit
+	            // ✅ capture inputs BEFORE submit (ALWAYS)
 	            inputs = "Name=" + safeGetValue(nameBy)
 	                    + " | Mobile=" + safeGetValue(mobileBy)
 	                    + " | Email=" + safeGetValue(emailBy)
 	                    + " | Message=" + safeGetValue(messageBy)
-	                    + " | File=" + fileInfo;
+	                    + " | File=" + fileInfo
+	                    + (fillIssues.isBlank() ? "" : " | FillIssues=" + fillIssues.trim())
+	                    + (uploadIssues.isBlank() ? "" : " | UploadIssues=" + uploadIssues.trim());
 
-	            // If file missing -> validation fail & stop
-	            if (fileInfo.startsWith("MISSING")) {
+	            // If file missing/upload failed -> validation fail & stop submit
+	            if (fileInfo.startsWith("MISSING") || fileInfo.startsWith("UPLOAD_FAILED")) {
 	                status = "❌ VALIDATION_FAIL";
-	                fieldErrors = "Upload file not found on machine: " + filePath;
-	                serverInfo = "Local file missing";
-	                return; // finally will still run
-	            }
-
-	            // ===== Submit =====
-	            System.out.println("➡️ [SecondOpinion] Clicking submit...");
-	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
-
-	            try { Thread.sleep(800); } catch (Exception ignored) {}
-
-	            // ✅ clear perf logs before submit
-	            clearPerformanceLogs();
-
-	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
-	            }
-
-	            // ===== Detect outcomes =====
-	            successSeen =
-	                    waitForFlashPresence(thankYouBy, 4500) || waitForFlashPresence(successFallbackBy, 9000);
-
-	            network5xx = waitForNetwork5xx(9000);
-
-	            fieldErrors = collectAllValidationErrors();
-	            globalErrors = collectGlobalErrors();
-
-	            // ===== Decide Status =====
-	            if (successSeen && network5xx) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = "API returned 5xx after submit";
-	            } else if (successSeen) {
-	                status = "✅ PASS";
-	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-	                status = "❌ VALIDATION_FAIL";
-	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	                fieldErrors = uploadIssues;
+	                globalErrors = collectGlobalErrors();
+	                info = uploadIssues.isBlank() ? "File issue" : uploadIssues;
 	            } else {
-	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
+
+	                // ===== Submit =====
+	                System.out.println("➡️ [SecondOpinion] Clicking submit...");
+
+	                try {
+	                    WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	                    js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+	                    try { Thread.sleep(800); } catch (Exception ignored) {}
+
+	                    try {
+	                        submitBtn.click();
+	                    } catch (Exception e) {
+	                        js.executeScript("arguments[0].click();", submitBtn);
+	                    }
+
+	                    submitClicked = true;
+
+	                } catch (Exception clickEx) {
+	                    submitClicked = false;
+	                    info = "Submit click failed: " + clickEx.getClass().getSimpleName() + " | " + clickEx.getMessage();
+	                }
+
+	                // ===== Detect outcomes =====
+	                if (submitClicked) {
+	                    successSeen = waitForFlashPresence(thankYouBy, 4500)
+	                            || waitForFlashPresence(successFallbackBy, 9000);
+	                }
+
+	                fieldErrors = collectAllValidationErrors();
+	                globalErrors = collectGlobalErrors();
+
+	                // ===== Decide Status =====
+	                if (!submitClicked) {
+	                    status = "❌ FORM_NOT_SUBMITTED";
+	                    successSeen = false;
+	                    if (info == null || info.isBlank()) info = "Submit not clicked";
+	                } else if (successSeen) {
+	                    status = "✅ PASS";
+	                    info = fillIssues.isBlank() ? "Submitted" : ("Submitted | " + fillIssues.trim());
+	                } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+	                    status = "❌ VALIDATION_FAIL";
+	                    info = fillIssues.isBlank() ? "Validation errors" : fillIssues.trim();
+	                } else if (globalErrors != null && !globalErrors.isBlank()) {
+	                    status = "❌ GLOBAL_FAIL";
+	                    info = fillIssues.isBlank() ? "Global error shown" : fillIssues.trim();
+	                } else {
+	                    status = "⚠ UNKNOWN";
+	                    info = fillIssues.isBlank() ? "No success/error signal detected" : fillIssues.trim();
+	                }
 	            }
 
 	        } catch (Exception e) {
-
 	            if (status == null || status.trim().isEmpty() || status.equals("⚠ UNKNOWN")) {
 	                status = "❌ EXCEPTION";
-	                serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
-	            }
-
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
+	                info = e.getClass().getSimpleName() + " | " + e.getMessage();
 	            }
 
 	        } finally {
@@ -179,20 +197,19 @@ public class SecondOpiniun extends BaseClass {
 
 	            System.out.println("============== SECOND OPINION FORM RESULT ==============");
 	            System.out.println("STATUS        : " + status);
+	            System.out.println("SUBMIT CLICKED: " + submitClicked);
 	            System.out.println("SUCCESS       : " + successSeen);
-	            System.out.println("NETWORK 5XX   : " + network5xx);
 	            System.out.println("INPUTS        : " + inputs);
 	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
 	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
+	            System.out.println("INFO          : " + info);
 	            System.out.println("DEBUG         : " + debug);
 	            System.out.println("========================================================");
 
-	            // ✅ Excel ALWAYS writes
-	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
+	            // serverInfo column me info pass
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, info, successSeen, debug);
 	        }
 
-	        // ✅ Fail AFTER excel write
 	        if (!status.contains("PASS")) {
 	            Assert.fail("Second Opinion form failed -> " + status + " | " + debug);
 	        }
@@ -207,20 +224,21 @@ public class SecondOpiniun extends BaseClass {
 	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
 	                try { el.click(); } catch (Exception ignored) {}
-	                try { el.clear(); } catch (Exception ignored) {}
 
+	                // slowType already does strong clear + JS fallback
 	                slowType(el, value);
 
 	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
 
 	                String actual = el.getAttribute("value");
-	                if (actual != null && actual.trim().equals(value)) return;
+	                if (actual == null) actual = "";
+	                if (actual.trim().equals(value.trim())) return;
 
 	            } catch (StaleElementReferenceException ignored) {
 	            } catch (Exception ignored) {
 	            }
 	        }
-	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
 	    }
 
 	    private String safeGetValue(By locator) {

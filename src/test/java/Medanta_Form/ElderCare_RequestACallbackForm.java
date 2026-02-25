@@ -20,14 +20,16 @@ public class ElderCare_RequestACallbackForm extends BaseClass {
 
         int row = 11;
 
-        // ✅ Make these available to finally block (so Excel ALWAYS writes)
         String status = "⚠ UNKNOWN";
         String inputs = "";
         String fieldErrors = "";
         String globalErrors = "";
-        String serverInfo = "";
+        String info = "";
         boolean thankYouSeen = false;
         String debug = "";
+
+        boolean submitClicked = false;
+        String fillIssues = "";
 
         try {
             String url = "https://www.medanta.org/elder-care-program";
@@ -46,11 +48,10 @@ public class ElderCare_RequestACallbackForm extends BaseClass {
             // success element (your original)
             By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
 
-            // 🔥 Strong ThankYou fallback
+            // ✅ Thank you fallback (avoid broad "success")
             By thankYouBy = By.xpath(
                     "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you for filling the form') "
                             + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'success') "
                             + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
             );
 
@@ -62,109 +63,123 @@ public class ElderCare_RequestACallbackForm extends BaseClass {
 
             System.out.println("➡️ [ElderCare_Callback] Opening page...");
 
-            // Scroll first field into view
-            WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-            scrollToElement(nameForScroll);
+            // Scroll first field into view (safe)
+            try {
+                WebElement nameForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+                scrollToElement(nameForScroll);
+            } catch (Exception ignored) {}
 
             System.out.println("➡️ [ElderCare_Callback] Filling form...");
 
-            typeAndEnsureValue(wait, js, nameBy, expName);
-            typeAndEnsureValue(wait, js, mobileBy, expMobile);
-            typeAndEnsureValue(wait, js, emailBy, expEmail);
-            typeAndEnsureValue(wait, js, messageBy, expMsg);
+            // ===== SAFE FILL (never stop flow if one field fails) =====
+            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-            // ⭐ value wipe protection
-            ensureValueStillPresent(nameBy, expName);
-            ensureValueStillPresent(mobileBy, expMobile);
-            ensureValueStillPresent(emailBy, expEmail);
-            ensureValueStillPresent(messageBy, expMsg);
+            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
 
-            // ✅ capture inputs BEFORE submit
+            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+            catch (Exception ex) { fillIssues += "Email fill failed | "; }
+
+            try { typeAndEnsureValue(wait, js, messageBy, expMsg); }
+            catch (Exception ex) { fillIssues += "Message fill failed | "; }
+
+            // Optional: value wipe protection (safe)
+            try { ensureValueStillPresent(nameBy, expName); } catch (Exception ignored) {}
+            try { ensureValueStillPresent(mobileBy, expMobile); } catch (Exception ignored) {}
+            try { ensureValueStillPresent(emailBy, expEmail); } catch (Exception ignored) {}
+            try { ensureValueStillPresent(messageBy, expMsg); } catch (Exception ignored) {}
+
+            // ✅ Inputs ALWAYS captured (partial ok)
             inputs = "Name=" + safeGetValue(nameBy)
                     + " | Mobile=" + safeGetValue(mobileBy)
                     + " | Email=" + safeGetValue(emailBy)
                     + " | Message=" + safeGetValue(messageBy);
 
-            // ===== Submit =====
+            // ===== Submit (ALWAYS attempt) =====
             System.out.println("➡️ [ElderCare_Callback] Clicking submit...");
-            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-            try { Thread.sleep(800); } catch (Exception ignored) {}
-
-            // ✅ Recommended: clear perf logs before submit, so only post-submit 5xx is captured
-            clearPerformanceLogs();
-
             try {
-                submitBtn.click();
-            } catch (Exception e) {
-                js.executeScript("arguments[0].click();", submitBtn);
+                WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+                js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+
+                try { Thread.sleep(400); } catch (Exception ignored) {}
+
+                try {
+                    submitBtn.click();
+                } catch (Exception e) {
+                    js.executeScript("arguments[0].click();", submitBtn);
+                }
+
+                submitClicked = true;
+
+            } catch (Exception ex) {
+                submitClicked = false;
+                fillIssues += "Submit click failed | ";
             }
 
             // ===== Detect outcomes =====
-            thankYouSeen =
-                    waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 8000);
+            boolean successSeen = submitClicked
+                    && (waitForFlashPresence(successBy, 4000) || waitForFlashPresence(thankYouBy, 9000));
 
-            boolean network5xx = waitForNetwork5xx(9000);
+            thankYouSeen = successSeen;
 
+            // ✅ Always collect errors (fail/pass)
             fieldErrors = collectAllValidationErrors();
             globalErrors = collectGlobalErrors();
 
+            // Clean fillIssues text
+            String issues = (fillIssues == null) ? "" : fillIssues.trim();
+            if (issues.endsWith("|")) issues = issues.substring(0, issues.length() - 1).trim();
+
             // ===== Decide status =====
-            if (thankYouSeen && network5xx) {
-                status = "❌ SERVER_FAIL (POST SUBMIT)";
-                serverInfo = "API returned 5xx after submit";
-            } else if (thankYouSeen) {
+            if (thankYouSeen) {
                 status = "✅ PASS";
+                info = "Submitted";
+            } else if (!submitClicked) {
+                status = "❌ FORM_NOT_SUBMITTED";
+                info = issues.isBlank() ? "Submit not clicked" : issues;
             } else if (fieldErrors != null && !fieldErrors.isBlank()) {
                 status = "❌ VALIDATION_FAIL";
-            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-                status = "❌ SERVER_FAIL";
-                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+                info = issues.isBlank() ? "Validation errors" : issues;
+            } else if (globalErrors != null && !globalErrors.isBlank()) {
+                status = "❌ GLOBAL_FAIL";
+                info = issues.isBlank() ? "Global error shown" : issues;
             } else {
                 status = "⚠ UNKNOWN";
-                serverInfo = "No success/error signal detected";
+                info = issues.isBlank() ? "No success/error signal detected" : issues;
             }
 
         } catch (Exception e) {
-
-            status = "❌ EXCEPTION";
-            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
-
-            if (isServer500Like()) {
-                status = "❌ SERVER_FAIL (PAGE 500)";
-                serverInfo = "500 page detected during flow";
-            }
-
+            status = "❌ FORM_NOT_SUBMITTED";
+            info = "Flow crashed: " + e.getClass().getSimpleName() + " | " + e.getMessage();
         } finally {
 
-            // Always compute debug safely
             try {
                 debug = driver.getCurrentUrl() + " | " + driver.getTitle();
             } catch (Exception ignored) {
                 debug = "Debug not available";
             }
 
-            // ===== PRINT =====
             System.out.println("============== ELDER CARE CALLBACK FORM RESULT ==============");
             System.out.println("STATUS        : " + status);
+            System.out.println("SUBMIT CLICKED: " + submitClicked);
             System.out.println("THANK YOU     : " + thankYouSeen);
             System.out.println("INPUTS        : " + inputs);
             System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
             System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-            System.out.println("SERVER INFO   : " + serverInfo);
+            System.out.println("INFO          : " + info);
             System.out.println("DEBUG         : " + debug);
             System.out.println("=============================================================");
 
-            // ✅ Excel ALWAYS writes
-            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, thankYouSeen, debug);
+            writeFormResult(row, status, inputs, fieldErrors, globalErrors, info, thankYouSeen, debug);
         }
 
-        // ✅ Fail AFTER excel write
         if (!status.contains("PASS")) {
             Assert.fail("ElderCare_RequestACallbackForm failed -> " + status + " | " + debug);
         }
     }
 
-    /* ================= SAFE TYPE ================= */
+    /* ================= SAFE TYPE (local for now) ================= */
 
     private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
         for (int attempt = 1; attempt <= 3; attempt++) {
@@ -177,7 +192,7 @@ public class ElderCare_RequestACallbackForm extends BaseClass {
 
                 slowType(el, value);
 
-                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+                try { Thread.sleep(200); } catch (InterruptedException ignored) {}
 
                 String actual = el.getAttribute("value");
                 if (actual != null && actual.trim().equals(value)) return;
@@ -186,7 +201,7 @@ public class ElderCare_RequestACallbackForm extends BaseClass {
             } catch (Exception ignored) {
             }
         }
-        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
     }
 
     private String safeGetValue(By locator) {

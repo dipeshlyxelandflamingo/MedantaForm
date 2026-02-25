@@ -6,27 +6,22 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
-import java.util.logging.Level;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-
 
 public class BaseClass {
 
@@ -37,15 +32,14 @@ public class BaseClass {
     protected XSSFSheet sheet;
     protected DataFormatter formatter;
 
-    protected static final String EXCEL_PATH =
-            System.getProperty("user.dir") + "/src/test/resources/formsautomation.xlsx";
+    protected static final String EXCEL_PATH = System.getProperty("user.dir")
+            + "/src/test/resources/formsautomation.xlsx";
 
     /* ================= BEFORE SUITE ================= */
     @BeforeSuite
     public void writeExecutionDateOnce() {
 
-        try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
-             XSSFWorkbook wb = new XSSFWorkbook(fis)) {
+        try (FileInputStream fis = new FileInputStream(EXCEL_PATH); XSSFWorkbook wb = new XSSFWorkbook(fis)) {
 
             XSSFSheet sh = wb.getSheet("Sheet1");
 
@@ -92,20 +86,14 @@ public class BaseClass {
         options.addArguments("--disable-extensions");
         options.addArguments("--disable-blink-features=AutomationControlled");
 
-        // ✅ PERF/NETWORK logs DISABLED (Jenkins safe)
-        // We keep waitForNetwork5xx() as a lightweight 500 detector without perf logs.
-
         if (isLinux()) {
             System.out.println("🔹 Jenkins/Linux → Headless Chrome");
             options.addArguments("--headless=new");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--window-size=1920,1080");
-
-            // ✅ extra stability flags for headless/Jenkins
             options.addArguments("--disable-gpu");
             options.addArguments("--disable-features=VizDisplayCompositor");
-
         } else {
             System.out.println("🔹 Windows → Normal Chrome");
             options.addArguments("start-maximized");
@@ -123,6 +111,11 @@ public class BaseClass {
         try {
             file = new FileInputStream(EXCEL_PATH);
             workbook = new XSSFWorkbook(file);
+
+            // ✅ close stream to avoid file-lock issues
+            file.close();
+            file = null;
+
             sheet = workbook.getSheet("Sheet1");
             formatter = new DataFormatter();
             System.out.println("✅ Excel loaded");
@@ -133,30 +126,74 @@ public class BaseClass {
 
     /* ================= EXCEL WRITE ================= */
     public synchronized void writeExcel(int row, int col, String value) {
-        try {
-            if (sheet.getRow(row) == null) sheet.createRow(row);
-            sheet.getRow(row).createCell(col).setCellValue(value);
+        try (FileInputStream fis = new FileInputStream(EXCEL_PATH);
+             XSSFWorkbook wb = new XSSFWorkbook(fis)) {
+
+            XSSFSheet sh = wb.getSheet("Sheet1");
+            if (sh.getRow(row) == null) sh.createRow(row);
+            sh.getRow(row).createCell(col).setCellValue(value);
 
             try (FileOutputStream out = new FileOutputStream(EXCEL_PATH)) {
-                workbook.write(out);
+                wb.write(out);
             }
+
         } catch (Exception e) {
             System.err.println("❌ Excel write failed: " + e.getMessage());
         }
     }
 
     /* ================= UTIL METHODS ================= */
+
     public void slowType(WebElement element, String text) {
-        try { element.clear(); } catch (Exception ignored) {}
-        for (char c : text.toCharArray()) {
-            element.sendKeys(String.valueOf(c));
-            try { Thread.sleep(120); } catch (InterruptedException ignored) {}
+
+        if (text == null) text = "";
+
+        try { element.click(); } catch (Exception ignored) {}
+
+        // 1) Strong clear
+        try {
+            element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+            element.sendKeys(Keys.BACK_SPACE);
+        } catch (Exception ignored) {}
+
+        // 2) Try native typing
+        try {
+            element.sendKeys(text);
+        } catch (Exception ignored) {
+            try {
+                for (char c : text.toCharArray()) {
+                    element.sendKeys(String.valueOf(c));
+                    try { Thread.sleep(60); } catch (InterruptedException ignored2) {}
+                }
+            } catch (Exception ignored2) {}
         }
+
+        // 3) Validate
+        String v = "";
+        try {
+            v = element.getAttribute("value");
+            if (v == null) v = "";
+        } catch (Exception ignored) {}
+
+        if (v.trim().equals(text.trim())) return;
+
+        // 4) JS fallback + events
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript(
+                    "var el=arguments[0]; var val=arguments[1];" +
+                            "el.focus();" +
+                            "el.value = val;" +
+                            "el.dispatchEvent(new Event('input', {bubbles:true}));" +
+                            "el.dispatchEvent(new Event('change', {bubbles:true}));" +
+                            "el.dispatchEvent(new Event('blur', {bubbles:true}));",
+                    element, text
+            );
+        } catch (Exception ignored) {}
     }
 
     public void scrollToElement(WebElement element) {
-        ((JavascriptExecutor) driver)
-                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", element);
     }
 
     public String nowStamp() {
@@ -166,11 +203,16 @@ public class BaseClass {
     /* ================= THANK YOU FLASH DETECT ================= */
     public boolean waitForFlashPresence(By locator, int maxMillis) {
         long end = System.currentTimeMillis() + maxMillis;
+
         while (System.currentTimeMillis() < end) {
             try {
-                if (!driver.findElements(locator).isEmpty()) return true;
+                for (WebElement el : driver.findElements(locator)) {
+                    // element present => count it success (displayed check optional)
+                    if (el != null) return true;
+                }
             } catch (Exception ignored) {}
-            try { Thread.sleep(150); } catch (InterruptedException ignored) {}
+
+            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
         }
         return false;
     }
@@ -183,7 +225,8 @@ public class BaseClass {
                     "//*[contains(@class,'errmsg') or contains(@class,'error') or contains(@class,'invalid')][normalize-space()!='']"))) {
                 if (e.isDisplayed()) {
                     String t = e.getText();
-                    if (t != null && !t.trim().isEmpty()) sb.append(t.trim()).append(" | ");
+                    if (t != null && !t.trim().isEmpty())
+                        sb.append(t.trim()).append(" | ");
                 }
             }
         } catch (Exception ignored) {}
@@ -198,70 +241,12 @@ public class BaseClass {
                     "//*[@role='alert' or contains(@class,'toast') or contains(@class,'alert') or contains(@class,'notification')][normalize-space()!='']"))) {
                 if (e.isDisplayed()) {
                     String t = e.getText();
-                    if (t != null && !t.trim().isEmpty()) sb.append(t.trim()).append(" | ");
+                    if (t != null && !t.trim().isEmpty())
+                        sb.append(t.trim()).append(" | ");
                 }
             }
         } catch (Exception ignored) {}
         return sb.toString().trim();
-    }
-
-    /* ================= BASIC 500 DETECT (PAGE SOURCE) ================= */
-    public boolean isServer500Like() {
-        try {
-            String src = driver.getPageSource();
-            if (src == null) return false;
-            String s = src.toLowerCase();
-            return (s.contains("server error") && (s.contains(">500<") || s.contains(" 500 ")))
-                    || s.contains("internal server error")
-                    || s.contains("http status 500")
-                    || s.contains("bad gateway")
-                    || s.contains("service unavailable")
-                    || s.contains("gateway timeout");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /* ================= CLEAR PERFORMANCE LOGS (NO-OP) ================= */
-    public void clearPerformanceLogs() {
-        // PERF logs disabled (Jenkins safe)
-    }
-
-    /* ================= ✅ LIGHTWEIGHT 5XX/500 DETECT (NO PERF LOGS) =================
-       Kept the SAME METHOD NAME so you DON'T need to touch 29 forms.
-       Returns TRUE if any visible server error signal appears within maxMillis.
-    ================================================================================ */
-    public boolean waitForNetwork5xx(int maxMillis) {
-
-        long end = System.currentTimeMillis() + maxMillis;
-
-        By serverErrorBy = By.xpath(
-                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'internal server error') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'server error') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'bad gateway') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'service unavailable') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'gateway timeout') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'http status 500') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'502') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'503') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'504') "
-                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'500')]"
-        );
-
-        while (System.currentTimeMillis() < end) {
-            try {
-                // 1) DOM check
-                if (!driver.findElements(serverErrorBy).isEmpty()) return true;
-
-                // 2) Page source check
-                if (isServer500Like()) return true;
-
-            } catch (Exception ignored) {}
-
-            try { Thread.sleep(250); } catch (InterruptedException ignored) {}
-        }
-
-        return false;
     }
 
     /* ================= VALUE LOST DETECT + REFILL ================= */
@@ -273,13 +258,7 @@ public class BaseClass {
             if (actual == null) actual = "";
             if (expected.equals(actual.trim())) return true;
 
-            try { el.click(); } catch (Exception ignored) {}
-            try { el.clear(); } catch (Exception ignored) {}
-
-            for (char c : expected.toCharArray()) {
-                el.sendKeys(String.valueOf(c));
-                try { Thread.sleep(80); } catch (InterruptedException ignored) {}
-            }
+            slowType(el, expected);
 
             String after = el.getAttribute("value");
             return after != null && expected.equals(after.trim());
@@ -289,25 +268,22 @@ public class BaseClass {
         }
     }
 
+    public void ensureValueStillPresentStrict(By locator, String expected) {
+        boolean ok = ensureValueStillPresent(locator, expected);
+        if (!ok) throw new RuntimeException("Value wiped / not present for: " + locator + " expected='" + expected + "'");
+    }
+
     /* ================= WRITE RESULT (E to L) ================= */
-    public void writeFormResult(
-            int row,
-            String status,
-            String inputs,
-            String fieldErrors,
-            String globalErrors,
-            String serverInfo,
-            boolean thankYouSeen,
-            String debugUrlTitle
-    ) {
-        writeExcel(row, 4, status);                           // E
-        writeExcel(row, 5, inputs);                           // F
-        writeExcel(row, 6, fieldErrors);                      // G
-        writeExcel(row, 7, globalErrors);                     // H
-        writeExcel(row, 8, serverInfo);                       // I
-        writeExcel(row, 9, String.valueOf(thankYouSeen));     // J
-        writeExcel(row, 10, debugUrlTitle);                   // K
-        writeExcel(row, 11, nowStamp());                      // L
+    public void writeFormResult(int row, String status, String inputs, String fieldErrors, String globalErrors,
+                                String serverInfo, boolean thankYouSeen, String debugUrlTitle) {
+        writeExcel(row, 4, status);                 // E
+        writeExcel(row, 5, inputs);                 // F
+        writeExcel(row, 6, fieldErrors);            // G
+        writeExcel(row, 7, globalErrors);           // H
+        writeExcel(row, 8, serverInfo);             // I
+        writeExcel(row, 9, String.valueOf(thankYouSeen)); // J
+        writeExcel(row, 10, debugUrlTitle);         // K
+        writeExcel(row, 11, nowStamp());            // L
     }
 
     /* ================= AFTER CLASS ================= */

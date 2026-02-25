@@ -15,201 +15,207 @@ import Base.BaseClass;
 
 public class Telemedicine extends BaseClass {
 
-	
-	 @Test(priority = 1)
-	    public void Telemedicine_RequestACallbackForm() {
+	@Test(priority = 1)
+    public void Telemedicine_RequestACallbackForm() {
 
-	        int row = 27;
+        int row = 27;
 
-	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
-	        String status = "⚠ UNKNOWN";
-	        String inputs = "";
-	        String fieldErrors = "";
-	        String globalErrors = "";
-	        String serverInfo = "";
-	        boolean successSeen = false;
-	        String debug = "";
+        String status = "⚠ UNKNOWN";
+        String inputs = "";
+        String fieldErrors = "";
+        String globalErrors = "";
+        boolean successSeen = false;
+        boolean submitClicked = false;
+        String fillIssues = "";
+        String debug = "";
 
-	        // ===== Page =====
-	        String url = "https://www.medanta.org/tele-medicine";
+        // ===== Page =====
+        String url = "https://www.medanta.org/tele-medicine";
 
-	        // ===== Locators =====
-	        By nameBy     = By.name("name");
-	        By mobileBy   = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]");
-	        By emailBy    = By.name("email");
-	        By messageBy  = By.xpath("//textarea[@class='inputbox']");
-	        By submitBy   = By.xpath("(//button[@type='submit'])[3]");
+        // ===== Locators =====
+        By nameBy    = By.name("name");
+        By mobileBy  = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]");
+        By emailBy   = By.name("email");
+        By messageBy = By.xpath("//textarea[@class='inputbox']");
+        By submitBy  = By.xpath("(//button[@type='submit'])[3]");
 
-	        By thankYouBy = By.xpath("//div[contains(text(),'Thank you')]");
-	        By successFallbackBy = By.xpath(
-	                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully') "
-	                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
-	        );
+        // Success (fast + fallback)
+        By thankYouBy = By.xpath("//div[contains(text(),'Thank you')]");
+        By successFallbackBy = By.xpath(
+                "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully') "
+                        + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+        );
 
-	        // ===== Test Data =====
-	        String expName   = "Dipesh";
-	        String expMobile = "9876543210";
-	        String expEmail  = "dipesh@yopmail.com";
-	        String expMsg    = "Test";
+        // ===== Test Data =====
+        String expName   = "Dipesh";
+        String expMobile = "9876543210";
+        String expEmail  = "dipesh@yopmail.com";
+        String expMsg    = "Test";
 
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-	        JavascriptExecutor js = (JavascriptExecutor) driver;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	        try {
-	            driver.navigate().to(url);
+        try {
+            driver.navigate().to(url);
 
-	            System.out.println("➡️ [Telemedicine] Opening page...");
-	            wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+            System.out.println("➡️ [Telemedicine] Opening page...");
 
-	            // Scroll to form
-	            WebElement nameElForScroll = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", nameElForScroll);
+            WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+            scrollToElement(first);
 
-	            System.out.println("➡️ [Telemedicine] Filling form...");
+            System.out.println("➡️ [Telemedicine] Filling form...");
 
-	            typeAndEnsureValue(wait, js, nameBy, expName);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	            typeAndEnsureValue(wait, js, emailBy, expEmail);
-	            typeAndEnsureValue(wait, js, messageBy, expMsg);
+            // ===== SAFE FILL =====
+            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-	            // value wipe protection
-	            ensureValueStillPresent(nameBy, expName);
-	            ensureValueStillPresent(mobileBy, expMobile);
-	            ensureValueStillPresent(emailBy, expEmail);
-	            ensureValueStillPresent(messageBy, expMsg);
+            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
 
-	            // ✅ capture inputs BEFORE submit
-	            inputs = "Name=" + safeGetValue(nameBy)
-	                    + " | Mobile=" + safeGetValue(mobileBy)
-	                    + " | Email=" + safeGetValue(emailBy)
-	                    + " | Message=" + safeGetValue(messageBy);
+            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+            catch (Exception ex) { fillIssues += "Email fill failed | "; }
 
-	            // ===== Submit =====
-	            System.out.println("➡️ [Telemedicine] Clicking submit...");
+            try { typeAndEnsureValue(wait, js, messageBy, expMsg); }
+            catch (Exception ex) { fillIssues += "Message fill failed | "; }
 
-	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+            // ===== SAFE value wipe protection =====
+            try { ensureValueStillPresent(nameBy, expName); }
+            catch (Exception ex) { fillIssues += "Name value wiped | "; }
 
-	            try { Thread.sleep(800); } catch (InterruptedException ignored) {}
+            try { ensureValueStillPresent(mobileBy, expMobile); }
+            catch (Exception ex) { fillIssues += "Mobile value wiped | "; }
 
-	            // ✅ baseline logs before submit (so only post-submit 5xx counts)
-	            clearPerformanceLogs();
+            try { ensureValueStillPresent(emailBy, expEmail); }
+            catch (Exception ex) { fillIssues += "Email value wiped | "; }
 
-	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
-	            }
+            try { ensureValueStillPresent(messageBy, expMsg); }
+            catch (Exception ex) { fillIssues += "Message value wiped | "; }
 
-	            // ===== Detect outcomes =====
-	            successSeen =
-	                    waitForFlashPresence(thankYouBy, 4500) ||
-	                    waitForFlashPresence(successFallbackBy, 9000);
+            // ✅ capture inputs BEFORE submit (ALWAYS)
+            inputs = "Name=" + safeGetValue(nameBy)
+                    + " | Mobile=" + safeGetValue(mobileBy)
+                    + " | Email=" + safeGetValue(emailBy)
+                    + " | Message=" + safeGetValue(messageBy)
+                    + (fillIssues.isBlank() ? "" : " | FillIssues=" + fillIssues.trim());
 
-	            boolean network5xx = waitForNetwork5xx(9000);
+            // ===== Submit (SAFE) =====
+            System.out.println("➡️ [Telemedicine] Clicking submit...");
 
-	            fieldErrors  = collectAllValidationErrors();
-	            globalErrors = collectGlobalErrors();
+            try {
+                WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+                js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+                try { Thread.sleep(800); } catch (Exception ignored) {}
 
-	            // ===== Decide Status =====
-	            if (successSeen && network5xx) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = "API returned 5xx after submit";
-	            } else if (successSeen) {
-	                status = "✅ PASS";
-	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-	                status = "❌ VALIDATION_FAIL";
-	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
-	            } else {
-	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
-	            }
+                try {
+                    submitBtn.click();
+                } catch (Exception e) {
+                    js.executeScript("arguments[0].click();", submitBtn);
+                }
 
-	        } catch (Exception e) {
+                submitClicked = true;
 
-	            status = "❌ EXCEPTION";
-	            serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
+            } catch (Exception clickEx) {
+                submitClicked = false;
+                status = "❌ FORM_NOT_SUBMITTED";
+            }
 
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
-	            }
+            // ===== Detect outcomes =====
+            if (submitClicked) {
+                successSeen =
+                        waitForFlashPresence(thankYouBy, 4500)
+                                || waitForFlashPresence(successFallbackBy, 9000);
+            }
 
-	        } finally {
+            fieldErrors = collectAllValidationErrors();
+            globalErrors = collectGlobalErrors();
 
-	            // Always compute debug safely
-	            try {
-	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
-	            } catch (Exception ignored) {
-	                debug = "Debug not available";
-	            }
+            // ===== Decide Status =====
+            if (!submitClicked) {
+                status = "❌ FORM_NOT_SUBMITTED";
+            } else if (successSeen) {
+                status = "✅ PASS";
+            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+                status = "❌ VALIDATION_FAIL";
+            } else if (globalErrors != null && !globalErrors.isBlank()) {
+                status = "❌ GLOBAL_ERROR";
+            } else {
+                status = "⚠ UNKNOWN";
+            }
 
-	            System.out.println("============== TELEMEDICINE FORM RESULT ==============");
-	            System.out.println("STATUS        : " + status);
-	            System.out.println("SUCCESS       : " + successSeen);
-	            System.out.println("INPUTS        : " + inputs);
-	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
-	            System.out.println("DEBUG         : " + debug);
-	            System.out.println("======================================================");
+        } catch (Exception e) {
+            if (status == null || status.trim().isEmpty() || status.equals("⚠ UNKNOWN")) {
+                status = "❌ EXCEPTION";
+            }
 
-	            // ✅ Excel ALWAYS writes
-	            writeFormResult(
-	                    row,
-	                    status,
-	                    inputs,
-	                    fieldErrors,
-	                    globalErrors,
-	                    serverInfo,
-	                    successSeen,
-	                    debug
-	            );
-	        }
+        } finally {
 
-	        // ✅ Fail AFTER excel write
-	        if (!status.contains("PASS")) {
-	            Assert.fail("Telemedicine form failed -> " + status + " | " + debug);
-	        }
-	    }
+            // Always compute debug safely
+            try {
+                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+            } catch (Exception ignored) {
+                debug = "Debug not available";
+            }
 
-	    /* ================= Local helpers ================= */
+            System.out.println("============== TELEMEDICINE FORM RESULT ==============");
+            System.out.println("STATUS         : " + status);
+            System.out.println("SUBMIT CLICKED : " + submitClicked);
+            System.out.println("SUCCESS        : " + successSeen);
+            System.out.println("INPUTS         : " + inputs);
+            System.out.println("FIELD ERRORS   : " + (fieldErrors == null ? "" : fieldErrors));
+            System.out.println("GLOBAL ERRORS  : " + (globalErrors == null ? "" : globalErrors));
+            System.out.println("DEBUG          : " + debug);
+            System.out.println("======================================================");
 
-	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+            // ✅ Excel info column: PASS => "Submitted"
+            String excelInfo;
+            if (status.contains("PASS")) {
+                excelInfo = fillIssues.isBlank() ? "Submitted" : ("Submitted | " + fillIssues.trim());
+            } else {
+                excelInfo = fillIssues == null ? "" : fillIssues.trim();
+            }
 
-	        for (int attempt = 1; attempt <= 3; attempt++) {
-	            try {
-	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
-	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+            writeFormResult(row, status, inputs, fieldErrors, globalErrors, excelInfo, successSeen, debug);
+        }
 
-	                try { el.click(); } catch (Exception ignored) {}
-	                try { el.clear(); } catch (Exception ignored) {}
+        // ✅ Fail AFTER excel write
+        if (!status.contains("PASS")) {
+            Assert.fail("Telemedicine form failed -> " + status + " | " + debug);
+        }
+    }
 
-	                slowType(el, value);
+    /* ================= Local helpers ================= */
 
-	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
-	                String actual = el.getAttribute("value");
-	                if (actual != null && actual.trim().equals(value)) return;
+                try { el.click(); } catch (Exception ignored) {}
+                try { el.clear(); } catch (Exception ignored) {}
 
-	            } catch (StaleElementReferenceException ignored) {
-	            } catch (Exception ignored) {
-	            }
-	        }
+                slowType(el, value);
 
-	        Assert.fail("Value did not persist for locator: " + locator);
-	    }
+                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
 
-	    private String safeGetValue(By locator) {
-	        try {
-	            WebElement el = driver.findElement(locator);
-	            String v = el.getAttribute("value");
-	            return v == null ? "" : v.trim();
-	        } catch (Exception e) {
-	            return "";
-	        }
-	    }
-	}
+                String actual = el.getAttribute("value");
+                if (actual != null && actual.trim().equals(value)) return;
+
+            } catch (StaleElementReferenceException ignored) {
+            } catch (Exception ignored) {
+            }
+        }
+        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
+    }
+
+    private String safeGetValue(By locator) {
+        try {
+            WebElement el = driver.findElement(locator);
+            String v = el.getAttribute("value");
+            return v == null ? "" : v.trim();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+}

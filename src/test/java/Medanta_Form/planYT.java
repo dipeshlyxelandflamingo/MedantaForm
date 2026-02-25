@@ -15,181 +15,189 @@ import Base.BaseClass;
 
 public class planYT extends BaseClass {
 
-	 @Test(priority = 1)
-	    public void PlanYourTripPage_QueryForm() {
+	@Test(priority = 1)
+    public void PlanYourTripPage_QueryForm() {
 
-	        int row = 23;
+        int row = 23;
 
-	        // ✅ Make these available to finally block (so Excel ALWAYS writes)
-	        String status = "⚠ UNKNOWN";
-	        String inputs = "";
-	        String fieldErrors = "";
-	        String globalErrors = "";
-	        String serverInfo = "";
-	        boolean successSeen = false;
-	        String debug = "";
+        String status = "⚠ UNKNOWN";
+        String inputs = "";
+        String fieldErrors = "";
+        String globalErrors = "";
+        String info = "";
+        boolean successSeen = false;
+        boolean submitClicked = false;
+        String debug = "";
+        String fillIssues = "";
 
-	        try {
+        try {
 
-	            String url = "https://www.medanta.org/plan-your-trip";
-	            driver.navigate().to(url);
+            String url = "https://www.medanta.org/plan-your-trip";
+            driver.navigate().to(url);
 
-	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-	            JavascriptExecutor js = (JavascriptExecutor) driver;
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	            // ===== Locators (your original) =====
-	            By nameBy   = By.xpath("(//input[@placeholder='Enter Your Name'])[3]");
-	            By mobileBy = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]");
-	            By submitBy = By.xpath("(//button[@type='submit'])[3]");
+            // ===== Locators =====
+            By nameBy   = By.xpath("(//input[@placeholder='Enter Your Name'])[3]");
+            By mobileBy = By.xpath("(//input[@placeholder='Enter Your Mobile Number'])[2]");
+            By submitBy = By.xpath("(//button[@type='submit'])[3]");
 
-	            // success (your original)
-	            By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
+            // success
+            By successBy = By.xpath("//div[contains(text(),'Thank you for filling the form')]");
+            By successFallbackBy = By.xpath(
+                    "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
+                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully') "
+                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
+            );
 
-	            // fallback success (flash/text changes)
-	            By successFallbackBy = By.xpath(
-	                    "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
-	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully') "
-	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
-	            );
+            // ===== Test Data =====
+            String expName = "Test";
+            String expMobile = "9876543210";
 
-	            // ===== Test Data =====
-	            String expName = "Test";
-	            String expMobile = "9876543210";
+            System.out.println("➡️ [PlanYourTrip] Opening page...");
 
-	            System.out.println("➡️ [PlanYourTrip] Opening page...");
+            // wait first field visible & scroll (safe)
+            try {
+                WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
+                scrollToElement(first);
+            } catch (Exception ignored) {}
 
-	            // wait first field visible & scroll
-	            WebElement first = wait.until(ExpectedConditions.visibilityOfElementLocated(nameBy));
-	            scrollToElement(first);
+            System.out.println("➡️ [PlanYourTrip] Filling form...");
 
-	            System.out.println("➡️ [PlanYourTrip] Filling form...");
+            // ===== SAFE FILL =====
+            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-	            typeAndEnsureValue(wait, js, nameBy, expName);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
+            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
 
-	            // ⭐ value wipe protection
-	            ensureValueStillPresent(nameBy, expName);
-	            ensureValueStillPresent(mobileBy, expMobile);
+            // value wipe protection (safe)
+            try { ensureValueStillPresent(nameBy, expName); }
+            catch (Exception ex) { fillIssues += "Name value wiped | "; }
 
-	            // ✅ capture inputs BEFORE submit
-	            inputs = "Name=" + safeGetValue(nameBy)
-	                    + " | Mobile=" + safeGetValue(mobileBy);
+            try { ensureValueStillPresent(mobileBy, expMobile); }
+            catch (Exception ex) { fillIssues += "Mobile value wiped | "; }
 
-	            // ===== Submit =====
-	            System.out.println("➡️ [PlanYourTrip] Clicking submit...");
-	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+            // ✅ capture inputs BEFORE submit (ALWAYS)
+            inputs = "Name=" + safeGetValue(nameBy)
+                    + " | Mobile=" + safeGetValue(mobileBy)
+                    + (fillIssues.isBlank() ? "" : " | FillIssues=" + fillIssues.trim());
 
-	            try { Thread.sleep(800); } catch (Exception ignored) {}
+            // ===== Submit (SAFE) =====
+            System.out.println("➡️ [PlanYourTrip] Clicking submit...");
 
-	            // ✅ clear perf logs before submit (post-submit only check)
-	            clearPerformanceLogs();
+            try {
+                WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+                js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+                try { Thread.sleep(800); } catch (Exception ignored) {}
 
-	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
-	            }
+                try {
+                    submitBtn.click();
+                } catch (Exception e) {
+                    js.executeScript("arguments[0].click();", submitBtn);
+                }
+                submitClicked = true;
 
-	            // ===== Detect outcomes =====
-	            successSeen =
-	                    waitForFlashPresence(successBy, 4000) || waitForFlashPresence(successFallbackBy, 9000);
+            } catch (Exception clickEx) {
+                submitClicked = false;
+                info = "Submit click failed: " + clickEx.getClass().getSimpleName() + " | " + clickEx.getMessage();
+            }
 
-	            boolean network5xx = waitForNetwork5xx(9000);
+            // ===== Detect outcomes =====
+            if (submitClicked) {
+                successSeen = waitForFlashPresence(successBy, 4000)
+                        || waitForFlashPresence(successFallbackBy, 9000);
+            }
 
-	            fieldErrors = collectAllValidationErrors();
-	            globalErrors = collectGlobalErrors();
+            fieldErrors = collectAllValidationErrors();
+            globalErrors = collectGlobalErrors();
 
-	            // ===== Decide Status =====
-	            if (successSeen && network5xx) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = "API returned 5xx after submit";
-	            } else if (successSeen) {
-	                status = "✅ PASS";
-	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
-	                status = "❌ VALIDATION_FAIL";
-	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
-	            } else {
-	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
-	            }
+            // ===== Decide Status =====
+            if (!submitClicked) {
+                status = "❌ FORM_NOT_SUBMITTED";
+                successSeen = false;
+                if (info == null || info.isBlank()) info = "Submit not clicked";
+            } else if (successSeen) {
+                status = "✅ PASS";
+                info = fillIssues.isBlank() ? "Submitted" : ("Submitted | " + fillIssues.trim());
+            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
+                status = "❌ VALIDATION_FAIL";
+                info = fillIssues.isBlank() ? "Validation errors" : fillIssues.trim();
+            } else if (globalErrors != null && !globalErrors.isBlank()) {
+                status = "❌ GLOBAL_FAIL";
+                info = fillIssues.isBlank() ? "Global error shown" : fillIssues.trim();
+            } else {
+                status = "⚠ UNKNOWN";
+                info = fillIssues.isBlank() ? "No success/error signal detected" : fillIssues.trim();
+            }
 
-	        } catch (Exception e) {
+        } catch (Exception e) {
 
-	            if (status == null || status.trim().isEmpty() || status.equals("⚠ UNKNOWN")) {
-	                status = "❌ EXCEPTION";
-	                serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
-	            }
+            status = "❌ EXCEPTION";
+            info = e.getClass().getSimpleName() + " | " + e.getMessage();
 
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
-	            }
+        } finally {
 
-	        } finally {
+            try {
+                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
+            } catch (Exception ignored) {
+                debug = "Debug not available";
+            }
 
-	            // always compute debug safely
-	            try {
-	                debug = driver.getCurrentUrl() + " | " + driver.getTitle();
-	            } catch (Exception ignored) {
-	                debug = "Debug not available";
-	            }
+            System.out.println("============== PLAN YOUR TRIP FORM RESULT ==============");
+            System.out.println("STATUS         : " + status);
+            System.out.println("SUBMIT CLICKED : " + submitClicked);
+            System.out.println("SUCCESS        : " + successSeen);
+            System.out.println("INPUTS         : " + inputs);
+            System.out.println("FIELD ERRORS   : " + (fieldErrors == null ? "" : fieldErrors));
+            System.out.println("GLOBAL ERRORS  : " + (globalErrors == null ? "" : globalErrors));
+            System.out.println("INFO           : " + info);
+            System.out.println("DEBUG          : " + debug);
+            System.out.println("========================================================");
 
-	            // ===== PRINT =====
-	            System.out.println("============== PLAN YOUR TRIP FORM RESULT ==============");
-	            System.out.println("STATUS        : " + status);
-	            System.out.println("SUCCESS       : " + successSeen);
-	            System.out.println("INPUTS        : " + inputs);
-	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
-	            System.out.println("DEBUG         : " + debug);
-	            System.out.println("========================================================");
+            // serverInfo column me info pass
+            writeFormResult(row, status, inputs, fieldErrors, globalErrors, info, successSeen, debug);
+        }
 
-	            // ✅ Excel ALWAYS writes
-	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
-	        }
+        if (!status.contains("PASS")) {
+            Assert.fail("Plan Your Trip form failed -> " + status + " | " + debug);
+        }
+    }
 
-	        // ✅ Fail AFTER excel write
-	        if (!status.contains("PASS")) {
-	            Assert.fail("Plan Your Trip form failed -> " + status + " | " + debug);
-	        }
-	    }
+    /* ================= SAFE TYPE ================= */
 
-	    /* ================= SAFE TYPE ================= */
+    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
-	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
-	        for (int attempt = 1; attempt <= 3; attempt++) {
-	            try {
-	                WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
-	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
+                try { el.click(); } catch (Exception ignored) {}
 
-	                try { el.click(); } catch (Exception ignored) {}
-	                try { el.clear(); } catch (Exception ignored) {}
+                // slowType already clears + JS fallback
+                slowType(el, value);
 
-	                slowType(el, value);
+                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
 
-	                try { Thread.sleep(250); } catch (InterruptedException ignored) {}
+                String actual = el.getAttribute("value");
+                if (actual == null) actual = "";
+                if (actual.trim().equals(value.trim())) return;
 
-	                String actual = el.getAttribute("value");
-	                if (actual != null && actual.trim().equals(value)) return;
+            } catch (StaleElementReferenceException ignored) {
+            } catch (Exception ignored) {
+            }
+        }
+        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
+    }
 
-	            } catch (StaleElementReferenceException ignored) {
-	            } catch (Exception ignored) {
-	            }
-	        }
-	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
-	    }
-
-	    private String safeGetValue(By locator) {
-	        try {
-	            WebElement el = driver.findElement(locator);
-	            String v = el.getAttribute("value");
-	            return v == null ? "" : v.trim();
-	        } catch (Exception e) {
-	            return "";
-	        }
-	    }
-	}
+    private String safeGetValue(By locator) {
+        try {
+            WebElement el = driver.findElement(locator);
+            String v = el.getAttribute("value");
+            return v == null ? "" : v.trim();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+}

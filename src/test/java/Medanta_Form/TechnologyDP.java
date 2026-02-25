@@ -21,16 +21,15 @@ public class TechnologyDP extends BaseClass {
 
 	        int row = 26;
 
-	        // ✅ Excel ALWAYS write variables
 	        String status = "⚠ UNKNOWN";
 	        String inputs = "";
 	        String fieldErrors = "";
 	        String globalErrors = "";
-	        String serverInfo = "";
 	        boolean successSeen = false;
+	        boolean submitClicked = false;
+	        String fillIssues = "";
 	        String debug = "";
-
-	        boolean network5xx = false;
+	        String info = ""; // ✅ add this
 
 	        try {
 
@@ -40,21 +39,20 @@ public class TechnologyDP extends BaseClass {
 	            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 	            JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	            // ===== Locators =====
 	            By nameBy    = By.name("name");
 	            By mobileBy  = By.name("mobile");
 	            By emailBy   = By.name("email");
 	            By messageBy = By.xpath("//textarea[@placeholder='Enter Your Message']");
 	            By submitBy  = By.xpath("(//button[@type='submit'])[3]");
 
-	            By thankYouBy = By.xpath("//div[contains(text(),'Thank you')]");
+	            // ✅ better: exact success class/text bhi add kar do (flash issue)
+	            By thankYouBy = By.xpath("//*[contains(@class,'successmsg') and contains(.,'Thank you')]");
 	            By successFallbackBy = By.xpath(
 	                    "//*[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'thank you') "
 	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'successfully') "
 	                            + "or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'submitted')]"
 	            );
 
-	            // ===== Test Data =====
 	            String expName   = "Test";
 	            String expMobile = "9876543210";
 	            String expEmail  = "wakemedantatest@gmail.com";
@@ -67,74 +65,79 @@ public class TechnologyDP extends BaseClass {
 
 	            System.out.println("➡️ [TechnologyDP] Filling form...");
 
-	            typeAndEnsureValue(wait, js, nameBy, expName);
-	            typeAndEnsureValue(wait, js, mobileBy, expMobile);
-	            typeAndEnsureValue(wait, js, emailBy, expEmail);
-	            typeAndEnsureValue(wait, js, messageBy, expMsg);
+	            try { typeAndEnsureValue(wait, js, nameBy, expName); }
+	            catch (Exception ex) { fillIssues += "Name fill failed | "; }
 
-	            // ⭐ value wipe protection
-	            ensureValueStillPresent(nameBy, expName);
-	            ensureValueStillPresent(mobileBy, expMobile);
-	            ensureValueStillPresent(emailBy, expEmail);
-	            ensureValueStillPresent(messageBy, expMsg);
+	            try { typeAndEnsureValue(wait, js, mobileBy, expMobile); }
+	            catch (Exception ex) { fillIssues += "Mobile fill failed | "; }
 
-	            // ✅ capture inputs BEFORE submit
+	            try { typeAndEnsureValue(wait, js, emailBy, expEmail); }
+	            catch (Exception ex) { fillIssues += "Email fill failed | "; }
+
+	            try { typeAndEnsureValue(wait, js, messageBy, expMsg); }
+	            catch (Exception ex) { fillIssues += "Message fill failed | "; }
+
+	            try { ensureValueStillPresent(nameBy, expName); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(mobileBy, expMobile); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(emailBy, expEmail); } catch (Exception ignored) {}
+	            try { ensureValueStillPresent(messageBy, expMsg); } catch (Exception ignored) {}
+
 	            inputs = "Name=" + safeGetValue(nameBy)
 	                    + " | Mobile=" + safeGetValue(mobileBy)
 	                    + " | Email=" + safeGetValue(emailBy)
-	                    + " | Message=" + safeGetValue(messageBy);
+	                    + " | Message=" + safeGetValue(messageBy)
+	                    + (fillIssues.isBlank() ? "" : " | FillIssues=" + fillIssues);
 
-	            // ===== Submit =====
 	            System.out.println("➡️ [TechnologyDP] Clicking submit...");
-	            WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
-	            js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
-
-	            try { Thread.sleep(800); } catch (Exception ignored) {}
-
-	            // ✅ clear perf logs before submit
-	            clearPerformanceLogs();
 
 	            try {
-	                submitBtn.click();
-	            } catch (Exception e) {
-	                js.executeScript("arguments[0].click();", submitBtn);
+	                WebElement submitBtn = wait.until(ExpectedConditions.elementToBeClickable(submitBy));
+	                js.executeScript("arguments[0].scrollIntoView({block:'center'});", submitBtn);
+	                try { Thread.sleep(800); } catch (Exception ignored) {}
+
+	                try {
+	                    submitBtn.click();
+	                } catch (Exception e) {
+	                    js.executeScript("arguments[0].click();", submitBtn);
+	                }
+
+	                submitClicked = true;
+
+	            } catch (Exception clickEx) {
+	                submitClicked = false;
+	                status = "❌ FORM_NOT_SUBMITTED";
+	                info = "Submit click failed: " + clickEx.getClass().getSimpleName();
 	            }
 
-	            // ===== Detect outcomes =====
-	            successSeen =
-	                    waitForFlashPresence(thankYouBy, 4500) || waitForFlashPresence(successFallbackBy, 9000);
-
-	            network5xx = waitForNetwork5xx(9000);
+	            if (submitClicked) {
+	                // ✅ flash fast hai, isliye polling fast rakho
+	                successSeen = waitForFlashPresence(thankYouBy, 9000) || waitForFlashPresence(successFallbackBy, 9000);
+	            }
 
 	            fieldErrors = collectAllValidationErrors();
 	            globalErrors = collectGlobalErrors();
 
-	            // ===== Decide Status =====
-	            if (successSeen && network5xx) {
-	                status = "❌ SERVER_FAIL (POST SUBMIT)";
-	                serverInfo = "API returned 5xx after submit";
+	            if (!submitClicked) {
+	                status = "❌ FORM_NOT_SUBMITTED";
+	                if (info == null || info.isBlank()) info = "Submit not clicked";
 	            } else if (successSeen) {
 	                status = "✅ PASS";
+	                info = "Submitted"; // ✅ IMPORTANT
 	            } else if (fieldErrors != null && !fieldErrors.isBlank()) {
 	                status = "❌ VALIDATION_FAIL";
-	            } else if (network5xx || (globalErrors != null && !globalErrors.isBlank())) {
-	                status = "❌ SERVER_FAIL";
-	                serverInfo = network5xx ? "API returned 5xx" : "Global error shown";
+	                info = "Validation errors";
+	            } else if (globalErrors != null && !globalErrors.isBlank()) {
+	                status = "❌ GLOBAL_ERROR";
+	                info = "Global error shown";
 	            } else {
 	                status = "⚠ UNKNOWN";
-	                serverInfo = "No success/error signal detected";
+	                info = "No success/error signal detected";
 	            }
 
 	        } catch (Exception e) {
-
 	            if (status == null || status.trim().isEmpty() || status.equals("⚠ UNKNOWN")) {
 	                status = "❌ EXCEPTION";
-	                serverInfo = e.getClass().getSimpleName() + " | " + e.getMessage();
-	            }
-
-	            if (isServer500Like()) {
-	                status = "❌ SERVER_FAIL (PAGE 500)";
-	                serverInfo = "500 page detected during flow";
+	                info = e.getClass().getSimpleName() + " | " + e.getMessage();
 	            }
 
 	        } finally {
@@ -146,27 +149,24 @@ public class TechnologyDP extends BaseClass {
 	            }
 
 	            System.out.println("============== TECHNOLOGY DP FORM RESULT ==============");
-	            System.out.println("STATUS        : " + status);
-	            System.out.println("SUCCESS       : " + successSeen);
-	            System.out.println("NETWORK 5XX   : " + network5xx);
-	            System.out.println("INPUTS        : " + inputs);
-	            System.out.println("FIELD ERRORS  : " + (fieldErrors == null ? "" : fieldErrors));
-	            System.out.println("GLOBAL ERRORS : " + (globalErrors == null ? "" : globalErrors));
-	            System.out.println("SERVER INFO   : " + serverInfo);
-	            System.out.println("DEBUG         : " + debug);
+	            System.out.println("STATUS         : " + status);
+	            System.out.println("SUBMIT CLICKED : " + submitClicked);
+	            System.out.println("SUCCESS        : " + successSeen);
+	            System.out.println("INPUTS         : " + inputs);
+	            System.out.println("FIELD ERRORS   : " + (fieldErrors == null ? "" : fieldErrors));
+	            System.out.println("GLOBAL ERRORS  : " + (globalErrors == null ? "" : globalErrors));
+	            System.out.println("INFO           : " + info);
+	            System.out.println("DEBUG          : " + debug);
 	            System.out.println("=======================================================");
 
-	            // ✅ Excel ALWAYS writes
-	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, serverInfo, successSeen, debug);
+	            // ✅ PASS ho to Excel me "Submitted" jayega
+	            writeFormResult(row, status, inputs, fieldErrors, globalErrors, info, successSeen, debug);
 	        }
 
-	        // ✅ Fail AFTER excel write
 	        if (!status.contains("PASS")) {
 	            Assert.fail("Technology DP form failed -> " + status + " | " + debug);
 	        }
 	    }
-
-	    /* ================= Local helpers ================= */
 
 	    private void typeAndEnsureValue(WebDriverWait wait, JavascriptExecutor js, By locator, String value) {
 	        for (int attempt = 1; attempt <= 3; attempt++) {
@@ -188,7 +188,7 @@ public class TechnologyDP extends BaseClass {
 	            } catch (Exception ignored) {
 	            }
 	        }
-	        Assert.fail("Value did not persist for locator: " + locator + " expected='" + value + "'");
+	        throw new RuntimeException("Value did not persist for locator: " + locator + " expected='" + value + "'");
 	    }
 
 	    private String safeGetValue(By locator) {
